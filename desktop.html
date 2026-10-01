@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Moneta – Desktop</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root {
+      --bg-skifer: #F8FAFC;
+      --kort-hvit: #FFFFFF;
+      --ramme: #E2E8F0;
+      --mork-skifer: #1E293B;
+      --koks: #0F172A;
+      --tekst-dempet: #64748B;
+      --salvie: #0D9488;
+      --salvie-mork: #0F766E;
+      --lys-salvie: #CCFBF1;
+      --salvie-kant: #A7F3D0;
+      --varsel-rod: #BE123C;
+      --varsel-rosa: #FFE4E6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+    body { background-color: var(--bg-skifer); color: var(--koks); display: flex; min-height: 100vh; }
+
+    aside.sidemeny {
+      width: 230px; min-width: 230px; background-color: var(--mork-skifer); color: #fff;
+      padding: 24px 16px; display: flex; flex-direction: column; position: fixed; top: 0; bottom: 0; left: 0; z-index: 100;
+    }
+    aside.sidemeny h2 { font-size: 22px; font-weight: 800; margin-bottom: 28px; padding-left: 8px; letter-spacing: -0.5px; }
+    aside.sidemeny nav { display: flex; flex-direction: column; gap: 6px; }
+    aside.sidemeny nav a {
+      color: #CBD5E1; text-decoration: none; padding: 10px 14px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.15s;
+    }
+    aside.sidemeny nav a:hover { background: rgba(255,255,255,0.08); color: #fff; }
+    aside.sidemeny nav a.aktiv { background: var(--salvie); color: #fff; font-weight: 700; }
+
+    main.hovedinnhold { flex: 1; margin-left: 230px; padding: 32px 40px; min-width: 0; }
+    .topp-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; }
+    .topp-header h1 { font-size: 22px; font-weight: 700; color: var(--mork-skifer); margin: 0; }
+
+    .topp-ikoner-hoyre {
+      display: flex; align-items: center; font-size: 13px; font-weight: 600; color: var(--mork-skifer);
+    }
+    .topp-ikoner-hoyre a.bruker-profil-lenke {
+      display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: inherit;
+      padding: 7px 14px; border-radius: 8px; background: var(--kort-hvit); border: 1px solid var(--ramme);
+      transition: all 0.15s ease; cursor: pointer;
+    }
+    .topp-ikoner-hoyre a.bruker-profil-lenke:hover {
+      background: #E2E8F0; border-color: #CBD5E1;
+    }
+
+    .card { background: var(--kort-hvit); border: 1px solid var(--ramme); border-radius: 12px; padding: 20px 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+    .btn-primar { background: var(--mork-skifer); color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; padding: 10px 18px; cursor: pointer; }
+
+    .kpi-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 24px; }
+    .kpi-kort { background: #fff; border: 1px solid var(--ramme); border-radius: 12px; padding: 20px 24px; }
+    .kpi-tittel { font-size: 12px; font-weight: 600; color: var(--tekst-dempet); text-transform: uppercase; margin-bottom: 6px; }
+    .kpi-verdi { font-size: 28px; font-weight: 800; color: var(--koks); margin-bottom: 4px; }
+
+    .dashboard-hovedgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .regnestykke-bar { background: #fff; border: 1px solid var(--ramme); border-radius: 12px; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+    .formel-seksjon { display: flex; align-items: center; gap: 18px; }
+    .formel-kolonne { display: flex; flex-direction: column; }
+    .formel-etikett { font-size: 11px; color: var(--tekst-dempet); font-weight: 600; margin-bottom: 4px; }
+    .formel-verdi { font-size: 18px; font-weight: 700; color: var(--koks); }
+    .operator { font-size: 20px; color: #94A3B8; font-weight: 600; }
+
+    .budsjett-rutenett { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .utgift-rad { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 13px; }
+    .budsjett-input-lett { width: 95px; padding: 5px 8px; border: 1px solid var(--ramme); border-radius: 6px; font-weight: 700; text-align: right; background: #FAFAFA; }
+
+    .sifo-grid-layout { display: grid; grid-template-columns: 1fr 340px; gap: 24px; }
+    .sifo-tabell { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .sifo-tabell th, .sifo-tabell td { padding: 12px 16px; border-bottom: 1px solid #F1F5F9; }
+    .sifo-tabell thead th { font-size: 11px; color: var(--tekst-dempet); font-weight: 600; text-align: left; }
+    .sifo-tabell tr.post-rad:hover td { background-color: #F8FAFC; cursor: pointer; }
+    .sifo-tabell tr.valgt-rad td { background-color: #ECFDF5; }
+    .sifo-tabell tr.valgt-rad td:first-child { border-left: 4px solid var(--salvie); }
+
+    .kpi-fire-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+    .tiltak-kort { display: flex; align-items: center; justify-content: space-between; background: #F8FAFC; border: 1px solid var(--ramme); border-radius: 10px; padding: 12px 16px; cursor: pointer; margin-bottom: 10px; }
+    .custom-checkbox { width: 20px; height: 20px; border-radius: 5px; background: var(--salvie); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; }
+    .custom-checkbox.inaktiv { background: #E2E8F0; color: transparent; }
+
+    .profil-seksjon-tittel { font-size: 14px; font-weight: 700; color: var(--salvie); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px; border-bottom: 1px solid #F1F5F9; padding-bottom: 6px; }
+    .form-rad { display: flex; gap: 12px; }
+    .form-gruppe { flex: 1; margin-bottom: 12px; }
+    .form-gruppe label { display: block; font-size: 11.5px; font-weight: 600; margin-bottom: 4px; color: var(--koks); }
+    .form-gruppe input, .form-gruppe select { width: 100%; padding: 7px 10px; border: 1px solid var(--ramme); border-radius: 6px; font-size: 13px; background: #FFFFFF; color: var(--koks); }
+  </style>
+</head>
+<body>
+
+  <aside class="sidemeny">
+    <h2>Moneta</h2>
+    <nav>
+      <a class="nav-a aktiv" onclick="visFane('dashboard', this)">Dashboard</a>
+      <a class="nav-a" onclick="visFane('budsjett', this)">Budsjett (3-lag)</a>
+      <a class="nav-a" onclick="visFane('sifo', this)">SIFO-kalkulator</a>
+      <a class="nav-a" onclick="visFane('maalsparing', this)">Målsparing</a>
+      <a class="nav-a" onclick="visFane('profil', this)">Innstillinger</a>
+    </nav>
+  </aside>
+
+  <main class="hovedinnhold">
+    <header class="topp-header">
+      <h1 id="sidetittel">Dashboard</h1>
+      <div class="topp-ikoner-hoyre">
+        <a class="bruker-profil-lenke" onclick="visFane('profil')" title="Gå til innstillinger & profil">
+          👤 <strong id="header-bruker-navn">Profil</strong>
+        </a>
+      </div>
+    </header>
+
+    <!-- 1. DASHBOARD -->
+    <div id="fane-dashboard" class="fane">
+      <div class="kpi-grid">
+        <div class="kpi-kort" id="dash-buffer-kort" style="background: var(--lys-salvie); border-color: var(--salvie-kant);">
+          <div class="kpi-tittel" style="color: var(--salvie);">Disponibel restbuffer</div>
+          <div class="kpi-verdi" id="d-buffer" style="color: var(--salvie);">+0 kr</div>
+          <div style="font-size: 12px; color: var(--mork-skifer);">Netto disponibelt etter Lag 1, 2 og 3</div>
+        </div>
+        <div class="kpi-kort">
+          <div class="kpi-tittel">Rente-tåleevne</div>
+          <div class="kpi-verdi" id="d-rente">Tåler +4.5%</div>
+          <div style="font-size: 12px; color: var(--tekst-dempet);">Stresstest mot boliglånet</div>
+        </div>
+      </div>
+
+      <div class="dashboard-hovedgrid">
+        <div class="card">
+          <h3 style="font-size: 16px; margin-bottom: 14px;">Hverdagsforbruk mot SIFO</h3>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+            <span>Faktisk: <strong id="d-sifo-faktisk">0 kr</strong></span>
+            <span>Norm: <strong id="d-sifo-norm">0 kr</strong></span>
+          </div>
+          <div id="d-avvik-liste" style="display: flex; flex-direction: column; gap: 8px;"></div>
+        </div>
+        <div class="card">
+          <h3 style="font-size: 16px; margin-bottom: 14px;">Lag 3: Livsstil & Sparing</h3>
+          <div class="utgift-rad"><span>Restaurant & Kafé</span><strong id="d-liv-rest">0 kr</strong></div>
+          <div class="utgift-rad"><span>Ferie, reise & gaver</span><strong id="d-liv-ferie">0 kr</strong></div>
+          <div class="utgift-rad"><span>Annen fast sparing</span><strong id="d-liv-annen">0 kr</strong></div>
+          <div class="utgift-rad" style="border-top: 1px solid var(--ramme); padding-top: 10px;">
+            <span style="color: var(--salvie); font-weight: 700;">Aktiv Målsparing</span>
+            <strong style="color: var(--salvie);" id="d-liv-maal">0 kr</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. BUDSJETT (3-LAGS MODELL) -->
+    <div id="fane-budsjett" class="fane" style="display: none;">
+      <div class="regnestykke-bar">
+        <div class="formel-seksjon">
+          <div class="formel-kolonne"><span class="formel-etikett">Netto inntekt</span><span class="formel-verdi" id="b-inntekt">0 kr</span></div>
+          <span class="operator">&minus;</span>
+          <div class="formel-kolonne"><span class="formel-etikett">Faste</span><span class="formel-verdi" id="b-faste">0 kr</span></div>
+          <span class="operator">&minus;</span>
+          <div class="formel-kolonne"><span class="formel-etikett">SIFO</span><span class="formel-verdi" id="b-sifo">0 kr</span></div>
+          <span class="operator">&minus;</span>
+          <div class="formel-kolonne"><span class="formel-etikett">Livsstil</span><span class="formel-verdi" id="b-livsstil">0 kr</span></div>
+          <span class="operator">=</span>
+          <div class="formel-kolonne"><span class="formel-etikett">Buffer</span><span class="formel-verdi" id="b-buffer">0 kr</span></div>
+        </div>
+      </div>
+
+      <div class="budsjett-rutenett">
+        <!-- 1. Faste & Bolig[cite: 2] -->
+        <div class="card">
+          <h3 style="margin-bottom: 14px;">1. Faste & Bolig</h3>
+          <div class="utgift-rad"><span>Boliglån (termin)</span><strong id="b-lan">0 kr</strong></div>
+          <div class="utgift-rad"><span>Felleskostnader / leie</span><input type="number" id="in-felles" class="budsjett-input-lett" onchange="oppdaterBudsjettFelt('felleskost', this.value)"></div>
+          <div class="utgift-rad"><span>Strøm & oppvarming</span><input type="number" id="in-strom" class="budsjett-input-lett" onchange="oppdaterBudsjettFelt('strom', this.value)"></div>
+          <div class="utgift-rad"><span>Forsikringer</span><input type="number" id="in-forsikring" class="budsjett-input-lett" onchange="oppdaterBudsjettFelt('forsikring', this.value)"></div>
+        </div>
+
+        <!-- 2. Hverdagsforbruk[cite: 2] -->
+        <div class="card">
+          <h3 style="margin-bottom: 14px;">2. Hverdagsforbruk (Klynger)</h3>
+          <div id="b-sifo-liste"></div>
+        </div>
+
+        <!-- 3. Livsstil & Mål[cite: 2] -->
+        <div class="card">
+          <h3 style="margin-bottom: 14px;">3. Livsstil & Mål</h3>
+          <div class="utgift-rad"><span>Restaurant</span><input type="number" id="in-rest" class="budsjett-input-lett" onchange="oppdaterBudsjettFelt('restaurant', this.value)"></div>
+          <div class="utgift-rad"><span>Ferie & gaver</span><input type="number" id="in-ferie" class="budsjett-input-lett" onchange="oppdaterBudsjettFelt('ferie', this.value)"></div>
+          <div class="utgift-rad"><span>Annen sparing</span><input type="number" id="in-annen-sparing" class="budsjett-input-lett" onchange="oppdaterBudsjettFelt('annenSparing', this.value)"></div>
+          <div class="utgift-rad"><span style="color: var(--salvie); font-weight: 700;">🎯 Målsparing</span><strong id="b-maal-sparing" style="color: var(--salvie);">0 kr</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. SIFO-KALKULATOR -->
+    <div id="fane-sifo" class="fane" style="display: none;">
+      <div class="sifo-grid-layout">
+        <div>
+          <div class="card" style="margin-bottom: 20px;">
+            <table class="sifo-tabell">
+              <thead><tr><th>Post / Kategori</th><th style="text-align: right;">Faktisk</th><th style="text-align: right;">Norm</th><th style="text-align: right;">Avvik</th></tr></thead>
+              <tbody id="sifo-rader"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <h3 style="margin-bottom: 14px;">Juster valgt post</h3>
+          <div style="font-size: 13px; font-weight: 700; color: var(--salvie); margin-bottom: 6px;" id="sifo-aktiv-tittel">-</div>
+          <input type="range" id="sifo-slider" style="width: 100%; accent-color: var(--salvie); cursor: pointer;">
+          <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 13px;">
+            <span id="slider-norm">Norm: 0 kr</span>
+            <strong id="slider-faktisk" style="font-size: 16px;">0 kr</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. MÅLSPARING -->
+    <div id="fane-maalsparing" class="fane" style="display: none;">
+      <div class="kpi-fire-grid">
+        <div class="card"><div class="kpi-tittel">Målsum (<span id="m-mnd-vis">6</span> mnd)</div><div class="kpi-verdi" id="m-malsum-vis">30 000 kr</div></div>
+        <div class="card"><div class="kpi-tittel">Påkrevd sparing</div><div class="kpi-verdi" id="m-krav">5 000 kr</div></div>
+        <div class="card"><div class="kpi-tittel">Trygg spareevne</div><div class="kpi-verdi" style="color: var(--salvie);" id="m-trygg">0 kr</div></div>
+        <div class="card"><div class="kpi-tittel">Månedlig Gap</div><div class="kpi-verdi" id="m-gap">-5 000 kr</div></div>
+      </div>
+
+      <div class="dashboard-hovedgrid">
+        <div class="card">
+          <h3 style="margin-bottom: 14px;">SIFO-tiltak for å lukke gapet</h3>
+          <div id="tiltak-container"></div>
+        </div>
+        <div class="card">
+          <h3 style="margin-bottom: 14px;">Projeksjonsgraf</h3>
+          <div style="height: 250px;"><canvas id="projeksjonChart"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. INNSTILLINGER & PROFIL (STRUKTURERT ETTER DE 3 LAGENE)[cite: 2] -->
+    <div id="fane-profil" class="fane" style="display: none;">
+      
+      <!-- Fellesprofil -->
+      <div class="card" style="margin-bottom: 20px;">
+        <div class="profil-seksjon-tittel">Husholdningsprofil & Inntekt</div>
+        <div class="form-rad">
+          <div class="form-gruppe" style="flex: 2;">
+            <label>Fullt navn:</label>
+            <input type="text" id="p-navn" placeholder="F.eks. Kari Nordmann" onchange="oppdaterProfilVerdi('fulltNavn', this.value)">
+          </div>
+          <div class="form-gruppe" style="flex: 1.5;">
+            <label>Netto månedsinntekt (kr):</label>
+            <input type="number" id="p-inntekt" placeholder="0" onchange="oppdaterProfilVerdi('inntektNetto', this.value)">
+          </div>
+          <div class="form-gruppe" style="flex: 1.5;">
+            <label>Transportmiddel:</label>
+            <select id="p-transport" onchange="oppdaterProfilVerdi('transportmiddel', this.value)">
+              <option value="Bensinbil">Bensinbil</option>
+              <option value="Elbil">Elbil</option>
+              <option value="Kollektivtransport">Kollektivtransport</option>
+            </select>
+          </div>
+          <div class="form-gruppe" style="flex: 1;">
+            <label>Voksne:</label>
+            <input type="number" id="p-voksne" min="1" max="4" onchange="oppdaterProfilVerdi('voksne', this.value)">
+          </div>
+          <div class="form-gruppe" style="flex: 1;">
+            <label>Barn:</label>
+            <input type="number" id="p-barn" min="0" max="6" onchange="oppdaterProfilVerdi('barn', this.value)">
+          </div>
+        </div>
+      </div>
+
+      <!-- Fordeling etter de 3 lagene[cite: 2] -->
+      <div class="budsjett-rutenett" style="margin-bottom: 24px;">
+        
+        <!-- LAG 1: FASTE & BOLIG[cite: 2] -->
+        <div class="card">
+          <div class="profil-seksjon-tittel">1. Faste & Bolig</div>
+          <div class="form-gruppe">
+            <label>Boliglån saldo/gjeld (kr):</label>
+            <input type="number" id="p-lan-saldo" step="50000" placeholder="0" onchange="oppdaterProfilVerdi('boliglanSaldo', this.value)">
+          </div>
+          <div class="form-gruppe">
+            <label>Boliglån termin (kr/mnd):</label>
+            <input type="number" id="p-lan-termin" step="100" placeholder="0" onchange="oppdaterProfilVerdi('boliglanTermin', this.value)">
+          </div>
+          <div class="form-gruppe">
+            <label>Felleskostnader / leie (kr/mnd):</label>
+            <input type="number" id="p-felleskost" step="50" placeholder="0" onchange="oppdaterProfilVerdi('felleskost', this.value)">
+          </div>
+          <div class="form-gruppe">
+            <label>Strøm og oppvarming (kr/mnd):</label>
+            <input type="number" id="p-strom" step="50" placeholder="0" onchange="oppdaterProfilVerdi('strom', this.value)">
+          </div>
+          <div class="form-gruppe">
+            <label>Forsikringer (kr/mnd):</label>
+            <input type="number" id="p-forsikring" step="50" placeholder="0" onchange="oppdaterProfilVerdi('forsikring', this.value)">
+          </div>
+        </div>
+
+        <!-- LAG 2: HVERDAGSFORBRUK[cite: 2] -->
+        <div class="card" style="background: #FAFBFD; display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div class="profil-seksjon-tittel">2. Hverdagsforbruk (SIFO)</div>
+            <p style="font-size: 12px; color: var(--tekst-dempet); margin-bottom: 14px; line-height: 1.4;">
+              Disse postene beregnes automatisk fra referansebudsjettet (SIFO 2026) basert på antall voksne, barn og transportform.
+            </p>
+            <div style="font-size: 12px; display: flex; flex-direction: column; gap: 8px; color: var(--mork-skifer);">
+              <div style="display:flex; justify-content:space-between;"><span>1. Mat & Dagligvarer</span><strong>Normert</strong></div>
+              <div style="display:flex; justify-content:space-between;"><span>2. Transport & Bilhold</span><strong>Normert</strong></div>
+              <div style="display:flex; justify-content:space-between;"><span>3. Barn, SFO & Fritid</span><strong>Normert</strong></div>
+              <div style="display:flex; justify-content:space-between;"><span>4. Klær, Pleie & Hushold</span><strong>Normert</strong></div>
+            </div>
+          </div>
+          <div style="margin-top: 16px;">
+            <a onclick="visFane('sifo')" style="display: block; text-align: center; padding: 10px; background: var(--lys-salvie); color: var(--salvie); font-weight: 700; border-radius: 6px; cursor: pointer; text-decoration: none; font-size: 12px;">
+              🎚️️ Juster i SIFO-kalkulator →
+            </a>
+          </div>
+        </div>
+
+        <!-- LAG 3: LIVSSTIL & SPARING[cite: 2] -->
+        <div class="card">
+          <div class="profil-seksjon-tittel">3. Livsstil & Sparing</div>
+          <div class="form-gruppe">
+            <label>Restaurant & kafé (kr/mnd):</label>
+            <input type="number" id="p-restaurant" step="100" placeholder="0" onchange="oppdaterProfilVerdi('restaurant', this.value)">
+          </div>
+          <div class="form-gruppe">
+            <label>Ferie, reiser & gaver (kr/mnd):</label>
+            <input type="number" id="p-ferie" step="100" placeholder="0" onchange="oppdaterProfilVerdi('ferie', this.value)">
+          </div>
+          <div class="form-gruppe">
+            <label>Annen fast sparing (fond/buffer) (kr/mnd):</label>
+            <input type="number" id="p-annen-sparing" step="100" placeholder="0" onchange="oppdaterProfilVerdi('annenSparing', this.value)">
+          </div>
+          <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--ramme);">
+            <a onclick="visFane('maalsparing')" style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--salvie); font-weight: 700; text-decoration: none; cursor: pointer;">
+              <span>🎯 Aktiv målsparing</span>
+              <span>Gå til sparemål →</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <button type="button" class="btn-primar" style="padding: 12px 32px; font-size: 14px;" onclick="lagreProfilKnapp()">
+          Lagre innstillinger og oppdater budsjett
+        </button>
+        <button type="button" onclick="MonetaMotor.nullstillAltOgSlettData()" style="background: transparent; color: var(--varsel-rod); border: 1px solid #FECDD3; padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">
+          🗑️ Nullstill app og slett lokale data
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/felles_motor.js"></script>
+
+  <script>
+    const { SIFO_KLYNGER, hentState, lagreState, beregnTotalOkonomi, initFaktiskLikNorm, fmt } = window.MonetaMotor;
+    let state = hentState();
+    let aktivValgtPost = 'mat_drikke';
+    let chartInstance = null;
+
+    window.visFane = function(id, el) {
+      document.querySelectorAll('.fane').forEach(f => f.style.display = 'none');
+      const fane = document.getElementById('fane-' + id);
+      if (fane) fane.style.display = 'block';
+
+      document.querySelectorAll('.nav-a').forEach(a => a.classList.remove('aktiv'));
+      if (el) {
+        el.classList.add('aktiv');
+      } else {
+        const navLenker = document.querySelectorAll('.nav-a');
+        navLenker.forEach(a => {
+          if (a.getAttribute('onclick')?.includes(id)) a.classList.add('aktiv');
+        });
+      }
+
+      const titler = {
+        dashboard: 'Dashboard',
+        budsjett: 'Budsjettoversikt: 3-Lags Modellen',
+        sifo: 'SIFO Budsjettsimulator',
+        maalsparing: 'Målsparing',
+        profil: 'Innstillinger & Profil'
+      };
+      document.getElementById('sidetittel').innerText = titler[id] || 'Moneta';
+      oppdater();
+    };
+
+    window.lagreProfilKnapp = function() {
+      if (state.forstegangsBruker) {
+        state = initFaktiskLikNorm(state);
+        alert("Husstand er registrert! Forbruket er satt lik SIFO-normen som et balansert utgangspunkt.");
+        visFane('dashboard');
+      } else {
+        lagreState(state);
+        alert("Profilinnstillinger er lagret!");
+        oppdater();
+      }
+    };
+
+    window.oppdaterBudsjettFelt = function(felt, val) {
+      state[felt] = Number(val);
+      oppdater();
+      lagreState(state);
+    };
+
+    window.oppdaterProfilVerdi = function(felt, val) {
+      state[felt] = (felt === 'fulltNavn' || felt === 'transportmiddel') ? val : Number(val);
+      oppdater();
+      lagreState(state);
+    };
+
+    function oppsettSlider() {
+      const okonomi = beregnTotalOkonomi(state);
+      const postNavn = finnPostNavn(aktivValgtPost);
+      document.getElementById('sifo-aktiv-tittel').innerText = postNavn;
+
+      const norm = okonomi.normer[aktivValgtPost] || 0;
+      const faktisk = state.faktiskForbruk[aktivValgtPost] || 0;
+      const slider = document.getElementById('sifo-slider');
+
+      const erLaastMotpost = (aktivValgtPost === 'kollektivreise' && state.transportmiddel !== 'Kollektivtransport') ||
+                             (aktivValgtPost === 'bilhold' && state.transportmiddel === 'Kollektivtransport');
+
+      if (erLaastMotpost) {
+        slider.disabled = true;
+        slider.value = 0;
+        document.getElementById('slider-norm').innerText = `Låst (0 kr - motpost)`;
+        document.getElementById('slider-faktisk').innerText = `0 kr`;
+      } else {
+        slider.disabled = false;
+        slider.min = Math.round(norm * 0.3);
+        slider.max = Math.round(norm * 2.5);
+        slider.value = faktisk;
+        document.getElementById('slider-norm').innerText = `Norm: ${fmt(norm)} kr`;
+        document.getElementById('slider-faktisk').innerText = `${fmt(faktisk)} kr`;
+      }
+    }
+
+    function finnPostNavn(postId) {
+      for (const kNr in SIFO_KLYNGER) {
+        const post = SIFO_KLYNGER[kNr].poster.find(p => p.id === postId);
+        if (post) return post.navn;
+      }
+      return postId;
+    }
+
+    document.getElementById('sifo-slider').addEventListener('input', (e) => {
+      state.faktiskForbruk[aktivValgtPost] = Number(e.target.value);
+      oppsettSlider();
+      oppdater();
+      lagreState(state);
+    });
+
+    function tegnGraf(fremskrivning) {
+      const ctx = document.getElementById('projeksjonChart');
+      if (!ctx) return;
+      if (chartInstance) chartInstance.destroy();
+      chartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: fremskrivning.labels,
+          datasets: [
+            { label: '+ Kutt', data: fremskrivning.dataMedKutt, borderColor: '#0D9488', backgroundColor: 'rgba(204,251,241,0.4)', fill: true, tension: 0.1 },
+            { label: 'I dag', data: fremskrivning.dataUtenKutt, borderColor: '#94A3B8', borderDash: [5,5], fill: false, tension: 0.1 }
+          ]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+    }
+
+    function oppdater() {
+      const okonomi = beregnTotalOkonomi(state);
+
+      document.getElementById('header-bruker-navn').innerText = state.fulltNavn || 'Profil';
+
+      // Dashboard
+      document.getElementById('d-buffer').innerText = `${okonomi.buffer >= 0 ? '+' : ''}${fmt(okonomi.buffer)} kr`;
+      document.getElementById('d-rente').innerText = `Tåler +${okonomi.renteTaleevne}%`;
+      document.getElementById('d-sifo-faktisk').innerText = `${fmt(okonomi.sumForbrukFaktisk)} kr`;
+      document.getElementById('d-sifo-norm').innerText = `${fmt(okonomi.sumSifoNorm)} kr`;
+      document.getElementById('d-liv-rest').innerText = `${fmt(okonomi.restaurant)} kr`;
+      document.getElementById('d-liv-ferie').innerText = `${fmt(okonomi.ferie)} kr`;
+      document.getElementById('d-liv-annen').innerText = `${fmt(okonomi.annenSparing)} kr`;
+      document.getElementById('d-liv-maal').innerText = `${fmt(okonomi.sumMaalsparingMnd)} kr`;
+
+      const avvikListe = document.getElementById('d-avvik-liste');
+      avvikListe.innerHTML = '';
+      for (const kNr in SIFO_KLYNGER) {
+        const diff = okonomi.klyngeAvvik[kNr];
+        if (diff > 0) {
+          avvikListe.innerHTML += `<div class="utgift-rad"><span>${SIFO_KLYNGER[kNr].tittel}</span><strong style="color: var(--varsel-rod);">+${fmt(diff)} kr</strong></div>`;
+        }
+      }
+      if (avvikListe.innerHTML === '') {
+        avvikListe.innerHTML = `<div style="font-size:12px; color:var(--salvie);">✅ Forbruket er innenfor SIFO-norm.</div>`;
+      }
+
+      // Budsjett
+      document.getElementById('b-inntekt').innerText = `${fmt(okonomi.inntektNetto)} kr`;
+      document.getElementById('b-faste').innerText = `${fmt(okonomi.sumFaste)} kr`;
+      document.getElementById('b-sifo').innerText = `${fmt(okonomi.sumForbrukFaktisk)} kr`;
+      document.getElementById('b-livsstil').innerText = `${fmt(okonomi.sumLivsstil)} kr`;
+      document.getElementById('b-buffer').innerText = `${okonomi.buffer >= 0 ? '+' : ''}${fmt(okonomi.buffer)} kr`;
+      document.getElementById('b-lan').innerText = `${fmt(state.boliglanTermin || 0)} kr`;
+      document.getElementById('b-maal-sparing').innerText = `${fmt(okonomi.sumMaalsparingMnd)} kr`;
+
+      document.getElementById('in-felles').value = state.felleskost || 0;
+      document.getElementById('in-strom').value = state.strom || 0;
+      document.getElementById('in-forsikring').value = state.forsikring || 0;
+      document.getElementById('in-rest').value = state.restaurant || 0;
+      document.getElementById('in-ferie').value = state.ferie || 0;
+      document.getElementById('in-annen-sparing').value = state.annenSparing || 0;
+
+      const bSifoListe = document.getElementById('b-sifo-liste');
+      bSifoListe.innerHTML = '';
+      for (const kNr in SIFO_KLYNGER) {
+        bSifoListe.innerHTML += `<div class="utgift-rad"><span>${SIFO_KLYNGER[kNr].tittel}</span><strong>${fmt(okonomi.klyngeFaktisk[kNr])} kr</strong></div>`;
+      }
+
+      // SIFO Tabell
+      const sifoRader = document.getElementById('sifo-rader');
+      sifoRader.innerHTML = '';
+      for (const kNr in SIFO_KLYNGER) {
+        const klynge = SIFO_KLYNGER[kNr];
+        sifoRader.innerHTML += `<tr style="background:#F1F5F9;"><th colspan="4" style="color:var(--salvie); font-size:11px; text-transform:uppercase;">${klynge.tittel}</th></tr>`;
+        klynge.poster.forEach(post => {
+          const f = state.faktiskForbruk[post.id] || 0;
+          const n = okonomi.normer[post.id] || 0;
+          const diff = f - n;
+          const tr = document.createElement('tr');
+          tr.className = `post-rad ${aktivValgtPost === post.id ? 'valgt-rad' : ''}`;
+          tr.onclick = () => {
+            aktivValgtPost = post.id;
+            oppsettSlider();
+            oppdater();
+          };
+          tr.innerHTML = `
+            <td><strong>${post.navn}</strong></td>
+            <td style="text-align: right;">${fmt(f)} kr</td>
+            <td style="text-align: right; color: var(--tekst-dempet);">${fmt(n)} kr</td>
+            <td style="text-align: right; font-weight: 700; color: ${diff > 0 ? 'var(--varsel-rod)' : 'var(--salvie)'};">${diff > 0 ? '+' : ''}${fmt(diff)} kr</td>
+          `;
+          sifoRader.appendChild(tr);
+        });
+      }
+
+      // Målsparing
+      document.getElementById('m-malsum-vis').innerText = `${fmt(okonomi.aktivtMaal.malsum)} kr`;
+      document.getElementById('m-mnd-vis').innerText = okonomi.aktivtMaal.mnd;
+      document.getElementById('m-krav').innerText = `${fmt(okonomi.aktivtMaal.paakrevd)} kr/mnd`;
+      document.getElementById('m-trygg').innerText = `${fmt(Math.max(0, okonomi.buffer))} kr/mnd`;
+      const gapEl = document.getElementById('m-gap');
+      const gap = okonomi.buffer < 0 ? Math.abs(okonomi.buffer) : 0;
+      gapEl.innerText = okonomi.buffer >= 0 ? `Dekket! 🎉` : `-${fmt(gap)} kr/mnd`;
+      gapEl.style.color = okonomi.buffer >= 0 ? 'var(--salvie)' : 'var(--varsel-rod)';
+
+      tegnGraf(okonomi.fremskrivning);
+
+      // Profil inputs synkronisering
+      document.getElementById('p-navn').value = state.fulltNavn || '';
+      document.getElementById('p-inntekt').value = state.inntektNetto || 0;
+      document.getElementById('p-transport').value = state.transportmiddel || 'Bensinbil';
+      document.getElementById('p-voksne').value = state.voksne || 1;
+      document.getElementById('p-barn').value = state.barn || 0;
+      document.getElementById('p-lan-saldo').value = state.boliglanSaldo || 0;
+      document.getElementById('p-lan-termin').value = state.boliglanTermin || 0;
+      document.getElementById('p-felleskost').value = state.felleskost || 0;
+      document.getElementById('p-strom').value = state.strom || 0;
+      document.getElementById('p-forsikring').value = state.forsikring || 0;
+      document.getElementById('p-helse').value = state.helse || 0;
+      document.getElementById('p-restaurant').value = state.restaurant || 0;
+      document.getElementById('p-ferie').value = state.ferie || 0;
+      document.getElementById('p-annen-sparing').value = state.annenSparing || 0;
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      oppsettSlider();
+      if (state.forstegangsBruker) {
+        visFane('profil');
+      } else {
+        visFane('dashboard');
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Moneta</title>
+
+  <style>
+    :root {
+      --bg-skifer: #F8FAFC;
+      --mork-skifer: #1E293B;
+      --salvie: #0D9488;
+      --tekst-dempet: #64748B;
+    }
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+    }
+    body {
+      background-color: var(--bg-skifer);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      color: var(--mork-skifer);
+      text-align: center;
+      padding: 20px;
+    }
+    .laster-boks {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .spinner {
+      width: 28px;
+      height: 28px;
+      border: 3px solid #E2E8F0;
+      border-top-color: var(--salvie);
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .fallback-lenker {
+      margin-top: 16px;
+      font-size: 13px;
+      display: flex;
+      gap: 16px;
+    }
+    .fallback-lenker a {
+      color: var(--salvie);
+      text-decoration: none;
+      font-weight: 600;
+    }
+  </style>
+
+  <script>
+    (function dirigerEnhet() {
+      // 1. Sjekk skjermbredde
+      const erSmalSkjerm = window.innerWidth <= 860;
+      
+      // 2. Sjekk User-Agent for mobile operativsystemer
+      const erMobilUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      
+      // 3. Sjekk touch-skjerm
+      const harTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
+      // Bestem målsiden
+      const destinasjon = (erSmalSkjerm || (erMobilUA && harTouch)) ? "mobil.html" : "desktop.html";
+
+      // Bruk replace for å unngå historikk-loop ved trykk på tilbake-knappen
+      window.location.replace(destinasjon);
+    })();
+  </script>
+</head>
+<body>
+
+  <div class="laster-boks">
+    <div class="spinner"></div>
+    <div style="font-size: 13px; color: var(--tekst-dempet); font-weight: 500;">
+      Åpner Moneta...
+    </div>
+
+    <!-- Fallback dersom JavaScript er deaktivert -->
+    <noscript>
+      <div class="fallback-lenker">
+        <a href="desktop.html">Gå til PC-versjon</a>
+        <a href="mobil.html">Gå til Mobilversjon</a>
+      </div>
+    </noscript>
+  </div>
+
+</body>
+</html>

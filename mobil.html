@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Moneta – Mobil</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-skifer: #F8FAFC;
+      --kort-hvit: #FFFFFF;
+      --ramme: #E2E8F0;
+      --mork-skifer: #1E293B;
+      --koks: #0F172A;
+      --tekst-dempet: #64748B;
+      --salvie: #0D9488;
+      --lys-salvie: #CCFBF1;
+      --salvie-kant: #A7F3D0;
+      --varsel-rod: #BE123C;
+      --varsel-rosa: #FFE4E6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background-color: var(--bg-skifer); color: var(--koks); min-height: 100vh; display: flex; flex-direction: column; }
+
+    .mobil-topp-header {
+      position: fixed; top: 0; left: 0; right: 0; height: 44px; background-color: var(--mork-skifer); color: #FFFFFF;
+      padding: 0 12px; z-index: 1000; display: flex; align-items: center; justify-content: space-between;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+    }
+    .mobil-topp-header h1 { font-size: 13.5px; font-weight: 700; color: #FFFFFF; margin: 0; }
+    .topp-profil-lenke { color: #FFFFFF; text-decoration: none; font-size: 11.5px; font-weight: 700; cursor: pointer; }
+
+    main.mobil-hovedinnhold { padding: 52px 10px 70px 10px; width: 100%; max-width: 440px; margin: 0 auto; flex: 1; }
+
+    .mobil-bunnmeny {
+      display: flex; position: fixed; bottom: 0; left: 0; right: 0; height: 54px;
+      background-color: #FFFFFF; border-top: 1px solid var(--ramme); justify-content: space-around; align-items: center; z-index: 9999;
+    }
+    .mobil-bunnmeny a {
+      display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none;
+      color: #94A3B8; font-size: 10px; font-weight: 500; flex: 1; height: 100%; min-height: 44px; gap: 2px; cursor: pointer;
+    }
+    .mobil-bunnmeny a.aktiv { color: var(--salvie); font-weight: 700; }
+
+    .dash-ramme { display: flex; flex-direction: column; gap: 12px; }
+    .status-hovedtittel { font-size: 18px; font-weight: 800; color: var(--koks); line-height: 1.2; }
+    .status-undertittel { font-size: 11.5px; font-weight: 600; color: var(--salvie); margin-top: 2px; }
+
+    .kpi-buffer-kort { background: #FFFFFF; border: 1px solid var(--ramme); border-radius: 10px; padding: 14px 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+    .kpi-buffer-label { font-size: 11px; font-weight: 600; color: var(--tekst-dempet); text-transform: uppercase; }
+    .kpi-buffer-verdi { font-size: 24px; font-weight: 800; color: var(--koks); margin-top: 4px; }
+
+    .avvik-kort { background: #FFFFFF; border: 1px solid var(--ramme); border-radius: 8px; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; }
+    .avvik-kort.advarsel { background: var(--varsel-rosa); border-color: #FECDD3; }
+    .avvik-kort-badge { font-size: 10.5px; font-weight: 700; padding: 4px 8px; border-radius: 12px; }
+    .badge-over { background: #FFFFFF; color: var(--varsel-rod); border: 1px solid #FECDD3; }
+    .badge-under { background: var(--lys-salvie); color: var(--salvie); border: 1px solid var(--salvie-kant); }
+
+    .btn-cta-mobil {
+      display: flex; align-items: center; justify-content: center; background: var(--mork-skifer); color: #FFFFFF;
+      padding: 12px; border-radius: 8px; font-size: 13px; font-weight: 700; min-height: 44px; cursor: pointer; text-decoration: none;
+    }
+
+    .budsjett-mobil-ramme { display: flex; flex-direction: column; gap: 10px; }
+    .kpi-stripe-kort { background: #FFFFFF; border: 1px solid var(--ramme); border-radius: 8px; padding: 10px 12px; }
+    .lag-kort { background: #FFFFFF; border: 1px solid var(--ramme); border-radius: 8px; padding: 12px 14px; }
+    .lag-hode-rad { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid #F1F5F9; padding-bottom: 5px; }
+    .budsjett-rad { display: flex; justify-content: space-between; align-items: center; font-size: 11.5px; padding: 6px 0; border-bottom: 1px solid #F1F5F9; }
+    .btn-til-sifo { display: block; width: 100%; background: var(--mork-skifer); color: #FFFFFF; text-align: center; padding: 10px; border-radius: 6px; font-size: 11.5px; font-weight: 700; margin-top: 10px; min-height: 44px; line-height: 24px; cursor: pointer; }
+
+    .sifo-ramme { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+    .sifo-header-boks { background: #FFFFFF; border: 1px solid var(--ramme); border-radius: 6px; padding: 6px 10px; text-align: center; font-size: 11px; color: var(--tekst-dempet); }
+    .klynge-kort { background: #FFFFFF; border: 1px solid var(--ramme); border-radius: 8px; padding: 8px 10px; }
+    .klynge-kort.apen { border: 1.5px solid var(--salvie); }
+    .klynge-hode { cursor: pointer; user-select: none; }
+    .klynge-topprad { display: flex; justify-content: space-between; align-items: center; }
+    .klynge-subrad { display: flex; justify-content: space-between; font-size: 10px; color: var(--tekst-dempet); margin-top: 2px; }
+    .klynge-detaljer { display: none; margin-top: 6px; padding-top: 6px; border-top: 1px solid #F1F5F9; flex-direction: column; gap: 6px; }
+    .klynge-kort.apen .klynge-detaljer { display: flex; }
+    .post-element { background: #F8FAFC; padding: 6px 8px; border-radius: 6px; border: 1px solid #E2E8F0; display: flex; flex-direction: column; gap: 2px; }
+    .post-tekst-rad { display: flex; justify-content: space-between; font-size: 10px; color: var(--tekst-dempet); }
+    .post-slider { width: 100%; accent-color: var(--salvie); height: 4px; cursor: pointer; margin: 3px 0; }
+    .btn-nullstill-klynge { width: 100%; background: var(--lys-salvie); color: var(--salvie); border: none; border-radius: 5px; padding: 6px; font-size: 10px; font-weight: 700; cursor: pointer; }
+
+    /* MÅLSPARING-STILER */
+    .sparemaal-seksjon-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .sparemaal-tittel { font-size: 16px; font-weight: 800; color: var(--koks); }
+    .kapasitet-tekst { font-size: 12px; font-weight: 700; color: var(--salvie); }
+
+    .maal-liste-container { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+    .maal-rad-kort {
+      background: #FFFFFF; border: 1.5px solid var(--ramme); border-radius: 10px; padding: 14px 16px;
+      display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: all 0.15s ease;
+    }
+    .maal-rad-kort:hover { border-color: var(--salvie); }
+    .maal-rad-venstre { display: flex; flex-direction: column; gap: 2px; }
+    .maal-navn-stor { font-size: 14px; font-weight: 800; color: var(--koks); }
+    .maal-subinfo { font-size: 11px; color: var(--tekst-dempet); font-weight: 500; }
+    .maal-rad-hoyre { display: flex; align-items: center; gap: 6px; }
+    .maal-sum-tall { font-size: 15px; font-weight: 800; color: var(--koks); }
+    .maal-pil { color: #94A3B8; font-weight: bold; font-size: 13px; }
+
+    .opprett-maal-kort {
+      background: #FFFFFF; border: 1px solid var(--ramme); border-radius: 12px; padding: 16px; margin-bottom: 16px;
+    }
+    .opprett-maal-tittel { font-size: 13.5px; font-weight: 800; color: var(--koks); margin-bottom: 12px; }
+    .felt-label { font-size: 11px; font-weight: 600; color: var(--koks); margin-bottom: 4px; display: block; }
+    .felt-input {
+      width: 100%; padding: 10px 12px; border: 1px solid var(--ramme); border-radius: 8px; font-size: 13px;
+      background: #FFFFFF; color: var(--koks); margin-bottom: 10px; outline: none;
+    }
+    .felt-input:focus { border-color: var(--salvie); }
+    .btn-start-plan {
+      width: 100%; background: var(--mork-skifer); color: #FFFFFF; border: none; padding: 12px; border-radius: 8px;
+      font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 4px;
+    }
+
+    /* Detaljvisning av enkeltmål */
+    .maal-status-hode-kort {
+      background: #FFFFFF; border: 1px solid var(--ramme); border-radius: 12px; padding: 14px 16px; margin-bottom: 12px;
+      display: flex; justify-content: space-between; align-items: flex-start;
+    }
+    .simulering-tag {
+      background: var(--lys-salvie); color: var(--salvie); font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px;
+    }
+    .fremskriving-boks {
+      background: #FFFFFF; border: 1px solid var(--ramme); border-radius: 12px; padding: 14px 16px; margin-bottom: 12px;
+    }
+    .progresjon-spor {
+      position: relative; height: 4px; background: #E2E8F0; border-radius: 2px; margin: 24px 0 12px 0;
+    }
+    .progresjon-fyll {
+      height: 100%; background: var(--salvie); border-radius: 2px; position: relative;
+    }
+    .progresjon-punkt {
+      width: 12px; height: 12px; background: var(--salvie); border-radius: 50%; position: absolute; right: -4px; top: -4px;
+    }
+    .maal-stiplet-linje {
+      position: absolute; top: -14px; left: 0; right: 0; border-top: 1px dashed #CBD5E1; text-align: right; font-size: 9px; color: var(--salvie); font-weight: 700;
+    }
+
+    .tiltak-klynge-boks {
+      background: #FFFFFF; border: 1px solid var(--ramme); border-radius: 12px; padding: 16px; margin-bottom: 14px;
+    }
+    .tiltak-rad-element {
+      display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #F1F5F9;
+    }
+    .tiltak-rad-element:last-child { border-bottom: none; }
+    .tiltak-cb-label { display: flex; align-items: center; gap: 10px; font-size: 12px; font-weight: 600; color: var(--koks); cursor: pointer; }
+    .tiltak-cb-input { width: 18px; height: 18px; accent-color: var(--salvie); cursor: pointer; }
+    .tiltak-belop-gronn { font-size: 12.5px; font-weight: 800; color: var(--salvie); }
+
+    .btn-aktiver-tiltak {
+      width: 100%; background: var(--mork-skifer); color: #FFFFFF; border: none; padding: 13px; border-radius: 8px;
+      font-size: 13.5px; font-weight: 700; cursor: pointer; margin-top: 6px;
+    }
+    .lenke-ga-tilbake {
+      display: inline-block; color: var(--salvie); font-size: 12px; font-weight: 700; text-decoration: none; cursor: pointer; margin-top: 12px;
+    }
+
+    .profil-kort { background: #FFFFFF; border: 1px solid var(--ramme); border-radius: 8px; padding: 10px 12px; }
+    .seksjon-ramme { border-bottom: 1px solid var(--ramme); padding-bottom: 8px; margin-bottom: 8px; }
+    .seksjon-tittel-skjema { font-size: 11px; font-weight: 700; color: var(--salvie); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+    .form-gruppe { margin-bottom: 6px; }
+    .form-gruppe label { display: block; font-size: 10px; font-weight: 600; margin-bottom: 2px; color: var(--koks); }
+    .form-gruppe input, .form-gruppe select { width: 100%; padding: 6px 8px; border: 1px solid var(--ramme); border-radius: 6px; font-size: 11.5px; background: #FFFFFF; color: var(--koks); }
+    .btn-lagre-profil { width: 100%; background: var(--salvie); color: #FFFFFF; border: none; padding: 10px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; margin-top: 6px; }
+  </style>
+</head>
+<body>
+
+  <header class="mobil-topp-header">
+    <h1 id="mobil-tittel">Moneta</h1>
+    <a class="topp-profil-lenke" onclick="visMobilFane('profil', this)">
+      👤 <span id="m-topp-navn">Profil</span>
+    </a>
+  </header>
+
+  <main class="mobil-hovedinnhold">
+    <!-- 1. OVERSIKT -->
+    <div id="m-fane-dashboard" class="m-fane">
+      <div class="dash-ramme">
+        <div>
+          <div class="status-hovedtittel">Status: Robust</div>
+          <div class="status-undertittel">Tåleevne: Tåler +4.5% renteøkning</div>
+        </div>
+
+        <div class="kpi-buffer-kort">
+          <div class="kpi-buffer-label">Månedlig disponibel buffer</div>
+          <div class="kpi-buffer-verdi" id="m-dash-buffer">+0 kr</div>
+        </div>
+
+        <div style="font-size: 13px; font-weight: 700; margin-top: 4px;">Viktigste avvik mot SIFO</div>
+        <div id="m-dash-avvik-liste" style="display: flex; flex-direction: column; gap: 8px;"></div>
+
+        <div class="kpi-buffer-kort" style="padding: 12px 14px;">
+          <div style="font-size: 12px; font-weight: 700;">Boliglån (saldo)</div>
+          <div style="font-size: 11px; color: var(--tekst-dempet); margin-top: 2px;">Tåler rentehopp opp til +4.5%</div>
+        </div>
+
+        <a class="btn-cta-mobil" onclick="visMobilFane('budsjett')">+ Registrer / juster utgift</a>
+      </div>
+    </div>
+
+    <!-- 2. BUDSJETT -->
+    <div id="m-fane-budsjett" class="m-fane" style="display: none;">
+      <div class="budsjett-mobil-ramme">
+        <div class="kpi-stripe-kort">
+          <div style="font-size: 11px; font-weight: 700; margin-bottom: 6px;">Månedlig totalbudsjett</div>
+          <div style="display: flex; justify-content: space-between; font-size: 11.5px;">
+            <span>Inntekt: <strong id="m-b-inntekt">0</strong></span>
+            <span>Buffer: <strong id="m-b-buffer" style="color: var(--salvie);">+0 kr</strong></span>
+          </div>
+        </div>
+
+        <!-- 1. Faste & Bolig -->
+        <div class="lag-kort">
+          <div class="lag-hode-rad">
+            <span style="font-size: 12px; font-weight: 700;">1. Faste kostnader & Bolig</span>
+            <strong id="m-b-sum-faste">0 kr</strong>
+          </div>
+          <div class="budsjett-rad"><span>Boliglån (termin)</span><strong id="m-b-lan">0 kr</strong></div>
+          <div class="budsjett-rad"><span>Felleskostnader / leie</span><strong id="m-b-felles">0 kr</strong></div>
+          <div class="budsjett-rad"><span>Strøm & oppvarming</span><strong id="m-b-strom">0 kr</strong></div>
+        </div>
+
+        <!-- 2. Hverdagsforbruk -->
+        <div class="lag-kort">
+          <div class="lag-hode-rad">
+            <span style="font-size: 12px; font-weight: 700;">2. Hverdagsforbruk (SIFO)</span>
+            <strong id="m-b-sum-forbruk">0 kr</strong>
+          </div>
+          <div class="budsjett-rad"><span>1. Mat & Dagligvarer</span><strong id="m-sum-k1">0 kr</strong></div>
+          <div class="budsjett-rad"><span>2. Transport & Bilhold</span><strong id="m-sum-k2">0 kr</strong></div>
+          <div class="budsjett-rad"><span>3. Barn, SFO & Fritid</span><strong id="m-sum-k3">0 kr</strong></div>
+          <div class="budsjett-rad"><span>4. Klær, Pleie & Hushold</span><strong id="m-sum-k4">0 kr</strong></div>
+          <a class="btn-til-sifo" onclick="visMobilFane('sifo')">Juster hverdagsforbruk mot SIFO →</a>
+        </div>
+
+        <!-- 3. Livsstil & Mål -->
+        <div class="lag-kort" style="border: 1.5px solid var(--salvie);">
+          <div class="lag-hode-rad">
+            <span style="font-size: 12px; font-weight: 700;">3. Livsstil & Målsparing</span>
+            <strong id="m-b-sum-livsstil">0 kr</strong>
+          </div>
+          <div class="budsjett-rad"><span>Restaurant & Kafé</span><strong id="m-b-rest">0 kr</strong></div>
+          <div class="budsjett-rad"><span>Ferie, reise & gaver</span><strong id="m-b-ferie">0 kr</strong></div>
+          <div class="budsjett-rad"><span style="color: var(--salvie); font-weight: 700;">🎯 Målsparing</span><strong style="color: var(--salvie);" id="m-b-maal">0 kr</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. SIFO-KALKULATOR -->
+    <div id="m-fane-sifo" class="m-fane" style="display: none;">
+      <div class="sifo-ramme">
+        <div class="sifo-header-boks">
+          SIFO-norm: <strong id="m-sifo-total-overskrift">0 kr/mnd</strong>
+        </div>
+
+        <!-- Klynge 1 -->
+        <div class="klynge-kort apen" id="klynge-1">
+          <div class="klynge-hode" onclick="toggleKlynge('klynge-1')">
+            <div class="klynge-topprad">
+              <span style="font-size: 11.5px; font-weight: 700;">1. Mat & Dagligvarer</span>
+              <span id="pille-1" style="font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 10px;">+0 kr</span>
+            </div>
+            <div class="klynge-subrad">
+              <span id="subrad-faktisk-1">Faktisk: <strong>0 kr</strong></span>
+              <span id="subrad-norm-1">Norm: 0 kr</span>
+            </div>
+          </div>
+          <div class="klynge-detaljer">
+            <div class="post-element">
+              <div class="post-tekst-rad"><span>Mat og drikke (Norm: <span id="norm-mat_drikke">0</span> kr)</span><strong id="faktisk-mat_drikke">0 kr</strong></div>
+              <input type="range" class="post-slider" id="slider-mat_drikke" oninput="oppdaterPost('mat_drikke', this.value)">
+            </div>
+            <div class="post-element">
+              <div class="post-tekst-rad"><span>Andre dagligvarer (Norm: <span id="norm-andre_dagligvarer">0</span> kr)</span><strong id="faktisk-andre_dagligvarer">0 kr</strong></div>
+              <input type="range" class="post-slider" id="slider-andre_dagligvarer" oninput="oppdaterPost('andre_dagligvarer', this.value)">
+            </div>
+            <button class="btn-nullstill-klynge" onclick="nullstillKlynge(['mat_drikke', 'andre_dagligvarer'])">Sett til SIFO-norm</button>
+          </div>
+        </div>
+
+        <!-- Klynge 2 -->
+        <div class="klynge-kort" id="klynge-2">
+          <div class="klynge-hode" onclick="toggleKlynge('klynge-2')">
+            <div class="klynge-topprad">
+              <span style="font-size: 11.5px; font-weight: 700;">2. Transport & Bilhold</span>
+              <span id="pille-2" style="font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 10px;">0 kr</span>
+            </div>
+            <div class="klynge-subrad">
+              <span id="subrad-faktisk-2">Faktisk: <strong>0 kr</strong></span>
+              <span id="subrad-norm-2">Norm: 0 kr</span>
+            </div>
+          </div>
+          <div class="klynge-detaljer">
+            <div class="post-element">
+              <div class="post-tekst-rad">
+                <span>Bilkostnader (drift/vedlikehold) (Norm: <span id="norm-bilhold">0</span> kr)</span>
+                <strong id="faktisk-bilhold">0 kr</strong>
+              </div>
+              <input type="range" class="post-slider" id="slider-bilhold" oninput="oppdaterPost('bilhold', this.value)">
+            </div>
+            <div class="post-element">
+              <div class="post-tekst-rad">
+                <span>Kollektivreiser (månedskort) (Norm: <span id="norm-kollektivreise">0</span> kr)</span>
+                <strong id="faktisk-kollektivreise">0 kr</strong>
+              </div>
+              <input type="range" class="post-slider" id="slider-kollektivreise" oninput="oppdaterPost('kollektivreise', this.value)">
+            </div>
+            <button class="btn-nullstill-klynge" onclick="nullstillKlynge(['bilhold', 'kollektivreise'])">Sett til SIFO-norm</button>
+          </div>
+        </div>
+
+        <!-- Klynge 3 -->
+        <div class="klynge-kort" id="klynge-3">
+          <div class="klynge-hode" onclick="toggleKlynge('klynge-3')">
+            <div class="klynge-topprad">
+              <span style="font-size: 11.5px; font-weight: 700;">3. Barn, SFO & Fritid</span>
+              <span id="pille-3" style="font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 10px;">0 kr</span>
+            </div>
+            <div class="klynge-subrad">
+              <span id="subrad-faktisk-3">Faktisk: <strong>0 kr</strong></span>
+              <span id="subrad-norm-3">Norm: 0 kr</span>
+            </div>
+          </div>
+          <div class="klynge-detaljer">
+            <div class="post-element">
+              <div class="post-tekst-rad"><span>Lek & mediebruk (Norm: <span id="norm-lek_mediebruk">0</span> kr)</span><strong id="faktisk-lek_mediebruk">0 kr</strong></div>
+              <input type="range" class="post-slider" id="slider-lek_mediebruk" oninput="oppdaterPost('lek_mediebruk', this.value)">
+            </div>
+            <div class="post-element">
+              <div class="post-tekst-rad"><span>Barnehage & SFO (Norm: <span id="norm-barnehage_sfo">0</span> kr)</span><strong id="faktisk-barnehage_sfo">0 kr</strong></div>
+              <input type="range" class="post-slider" id="slider-barnehage_sfo" oninput="oppdaterPost('barnehage_sfo', this.value)">
+            </div>
+            <button class="btn-nullstill-klynge" onclick="nullstillKlynge(['lek_mediebruk', 'barnehage_sfo'])">Sett til SIFO-norm</button>
+          </div>
+        </div>
+
+        <!-- Klynge 4 -->
+        <div class="klynge-kort" id="klynge-4">
+          <div class="klynge-hode" onclick="toggleKlynge('klynge-4')">
+            <div class="klynge-topprad">
+              <span style="font-size: 11.5px; font-weight: 700;">4. Klær, Pleie & Hushold</span>
+              <span id="pille-4" style="font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 10px;">0 kr</span>
+            </div>
+            <div class="klynge-subrad">
+              <span id="subrad-faktisk-4">Faktisk: <strong>0 kr</strong></span>
+              <span id="subrad-norm-4">Norm: 0 kr</span>
+            </div>
+          </div>
+          <div class="klynge-detaljer">
+            <div class="post-element">
+              <div class="post-tekst-rad"><span>Klær og sko (Norm: <span id="norm-klaer_sko">0</span> kr)</span><strong id="faktisk-klaer_sko">0 kr</strong></div>
+              <input type="range" class="post-slider" id="slider-klaer_sko" oninput="oppdaterPost('klaer_sko', this.value)">
+            </div>
+            <div class="post-element">
+              <div class="post-tekst-rad"><span>Personlig pleie (Norm: <span id="norm-personlig_pleie">0</span> kr)</span><strong id="faktisk-personlig_pleie">0 kr</strong></div>
+              <input type="range" class="post-slider" id="slider-personlig_pleie" oninput="oppdaterPost('personlig_pleie', this.value)">
+            </div>
+            <div class="post-element">
+              <div class="post-tekst-rad"><span>Møbler & fritid (Norm: <span id="norm-mobler_fritid">0</span> kr)</span><strong id="faktisk-mobler_fritid">0 kr</strong></div>
+              <input type="range" class="post-slider" id="slider-mobler_fritid" oninput="oppdaterPost('mobler_fritid', this.value)">
+            </div>
+            <button class="btn-nullstill-klynge" onclick="nullstillKlynge(['klaer_sko', 'personlig_pleie', 'mobler_fritid'])">Sett til SIFO-norm</button>
+          </div>
+        </div>
+
+        <div id="m-kutt-banner" style="background:var(--lys-salvie); border:1px solid var(--salvie-kant); color:var(--salvie); font-size:11px; font-weight:700; padding:6px 10px; border-radius:6px; text-align:center;">
+          Mulig kutt: +0 kr/mnd
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. MÅLSPARING -->
+    <div id="m-fane-maalsparing" class="m-fane" style="display: none;">
+      
+      <!-- VISNING 1: OVERSIKT OVER DINE SPAREMÅL + OPPRETTELSE (Helt ren, ingen kutt) -->
+      <div id="m-maal-oversikt-seksjon">
+        <div class="sparemaal-seksjon-header">
+          <h2 class="sparemaal-tittel">Dine sparemål</h2>
+          <span class="kapasitet-tekst" id="m-maal-kapasitet">Kapasitet: 0 kr/mnd</span>
+        </div>
+
+        <div class="maal-liste-container" id="m-maal-liste"></div>
+
+        <div class="opprett-maal-kort">
+          <div class="opprett-maal-tittel">Opprett nytt sparemål</div>
+          
+          <label class="felt-label">Navn på målet:</label>
+          <input type="text" id="m-nytt-navn" class="felt-input" placeholder="f.eks. Sommerferie 2027">
+          
+          <div style="display: flex; gap: 10px;">
+            <div style="flex: 1;">
+              <label class="felt-label">Målsum (kr):</label>
+              <input type="number" id="m-nytt-belop" class="felt-input" placeholder="f.eks. 40000">
+            </div>
+            <div style="flex: 1;">
+              <label class="felt-label">Tidshorisont (mnd):</label>
+              <input type="number" id="m-nytt-mnd" class="felt-input" placeholder="f.eks. 5">
+            </div>
+          </div>
+
+          <button type="button" class="btn-start-plan" onclick="opprettNyttSparemål()">Start spareplan</button>
+        </div>
+      </div>
+
+      <!-- VISNING 2: DETALJER FOR VALGT MÅL -->
+      <div id="m-maal-detalj-seksjon" style="display: none;">
+        
+        <!-- Hodekort -->
+        <div class="maal-status-hode-kort">
+          <div>
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+              <span style="font-size: 11.5px; color: var(--tekst-dempet); font-weight: 600;" id="m-det-tittel-horisont">-</span>
+              <span class="simulering-tag">Simulering</span>
+            </div>
+            <div style="font-size: 24px; font-weight: 800; color: var(--koks);" id="m-det-sum-stor">0 kr</div>
+            <div style="font-size: 11px; color: var(--tekst-dempet); margin-top: 4px;" id="m-det-krav-spareevne">
+              Krav: 0 kr/mnd • Spareevne: 0 kr/mnd
+            </div>
+          </div>
+          <span id="m-det-gap-badge" class="avvik-kort-badge badge-under">Innenfor</span>
+        </div>
+
+        <!-- Fremskriving mot mål -->
+        <div class="fremskriving-boks">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size: 12px; font-weight: 700; color: var(--koks);">Fremskriving mot mål</span>
+            <span style="font-size: 11px; font-weight: 700; color: var(--salvie);" id="m-det-prosent-visning">0% av målet nås (0 kr)</span>
+          </div>
+          
+          <div class="progresjon-spor">
+            <div class="maal-stiplet-linje">Mål</div>
+            <div class="progresjon-fyll" id="m-det-progresjon-bar" style="width: 0%;">
+              <div class="progresjon-punkt"></div>
+            </div>
+          </div>
+          
+          <div style="display:flex; justify-content:space-between; font-size: 10px; color: var(--tekst-dempet);">
+            <span>Mnd 0</span>
+            <span id="m-det-slutt-mnd-tekst">Mnd 0</span>
+          </div>
+        </div>
+
+        <!-- Melding når målet er innenfor (ingen kutt trengs) -->
+        <div id="m-maal-dekket-melding" style="display: none; background: var(--lys-salvie); border: 1px solid var(--salvie-kant); border-radius: 12px; padding: 16px; margin-bottom: 14px; text-align: center;">
+          <div style="font-size: 14px; font-weight: 800; color: var(--salvie); margin-bottom: 4px;">🎉 Sparemålet er fullt dekket!</div>
+          <p style="font-size: 11.5px; color: var(--salvie); line-height: 1.4;">
+            Din nåværende månedlige spareevne er tilstrekkelig til å nå dette målet. Ingen kutt i SIFO- eller livsstilsposter er nødvendig.
+          </p>
+        </div>
+
+        <!-- Viser aktive tiltak hvis brukeren har aktivert noen, men målet nå er dekket -->
+        <div id="m-aktive-tiltak-visning" style="display: none;" class="tiltak-klynge-boks">
+          <div style="font-size: 13.5px; font-weight: 800; color: var(--koks); margin-bottom: 8px;">
+            Tilknyttede kutt-tiltak
+          </div>
+          <div id="m-aktive-tiltak-liste"></div>
+        </div>
+
+        <!-- Kuttforslag-kort (vises KUN hvis målet har et gap) -->
+        <div class="tiltak-klynge-boks" id="m-kuttforslag-kort-seksjon" style="display: none;">
+          <div style="font-size: 13.5px; font-weight: 800; color: var(--koks); margin-bottom: 12px;">
+            SIFO-forslag for å lukke gapet
+          </div>
+
+          <div id="m-kuttforslag-liste"></div>
+
+          <button type="button" class="btn-aktiver-tiltak" onclick="aktiverValgteTiltak()">
+            Aktiver valgte tiltak
+          </button>
+        </div>
+
+        <!-- Handlinger i bunn -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 8px;">
+          <a class="lenke-ga-tilbake" onclick="lukkDetaljvisning()">← Forkast og gå tilbake</a>
+          <button type="button" onclick="slettGjeldendeMaal()" style="background: transparent; color: var(--varsel-rod); border: none; font-size: 11.5px; font-weight: 700; cursor: pointer;">
+            🗑️ Slett mål
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- 5. MOBIL PROFIL (STRUKTURERT ETTER DE 3 LAGENE) -->
+    <div id="m-fane-profil" class="m-fane" style="display: none;">
+      <div class="profil-kort">
+        
+        <!-- Fellesprofil -->
+        <div class="seksjon-ramme">
+          <div class="seksjon-tittel-skjema">Husholdning & Inntekt</div>
+          <div class="form-gruppe">
+            <label>Fullt navn:</label>
+            <input type="text" id="m-prof-navn" placeholder="Navn" onchange="oppdaterProfilMobil('fulltNavn', this.value)">
+          </div>
+          <div class="form-gruppe">
+            <label>Netto månedsinntekt (kr):</label>
+            <input type="number" id="m-prof-inntekt" placeholder="0" onchange="oppdaterProfilMobil('inntektNetto', this.value)">
+          </div>
+          <div class="form-gruppe">
+            <label>Transportmiddel:</label>
+            <select id="m-prof-transport" onchange="oppdaterProfilMobil('transportmiddel', this.value)">
+              <option value="Bensinbil">Bensinbil</option>
+              <option value="Elbil">Elbil</option>
+              <option value="Kollektivtransport">Kollektivtransport</option>
+            </select>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <div class="form-gruppe" style="flex:1;">
+              <label>Voksne:</label>
+              <input type="number" id="m-prof-voksne" min="1" max="4" value="1" onchange="oppdaterProfilMobil('voksne', this.value)">
+            </div>
+            <div class="form-gruppe" style="flex:1;">
+              <label>Barn:</label>
+              <input type="number" id="m-prof-barn" min="0" max="6" value="0" onchange="oppdaterProfilMobil('barn', this.value)">
+            </div>
+          </div>
+        </div>
+
+        <!-- LAG 1: FASTE & BOLIG -->
+        <div class="seksjon-ramme">
+          <div class="seksjon-tittel-skjema">1. Faste & Bolig</div>
+          <div class="form-gruppe">
+            <label>Boliglån saldo/gjeld (kr):</label>
+            <input type="number" id="m-prof-lan-saldo" placeholder="0" onchange="oppdaterProfilMobil('boliglanSaldo', this.value)">
+          </div>
+          <div class="form-gruppe">
+            <label>Boliglån termin (kr/mnd):</label>
+            <input type="number" id="m-prof-lan-termin" placeholder="0" onchange="oppdaterProfilMobil('boliglanTermin', this.value)">
+          </div>
+          <div class="form-gruppe">
+            <label>Felleskostnader / leie (kr/mnd):</label>
+            <input type="number" id="m-prof-felleskost" placeholder="0" onchange="oppdaterProfilMobil('felleskost', this.value)">
+          </div>
+          <div class="form-gruppe">
+            <label>Strøm og oppvarming (kr/mnd):</label>
+            <input type="number" id="m-prof-strom" placeholder="0" onchange="oppdaterProfilMobil('strom', this.value)">
+          </div>
+          <div class="form-gruppe">
+            <label>Forsikringer (kr/mnd):</label>
+            <input type="number" id="m-prof-forsikring" placeholder="0" onchange="oppdaterProfilMobil('forsikring', this.value)">
+          </div>
+        </div>
+
+        <!-- LAG 2: HVERDAGSFORBRUK -->
+        <div class="seksjon-ramme" style="background: #F8FAFC; padding: 8px; border-radius: 6px;">
+          <div class="seksjon-tittel-skjema" style="margin-bottom: 2px;">2. Hverdagsforbruk (SIFO)</div>
+          <div style="font-size: 10px; color: var(--tekst-dempet); margin-bottom: 6px;">
+            Beregnes automatisk fra SIFO 2026.
+          </div>
+          <a onclick="visMobilFane('sifo')" style="color: var(--salvie); font-size: 11px; font-weight: 700; text-decoration: none; cursor: pointer;">
+            Juster i SIFO-kalkulator →
+          </a>
+        </div>
+
+        <!-- LAG 3: LIVSSTIL & SPARING -->
+        <div class="seksjon-ramme">
+          <div class="seksjon-tittel-skjema">3. Livsstil & Sparing</div>
+          <div class="form-gruppe">
+            <label>Restaurant & kafé (kr/mnd):</label>
+            <input type="number" id="m-prof-restaurant" placeholder="0" onchange="oppdaterProfilMobil('restaurant', this.value)">
+          </div>
+          <div class="form-gruppe">
+            <label>Ferie, reiser & gaver (kr/mnd):</label>
+            <input type="number" id="m-prof-ferie" placeholder="0" onchange="oppdaterProfilMobil('ferie', this.value)">
+          </div>
+          <div class="form-gruppe">
+            <label>Annen fast sparing (fond/buffer) (kr/mnd):</label>
+            <input type="number" id="m-prof-annen-sparing" placeholder="0" onchange="oppdaterProfilMobil('annenSparing', this.value)">
+          </div>
+        </div>
+
+        <button type="button" class="btn-lagre-profil" onclick="lagreMobilProfilKnapp()">
+          Lagre innstillinger og start
+        </button>
+
+        <div style="margin-top: 14px; text-align: center;">
+          <button type="button" onclick="MonetaMotor.nullstillAltOgSlettData()" style="background: var(--varsel-rosa); color: var(--varsel-rod); border: 1px solid #FECDD3; width: 100%; padding: 8px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer;">
+            🗑️ Nullstill app og slett lagrede data
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <nav class="mobil-bunnmeny">
+    <a class="bunn-a aktiv" onclick="visMobilFane('dashboard', this)"><span>📊</span><span>Oversikt</span></a>
+    <a class="bunn-a" onclick="visMobilFane('budsjett', this)"><span>📑</span><span>Budsjett</span></a>
+    <a class="bunn-a" onclick="visMobilFane('sifo', this)"><span>⚖️</span><span>SIFO</span></a>
+    <a class="bunn-a" onclick="visMobilFane('maalsparing', this)"><span>🎯</span><span>Mål</span></a>
+  </nav>
+
+  <script src="js/felles_motor.js"></script>
+
+  <script>
+    const { SIFO_KLYNGER, hentState, lagreState, beregnTotalOkonomi, initFaktiskLikNorm, genererKuttForslag, fmt } = window.MonetaMotor;
+    let state = hentState();
+    let visningsModusMaal = 'oversikt'; // 'oversikt' eller 'detalj'
+
+    window.visMobilFane = function(id, el) {
+      document.querySelectorAll('.m-fane').forEach(f => f.style.display = 'none');
+      const fane = document.getElementById('m-fane-' + id);
+      if (fane) fane.style.display = 'block';
+
+      document.querySelectorAll('.bunn-a').forEach(a => a.classList.remove('aktiv'));
+      if (el && el.classList.contains('bunn-a')) {
+        el.classList.add('aktiv');
+      } else {
+        const bunnLenker = document.querySelectorAll('.bunn-a');
+        bunnLenker.forEach(a => {
+          if (a.getAttribute('onclick')?.includes(id)) a.classList.add('aktiv');
+        });
+      }
+
+      const titler = { dashboard: 'Moneta', budsjett: 'Totalbudsjett', sifo: 'SIFO-kalkulator', maalsparing: 'Målsparing', profil: 'Profil' };
+      document.getElementById('mobil-tittel').innerText = titler[id] || 'Moneta';
+      oppdaterMobil();
+    };
+
+    window.toggleKlynge = function(id) {
+      document.getElementById(id).classList.toggle('apen');
+    };
+
+    window.oppdaterPost = function(postId, val) {
+      state.faktiskForbruk[postId] = Number(val);
+      oppdaterMobil();
+      lagreState(state);
+    };
+
+    window.nullstillKlynge = function(postIder) {
+      const okonomi = beregnTotalOkonomi(state);
+      postIder.forEach(id => state.faktiskForbruk[id] = okonomi.normer[id]);
+      oppdaterMobil();
+      lagreState(state);
+    };
+
+    window.oppdaterProfilMobil = function(felt, val) {
+      state[felt] = (felt === 'fulltNavn' || felt === 'transportmiddel') ? val : Number(val);
+      oppdaterMobil();
+      lagreState(state);
+    };
+
+    window.lagreMobilProfilKnapp = function() {
+      if (state.forstegangsBruker) {
+        state = initFaktiskLikNorm(state);
+        alert("Profil registrert! Forbruket ditt starter lik SIFO-normen.");
+        visMobilFane('dashboard');
+      } else {
+        lagreState(state);
+        alert("Innstillinger er lagret!");
+        oppdaterMobil();
+      }
+    };
+
+    // MÅLSPARING-NAVIGASJON OG HANDLINGER
+    window.apneSparemålDetalj = function(id) {
+      state.aktivtMaalId = id;
+      visningsModusMaal = 'detalj';
+      lagreState(state);
+      oppdaterMobil();
+    };
+
+    window.lukkDetaljvisning = function() {
+      visningsModusMaal = 'oversikt';
+      oppdaterMobil();
+    };
+
+    window.opprettNyttSparemål = function() {
+      const tittel = document.getElementById('m-nytt-navn').value.trim();
+      const belop = Number(document.getElementById('m-nytt-belop').value);
+      const mnd = Number(document.getElementById('m-nytt-mnd').value);
+
+      if (!tittel || belop <= 0 || mnd <= 0) {
+        alert("Vennligst fyll ut navn, målsum og tidshorisont.");
+        return;
+      }
+
+      const nyId = 'maal_' + Date.now();
+      if (!state.sparemaalListe) state.sparemaalListe = [];
+
+      state.sparemaalListe.push({
+        id: nyId,
+        tittel: tittel,
+        malsum: belop,
+        mnd: mnd,
+        valgteTiltak: {}
+      });
+
+      state.aktivtMaalId = nyId;
+      visningsModusMaal = 'detalj';
+
+      document.getElementById('m-nytt-navn').value = '';
+      document.getElementById('m-nytt-belop').value = '';
+      document.getElementById('m-nytt-mnd').value = '';
+
+      lagreState(state);
+      oppdaterMobil();
+    };
+
+    window.slettGjeldendeMaal = function() {
+      if (!confirm("Vil du slette dette sparemålet?")) return;
+      state.sparemaalListe = (state.sparemaalListe || []).filter(m => m.id !== state.aktivtMaalId);
+      state.aktivtMaalId = state.sparemaalListe[0] ? state.sparemaalListe[0].id : null;
+      visningsModusMaal = 'oversikt';
+      lagreState(state);
+      oppdaterMobil();
+    };
+
+    window.toggleKuttTiltak = function(tiltakId) {
+      const maal = (state.sparemaalListe || []).find(m => m.id === state.aktivtMaalId);
+      if (!maal) return;
+      if (!maal.valgteTiltak) maal.valgteTiltak = {};
+      maal.valgteTiltak[tiltakId] = !maal.valgteTiltak[tiltakId];
+      lagreState(state);
+      oppdaterMobil();
+    };
+
+    window.aktiverValgteTiltak = function() {
+      alert("Tiltak er lagret og aktivert for dette sparemålet!");
+      visningsModusMaal = 'oversikt';
+      oppdaterMobil();
+    };
+
+    function oppdaterMobil() {
+      const okonomi = beregnTotalOkonomi(state);
+
+      document.getElementById('m-topp-navn').innerText = (state.fulltNavn || 'Profil').split(' ')[0];
+      document.getElementById('m-dash-buffer').innerText = `${okonomi.buffer >= 0 ? '+' : ''}${fmt(okonomi.buffer)} kr`;
+
+      // Avviksliste Dashboard
+      const avvikListe = document.getElementById('m-dash-avvik-liste');
+      avvikListe.innerHTML = '';
+      for (const kNr in SIFO_KLYNGER) {
+        const diff = okonomi.klyngeAvvik[kNr];
+        if (diff > 0) {
+          avvikListe.innerHTML += `
+            <div class="avvik-kort advarsel">
+              <span style="font-weight:700; font-size:12px;">${SIFO_KLYNGER[kNr].tittel}</span>
+              <span class="avvik-kort-badge badge-over">+${fmt(diff)} kr</span>
+            </div>
+          `;
+        }
+      }
+      if (avvikListe.innerHTML === '') {
+        avvikListe.innerHTML = `
+          <div class="avvik-kort">
+            <span style="font-size:11.5px; color:var(--salvie); font-weight:600;">Forbruket er innenfor SIFO-normen.</span>
+            <span class="avvik-kort-badge badge-under">I balanse</span>
+          </div>
+        `;
+      }
+
+      // Budsjett
+      document.getElementById('m-b-inntekt').innerText = fmt(okonomi.inntektNetto);
+      document.getElementById('m-b-buffer').innerText = `${okonomi.buffer >= 0 ? '+' : ''}${fmt(okonomi.buffer)} kr`;
+      document.getElementById('m-b-sum-faste').innerText = `${fmt(okonomi.sumFaste)} kr`;
+      document.getElementById('m-b-lan').innerText = `${fmt(state.boliglanTermin || 0)} kr`;
+      document.getElementById('m-b-felles').innerText = `${fmt(state.felleskost || 0)} kr`;
+      document.getElementById('m-b-strom').innerText = `${fmt(state.strom || 0)} kr`;
+
+      document.getElementById('m-b-sum-forbruk').innerText = `${fmt(okonomi.sumForbrukFaktisk)} kr`;
+      for (let i = 1; i <= 4; i++) {
+        document.getElementById(`m-sum-k${i}`).innerText = `${fmt(okonomi.klyngeFaktisk[i])} kr`;
+      }
+
+      document.getElementById('m-b-sum-livsstil').innerText = `${fmt(okonomi.sumLivsstil)} kr`;
+      document.getElementById('m-b-rest').innerText = `${fmt(okonomi.restaurant)} kr`;
+      document.getElementById('m-b-ferie').innerText = `${fmt(okonomi.ferie)} kr`;
+      document.getElementById('m-b-maal').innerText = `${fmt(okonomi.sumMaalsparingMnd)} kr`;
+
+      // SIFO Kalkulator
+      document.getElementById('m-sifo-total-overskrift').innerText = `${fmt(okonomi.sumSifoNorm)} kr/mnd`;
+
+      for (let kNr = 1; kNr <= 4; kNr++) {
+        SIFO_KLYNGER[kNr].poster.forEach(p => {
+          const f = state.faktiskForbruk[p.id] || 0;
+          const n = okonomi.normer[p.id] || 0;
+
+          const nEl = document.getElementById(`norm-${p.id}`);
+          const fEl = document.getElementById(`faktisk-${p.id}`);
+          const sEl = document.getElementById(`slider-${p.id}`);
+
+          const erLaastMotpost = (p.id === 'kollektivreise' && state.transportmiddel !== 'Kollektivtransport') ||
+                                 (p.id === 'bilhold' && state.transportmiddel === 'Kollektivtransport');
+
+          if (erLaastMotpost) {
+            if (nEl) nEl.innerText = "Låst (0 kr)";
+            if (fEl) fEl.innerText = "0 kr";
+            if (sEl) {
+              sEl.disabled = true;
+              sEl.value = 0;
+            }
+          } else {
+            if (nEl) nEl.innerText = fmt(n);
+            if (fEl) fEl.innerText = `${fmt(f)} kr`;
+            if (sEl) {
+              sEl.disabled = false;
+              sEl.min = Math.round(n * 0.3);
+              sEl.max = Math.round(n * 2.2);
+              sEl.value = f;
+            }
+          }
+        });
+
+        const kDiff = okonomi.klyngeAvvik[kNr];
+        document.getElementById(`subrad-faktisk-${kNr}`).innerHTML = `Faktisk: <strong>${fmt(okonomi.klyngeFaktisk[kNr])} kr</strong>`;
+        document.getElementById(`subrad-norm-${kNr}`).innerText = `Norm: ${fmt(okonomi.klyngeNorm[kNr])} kr`;
+
+        const pille = document.getElementById(`pille-${kNr}`);
+        if (kDiff > 50) {
+          pille.style.background = 'var(--varsel-rosa)';
+          pille.style.color = 'var(--varsel-rod)';
+          pille.innerText = `+${fmt(kDiff)} kr ▲`;
+        } else {
+          pille.style.background = 'var(--lys-salvie)';
+          pille.style.color = 'var(--salvie)';
+          pille.innerText = kDiff < -50 ? `${fmt(kDiff)} kr ▼` : 'I balanse';
+        }
+      }
+      document.getElementById('m-kutt-banner').innerText = `Mulig kutt: +${fmt(okonomi.muligKutt)} kr/mnd`;
+
+      // 4. MÅLSPARING RENDERING
+      const oversiktSeksjon = document.getElementById('m-maal-oversikt-seksjon');
+      const detaljSeksjon = document.getElementById('m-maal-detalj-seksjon');
+      const maalListe = state.sparemaalListe || [];
+      const valgtMaal = maalListe.find(m => m.id === state.aktivtMaalId) || maalListe[0];
+
+      if (visningsModusMaal === 'oversikt' || !valgtMaal) {
+        // VISNING 1: RENT OVERSIKTSBILDE
+        oversiktSeksjon.style.display = 'block';
+        detaljSeksjon.style.display = 'none';
+
+        const restKapasitet = okonomi.buffer;
+        const kapEl = document.getElementById('m-maal-kapasitet');
+        kapEl.innerText = `Kapasitet: ${fmt(restKapasitet)} kr/mnd`;
+        kapEl.style.color = restKapasitet >= 0 ? 'var(--salvie)' : 'var(--varsel-rod)';
+
+        const listeCont = document.getElementById('m-maal-liste');
+        listeCont.innerHTML = '';
+
+        maalListe.forEach(m => {
+          const kravMnd = Math.round(m.malsum / Math.max(1, m.mnd));
+          const kort = document.createElement('div');
+          kort.className = 'maal-rad-kort';
+          kort.onclick = () => apneSparemålDetalj(m.id);
+          kort.innerHTML = `
+            <div class="maal-rad-venstre">
+              <span class="maal-navn-stor">${m.tittel}</span>
+              <span class="maal-subinfo">${m.mnd} mnd • ${fmt(kravMnd)} kr/mnd</span>
+            </div>
+            <div class="maal-rad-hoyre">
+              <span class="maal-sum-tall">${fmt(m.malsum)} kr</span>
+              <span class="maal-pil">→</span>
+            </div>
+          `;
+          listeCont.appendChild(kort);
+        });
+
+      } else {
+        // VISNING 2: DETALJBILDE FOR VALGT MÅL
+        oversiktSeksjon.style.display = 'none';
+        detaljSeksjon.style.display = 'block';
+
+        const kravMnd = Math.round(valgtMaal.malsum / Math.max(1, valgtMaal.mnd));
+        const valgteTiltak = valgtMaal.valgteTiltak || {};
+        
+        let frigjort = 0;
+        const forslag = genererKuttForslag(state);
+        forslag.forEach(f => {
+          if (valgteTiltak[f.id]) frigjort += f.belop;
+        });
+
+        // Beregn netto tilgjengelig buffer for dette målet
+        const allokertBuffer = Math.max(0, okonomi.buffer + kravMnd);
+        const totalSpareevne = allokertBuffer + frigjort;
+        const gap = kravMnd - totalSpareevne;
+        const maalErInnenfor = gap <= 0;
+
+        // Toppkort
+        document.getElementById('m-det-tittel-horisont').innerText = `${valgtMaal.tittel} (${valgtMaal.mnd} mnd)`;
+        document.getElementById('m-det-sum-stor').innerText = `${fmt(valgtMaal.malsum)} kr`;
+        document.getElementById('m-det-krav-spareevne').innerText = `Krav: ${fmt(kravMnd)} kr/mnd • Spareevne: ${fmt(totalSpareevne)} kr/mnd`;
+
+        const gapBadge = document.getElementById('m-det-gap-badge');
+        if (maalErInnenfor) {
+          gapBadge.className = 'avvik-kort-badge badge-under';
+          gapBadge.innerText = `Innenfor (+${fmt(Math.abs(gap))} kr)`;
+        } else {
+          gapBadge.className = 'avvik-kort-badge badge-over';
+          gapBadge.innerText = `Gap: −${fmt(gap)} kr`;
+        }
+
+        // Fremskriving
+        const samletNadd = Math.min(valgtMaal.malsum, Math.round(totalSpareevne * valgtMaal.mnd));
+        const pst = Math.min(100, Math.round((samletNadd / (valgtMaal.malsum || 1)) * 100));
+        document.getElementById('m-det-prosent-visning').innerText = `${pst}% av målet nås (${fmt(samletNadd)} kr)`;
+        document.getElementById('m-det-progresjon-bar').style.width = `${pst}%`;
+        document.getElementById('m-det-slutt-mnd-tekst').innerText = `Mnd ${valgtMaal.mnd}`;
+
+        const dekketBoks = document.getElementById('m-maal-dekket-melding');
+        const kuttSeksjon = document.getElementById('m-kuttforslag-kort-seksjon');
+        const aktiveTiltakBoks = document.getElementById('m-aktive-tiltak-visning');
+
+        // STRENG KONDISJONELL VISNING:
+        // Hvis målet er innenfor, skal det ALDRI komme kuttforslag for restaurant eller ferie!
+        if (maalErInnenfor) {
+          dekketBoks.style.display = 'block';
+          kuttSeksjon.style.display = 'none';
+
+          // Hvis målet allerede har aktiverte tiltak, vises de som en ren oversikt
+          const aktiveIder = Object.keys(valgteTiltak).filter(id => valgteTiltak[id]);
+          if (aktiveIder.length > 0) {
+            aktiveTiltakBoks.style.display = 'block';
+            const aktiveCont = document.getElementById('m-aktive-tiltak-liste');
+            aktiveCont.innerHTML = '';
+            aktiveIder.forEach(id => {
+              const funnet = forslag.find(f => f.id === id);
+              if (funnet) {
+                aktiveCont.innerHTML += `
+                  <div class="tiltak-rad-element">
+                    <span style="font-size: 11.5px; font-weight: 600;">✓ ${funnet.tittel}</span>
+                    <span class="tiltak-belop-gronn">+${fmt(funnet.belop)} kr</span>
+                  </div>
+                `;
+              }
+            });
+          } else {
+            aktiveTiltakBoks.style.display = 'none';
+          }
+
+        } else {
+          // Målet er IKKE innenfor: Vis kuttforslag for å lukke gapet
+          dekketBoks.style.display = 'none';
+          aktiveTiltakBoks.style.display = 'none';
+          kuttSeksjon.style.display = 'block';
+
+          const kuttListeCont = document.getElementById('m-kuttforslag-liste');
+          kuttListeCont.innerHTML = '';
+
+          forslag.forEach(f => {
+            const erAktiv = !!valgteTiltak[f.id];
+            const rad = document.createElement('div');
+            rad.className = 'tiltak-rad-element';
+            rad.innerHTML = `
+              <label class="tiltak-cb-label">
+                <input type="checkbox" class="tiltak-cb-input" ${erAktiv ? 'checked' : ''}>
+                <span>${f.tittel}</span>
+              </label>
+              <span class="tiltak-belop-gronn">+${fmt(f.belop)} kr</span>
+            `;
+            rad.querySelector('input').addEventListener('change', () => toggleKuttTiltak(f.id));
+            kuttListeCont.appendChild(rad);
+          });
+        }
+      }
+
+      // Profil inputs synkronisering
+      document.getElementById('m-prof-navn').value = state.fulltNavn || '';
+      document.getElementById('m-prof-inntekt').value = state.inntektNetto || 0;
+      document.getElementById('m-prof-voksne').value = state.voksne || 1;
+      document.getElementById('m-prof-barn').value = state.barn || 0;
+      document.getElementById('m-prof-transport').value = state.transportmiddel || 'Bensinbil';
+      document.getElementById('m-prof-lan-saldo').value = state.boliglanSaldo || 0;
+      document.getElementById('m-prof-lan-termin').value = state.boliglanTermin || 0;
+      document.getElementById('m-prof-felleskost').value = state.felleskost || 0;
+      document.getElementById('m-prof-strom').value = state.strom || 0;
+      document.getElementById('m-prof-forsikring').value = state.forsikring || 0;
+      document.getElementById('m-prof-restaurant').value = state.restaurant || 0;
+      document.getElementById('m-prof-ferie').value = state.ferie || 0;
+      document.getElementById('m-prof-annen-sparing').value = state.annenSparing || 0;
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (state.forstegangsBruker) {
+        visMobilFane('profil');
+      } else {
+        visMobilFane('dashboard');
+      }
+    });
+  </script>
+</body>
+</html>
