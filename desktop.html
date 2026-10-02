@@ -45,7 +45,7 @@
     .topp-header h1 { font-size: 22px; font-weight: 700; color: var(--mork-skifer); margin: 0; }
 
     .topp-ikoner-hoyre {
-      display: flex; align-items: center; font-size: 13px; font-weight: 600; color: var(--mork-skifer);
+      display: flex; align-items: center; font-size: 13px; font-weight: 600; color: var(--mork-skifer); gap: 12px;
     }
     .topp-ikoner-hoyre a.bruker-profil-lenke {
       display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: inherit;
@@ -76,18 +76,72 @@
     .utgift-rad { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 13px; }
     .budsjett-input-lett { width: 95px; padding: 5px 8px; border: 1px solid var(--ramme); border-radius: 6px; font-weight: 700; text-align: right; background: #FAFAFA; }
 
-    .sifo-grid-layout { display: grid; grid-template-columns: 1fr 340px; gap: 24px; }
+    /* SIFO-KALKULATOR */
+    .sifo-grid-layout { display: grid; grid-template-columns: 1fr 380px; gap: 24px; }
     .sifo-tabell { width: 100%; border-collapse: collapse; font-size: 13px; }
     .sifo-tabell th, .sifo-tabell td { padding: 12px 16px; border-bottom: 1px solid #F1F5F9; }
     .sifo-tabell thead th { font-size: 11px; color: var(--tekst-dempet); font-weight: 600; text-align: left; }
-    .sifo-tabell tr.post-rad:hover td { background-color: #F8FAFC; cursor: pointer; }
-    .sifo-tabell tr.valgt-rad td { background-color: #ECFDF5; }
-    .sifo-tabell tr.valgt-rad td:first-child { border-left: 4px solid var(--salvie); }
+    
+    .sifo-tabell tr.post-rad { cursor: pointer; user-select: none; transition: background 0.12s ease; }
+    .sifo-tabell tr.post-rad:hover td { background-color: #F1F5F9; }
+    .sifo-tabell tr.valgt-rad td { background-color: #ECFDF5 !important; }
+    .sifo-tabell tr.valgt-rad td:first-child { border-left: 4px solid var(--salvie); font-weight: 700; }
 
-    .kpi-fire-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
-    .tiltak-kort { display: flex; align-items: center; justify-content: space-between; background: #F8FAFC; border: 1px solid var(--ramme); border-radius: 10px; padding: 12px 16px; cursor: pointer; margin-bottom: 10px; }
-    .custom-checkbox { width: 20px; height: 20px; border-radius: 5px; background: var(--salvie); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; }
-    .custom-checkbox.inaktiv { background: #E2E8F0; color: transparent; }
+    .sifo-tabell tr.klynge-hode-rad { cursor: pointer; user-select: none; transition: background 0.12s ease; background-color: #F8FAFC; }
+    .sifo-tabell tr.klynge-hode-rad:hover th { background-color: #E2E8F0; }
+    .sifo-tabell tr.klynge-valgt-hode { background-color: #CCFBF1 !important; }
+    .sifo-tabell tr.klynge-valgt-hode th { color: var(--salvie-mork) !important; font-weight: 800 !important; }
+
+    .sifo-status-boks { background: #F8FAFC; border: 1px solid var(--ramme); border-radius: 10px; padding: 14px 16px; margin-bottom: 16px; }
+    .status-verdi-rad { display: flex; justify-content: space-between; align-items: center; }
+    .status-etikett { font-size: 12px; color: var(--tekst-dempet); font-weight: 600; }
+    .status-tall { font-size: 16px; font-weight: 800; color: var(--koks); }
+    .sifo-select-felt { width: 100%; padding: 9px 12px; border: 1.5px solid var(--ramme); border-radius: 8px; font-size: 13px; font-weight: 600; background: #FFFFFF; color: var(--koks); outline: none; margin-bottom: 14px; }
+
+    /* MÅLSPARING DESKTOP */
+    .maalsparing-header-linje {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
+    }
+    .kapasitet-badge-desktop {
+      font-size: 13.5px; font-weight: 800; color: var(--salvie); background: var(--lys-salvie);
+      padding: 6px 14px; border-radius: 8px; border: 1px solid var(--salvie-kant);
+    }
+
+    .opprett-maal-desktop-kort {
+      background: #FFFFFF; border: 1px solid var(--ramme); border-radius: 12px; padding: 24px; margin-bottom: 28px; max-width: 640px; box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .opprett-maal-desktop-tittel { font-size: 15px; font-weight: 800; color: var(--koks); margin-bottom: 16px; }
+    .desktop-felt-label { font-size: 12px; font-weight: 600; color: var(--koks); margin-bottom: 6px; display: block; }
+    .desktop-felt-input {
+      width: 100%; padding: 10px 14px; border: 1px solid var(--ramme); border-radius: 8px; font-size: 13.5px;
+      background: #FFFFFF; color: var(--koks); margin-bottom: 14px; outline: none;
+    }
+    .desktop-felt-input:focus { border-color: var(--salvie); }
+    .btn-start-plan-desktop {
+      width: 100%; background: var(--mork-skifer); color: #FFFFFF; border: none; padding: 12px; border-radius: 8px;
+      font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 4px; transition: background 0.15s ease;
+    }
+    .btn-start-plan-desktop:hover { background: #0F172A; }
+
+    .eksisterende-maal-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;
+    }
+    .desktop-maal-kort {
+      background: #FFFFFF; border: 1.5px solid var(--ramme); border-radius: 12px; padding: 20px;
+      display: flex; flex-direction: column; justify-content: space-between; cursor: pointer;
+      transition: all 0.15s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.02); min-height: 140px;
+    }
+    .desktop-maal-kort:hover { border-color: var(--salvie); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+    .desktop-maal-kort-tittel { font-size: 15px; font-weight: 800; color: var(--koks); margin-bottom: 6px; }
+    .desktop-maal-kort-sum { font-size: 16px; font-weight: 800; color: var(--salvie); margin-bottom: 4px; }
+    .desktop-maal-kort-sub { font-size: 12px; color: var(--tekst-dempet); }
+    .desktop-maal-kort-bunn { display: flex; justify-content: flex-end; margin-top: 14px; border-top: 1px solid #F1F5F9; padding-top: 10px; }
+    .btn-slett-tekst { background: transparent; border: none; color: var(--tekst-dempet); font-size: 11.5px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
+    .btn-slett-tekst:hover { color: var(--varsel-rod); }
+
+    .avvik-kort-badge { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 12px; }
+    .badge-over { background: var(--varsel-rosa); color: var(--varsel-rod); border: 1px solid #FECDD3; }
+    .badge-under { background: var(--lys-salvie); color: var(--salvie); border: 1px solid var(--salvie-kant); }
 
     .profil-seksjon-tittel { font-size: 14px; font-weight: 700; color: var(--salvie); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px; border-bottom: 1px solid #F1F5F9; padding-bottom: 6px; }
     .form-rad { display: flex; gap: 12px; }
@@ -98,6 +152,7 @@
 </head>
 <body>
 
+  <!-- FAST SIDEMENY -->
   <aside class="sidemeny">
     <h2>Moneta</h2>
     <nav>
@@ -109,6 +164,7 @@
     </nav>
   </aside>
 
+  <!-- HOVEDFLATE -->
   <main class="hovedinnhold">
     <header class="topp-header">
       <h1 id="sidetittel">Dashboard</h1>
@@ -173,7 +229,7 @@
       </div>
 
       <div class="budsjett-rutenett">
-        <!-- 1. Faste & Bolig[cite: 2] -->
+        <!-- 1. Faste & Bolig -->
         <div class="card">
           <h3 style="margin-bottom: 14px;">1. Faste & Bolig</h3>
           <div class="utgift-rad"><span>Boliglån (termin)</span><strong id="b-lan">0 kr</strong></div>
@@ -182,13 +238,13 @@
           <div class="utgift-rad"><span>Forsikringer</span><input type="number" id="in-forsikring" class="budsjett-input-lett" onchange="oppdaterBudsjettFelt('forsikring', this.value)"></div>
         </div>
 
-        <!-- 2. Hverdagsforbruk[cite: 2] -->
+        <!-- 2. Hverdagsforbruk -->
         <div class="card">
           <h3 style="margin-bottom: 14px;">2. Hverdagsforbruk (Klynger)</h3>
           <div id="b-sifo-liste"></div>
         </div>
 
-        <!-- 3. Livsstil & Mål[cite: 2] -->
+        <!-- 3. Livsstil & Mål -->
         <div class="card">
           <h3 style="margin-bottom: 14px;">3. Livsstil & Mål</h3>
           <div class="utgift-rad"><span>Restaurant</span><input type="number" id="in-rest" class="budsjett-input-lett" onchange="oppdaterBudsjettFelt('restaurant', this.value)"></div>
@@ -203,20 +259,77 @@
     <div id="fane-sifo" class="fane" style="display: none;">
       <div class="sifo-grid-layout">
         <div>
-          <div class="card" style="margin-bottom: 20px;">
+          <div class="card">
             <table class="sifo-tabell">
-              <thead><tr><th>Post / Kategori</th><th style="text-align: right;">Faktisk</th><th style="text-align: right;">Norm</th><th style="text-align: right;">Avvik</th></tr></thead>
+              <thead>
+                <tr>
+                  <th>Post / Kategori</th>
+                  <th style="text-align: right;">Faktisk</th>
+                  <th style="text-align: right;">Norm</th>
+                  <th style="text-align: right;">Avvik</th>
+                </tr>
+              </thead>
               <tbody id="sifo-rader"></tbody>
             </table>
           </div>
         </div>
-        <div class="card">
-          <h3 style="margin-bottom: 14px;">Juster valgt post</h3>
-          <div style="font-size: 13px; font-weight: 700; color: var(--salvie); margin-bottom: 6px;" id="sifo-aktiv-tittel">-</div>
-          <input type="range" id="sifo-slider" style="width: 100%; accent-color: var(--salvie); cursor: pointer;">
-          <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 13px;">
-            <span id="slider-norm">Norm: 0 kr</span>
-            <strong id="slider-faktisk" style="font-size: 16px;">0 kr</strong>
+
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+          <div class="card">
+            <h3 style="font-size: 15px; margin-bottom: 14px; color: var(--koks);">Status: SIFO-budsjett</h3>
+            <div class="sifo-status-boks">
+              <div class="status-verdi-rad">
+                <span class="status-etikett">Sum beløp over SIFO:</span>
+                <span class="status-tall" id="sifo-sum-over-tall" style="color: var(--varsel-rod);">+0 kr</span>
+              </div>
+            </div>
+            <div class="sifo-status-boks" style="margin-bottom: 0;">
+              <div class="status-verdi-rad">
+                <span class="status-etikett">Totalt avvik mot norm:</span>
+                <span class="status-tall" id="sifo-totalt-avvik-tall">+0 kr</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 style="font-size: 15px; margin-bottom: 12px; color: var(--koks);">Juster forbruk</h3>
+            <label style="display: block; font-size: 11.5px; font-weight: 600; color: var(--tekst-dempet); margin-bottom: 6px;">
+              Velg klynge eller post:
+            </label>
+            <select id="sifo-modus-dropdown" class="sifo-select-felt" onchange="endreSifoValgModus(this.value)">
+              <optgroup label="Felles justering av hel klynge">
+                <option value="klynge_1">Klynge 1: Mat & Dagligvarer</option>
+                <option value="klynge_2">Klynge 2: Transport & Bilhold</option>
+                <option value="klynge_3">Klynge 3: Barn, SFO & Fritid</option>
+                <option value="klynge_4">Klynge 4: Klær, Pleie & Hushold</option>
+              </optgroup>
+              <optgroup label="Enkeltposter">
+                <option value="post_mat_drikke">Mat og drikke</option>
+                <option value="post_andre_dagligvarer">Andre dagligvarer</option>
+                <option value="post_bilhold">Bilkostnader (drift & vedlikehold)</option>
+                <option value="post_kollektivreise">Kollektivreiser (månedskort)</option>
+                <option value="post_lek_mediebruk">Lek & mediebruk</option>
+                <option value="post_barnehage_sfo">Barnehage & SFO</option>
+                <option value="post_klaer_sko">Klær og sko</option>
+                <option value="post_personlig_pleie">Personlig pleie</option>
+                <option value="post_mobler_fritid">Møbler & fritid</option>
+              </optgroup>
+            </select>
+
+            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">
+              <span id="sifo-aktiv-tittel" style="font-size: 13.5px; font-weight: 700; color: var(--salvie);">-</span>
+              <span id="slider-avvik-pille" style="font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 12px; background: var(--lys-salvie); color: var(--salvie);">I balanse</span>
+            </div>
+
+            <input type="range" id="sifo-slider" style="width: 100%; accent-color: var(--salvie); height: 6px; cursor: pointer; margin: 8px 0 12px 0;">
+            <div style="display: flex; justify-content: space-between; font-size: 12.5px; border-bottom: 1px solid #F1F5F9; padding-bottom: 12px; margin-bottom: 12px;">
+              <span id="slider-norm" style="color: var(--tekst-dempet);">Norm: 0 kr</span>
+              <strong id="slider-faktisk" style="font-size: 16px; color: var(--koks);">0 kr</strong>
+            </div>
+
+            <button type="button" onclick="nullstillValgtSifoPostEllerKlynge()" style="width: 100%; background: #F1F5F9; color: var(--mork-skifer); border: 1px solid var(--ramme); padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">
+              Sett valgte til SIFO-norm
+            </button>
           </div>
         </div>
       </div>
@@ -224,29 +337,117 @@
 
     <!-- 4. MÅLSPARING -->
     <div id="fane-maalsparing" class="fane" style="display: none;">
-      <div class="kpi-fire-grid">
-        <div class="card"><div class="kpi-tittel">Målsum (<span id="m-mnd-vis">6</span> mnd)</div><div class="kpi-verdi" id="m-malsum-vis">30 000 kr</div></div>
-        <div class="card"><div class="kpi-tittel">Påkrevd sparing</div><div class="kpi-verdi" id="m-krav">5 000 kr</div></div>
-        <div class="card"><div class="kpi-tittel">Trygg spareevne</div><div class="kpi-verdi" style="color: var(--salvie);" id="m-trygg">0 kr</div></div>
-        <div class="card"><div class="kpi-tittel">Månedlig Gap</div><div class="kpi-verdi" id="m-gap">-5 000 kr</div></div>
+      
+      <!-- VISNING 1: HOVEDOVERSIKT -->
+      <div id="d-maal-oversikt-seksjon">
+        <div class="maalsparing-header-linje">
+          <h3 style="font-size: 17px; font-weight: 800; color: var(--koks);">Målsparing & Kapasitet</h3>
+          <span class="kapasitet-badge-desktop" id="d-maal-kapasitet">Kapasitet: 0 kr/mnd</span>
+        </div>
+
+        <div class="opprett-maal-desktop-kort">
+          <div class="opprett-maal-desktop-tittel">Opprett nytt sparemål</div>
+          
+          <label class="desktop-felt-label">Navn på målet:</label>
+          <input type="text" id="d-nytt-navn" class="desktop-felt-input" placeholder="f.eks. Sommerferie 2027">
+          
+          <div style="display: flex; gap: 16px;">
+            <div style="flex: 1;">
+              <label class="desktop-felt-label">Målsum (kr):</label>
+              <input type="number" id="d-nytt-belop" class="desktop-felt-input" placeholder="f.eks. 40000">
+            </div>
+            <div style="flex: 1;">
+              <label class="desktop-felt-label">Tidshorisont (mnd):</label>
+              <input type="number" id="d-nytt-mnd" class="desktop-felt-input" placeholder="f.eks. 5">
+            </div>
+          </div>
+
+          <button type="button" class="btn-start-plan-desktop" onclick="opprettNyttSparemålDesktop()">
+            Start spareplan
+          </button>
+        </div>
+
+        <h3 style="font-size: 15px; font-weight: 800; color: var(--koks); margin-bottom: 16px;">
+          Dine eksisterende sparemål:
+        </h3>
+        
+        <div class="eksisterende-maal-grid" id="d-maal-kort-grid"></div>
       </div>
 
-      <div class="dashboard-hovedgrid">
-        <div class="card">
-          <h3 style="margin-bottom: 14px;">SIFO-tiltak for å lukke gapet</h3>
-          <div id="tiltak-container"></div>
+      <!-- VISNING 2: DETALJVISNING -->
+      <div id="d-maal-detalj-seksjon" style="display: none; max-width: 760px;">
+        <div class="card" style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-start;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+              <span style="font-size: 13px; color: var(--tekst-dempet); font-weight: 600;" id="d-det-tittel-horisont">-</span>
+              <span id="d-det-modus-badge" style="background: var(--lys-salvie); color: var(--salvie); font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px;">Aktivt mål</span>
+            </div>
+            <div style="font-size: 28px; font-weight: 800; color: var(--koks);" id="d-det-sum-stor">0 kr</div>
+            <div style="font-size: 13px; color: var(--tekst-dempet); margin-top: 4px;" id="d-det-krav-spareevne">
+              Krav: 0 kr/mnd • Spareevne: 0 kr/mnd
+            </div>
+          </div>
+          <!-- Skjules i lesemodus -->
+          <span id="d-det-gap-badge" class="avvik-kort-badge badge-under" style="display: none;">Innenfor</span>
         </div>
-        <div class="card">
-          <h3 style="margin-bottom: 14px;">Projeksjonsgraf</h3>
-          <div style="height: 250px;"><canvas id="projeksjonChart"></canvas></div>
+
+        <div class="card" style="margin-bottom: 20px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <span style="font-size: 13.5px; font-weight: 700; color: var(--koks);">Fremskriving mot mål</span>
+            <span style="font-size: 12.5px; font-weight: 700; color: var(--salvie);" id="d-det-prosent-visning">0% av målet nås (0 kr)</span>
+          </div>
+          
+          <div style="position: relative; height: 6px; background: #E2E8F0; border-radius: 3px; margin: 28px 0 16px 0;">
+            <div style="position: absolute; top: -16px; left: 0; right: 0; border-top: 1px dashed #CBD5E1; text-align: right; font-size: 11px; color: var(--salvie); font-weight: 700;">Mål</div>
+            <div id="d-det-progresjon-bar" style="height: 100%; background: var(--salvie); border-radius: 3px; position: relative; width: 0%;">
+              <div style="width: 14px; height: 14px; background: var(--salvie); border-radius: 50%; position: absolute; right: -5px; top: -4px;"></div>
+            </div>
+          </div>
+          
+          <div style="display: flex; justify-content: space-between; font-size: 11.5px; color: var(--tekst-dempet);">
+            <span>Mnd 0</span>
+            <span id="d-det-slutt-mnd-tekst">Mnd 0</span>
+          </div>
+        </div>
+
+        <div id="d-maal-dekket-melding" style="display: none; background: var(--lys-salvie); border: 1px solid var(--salvie-kant); border-radius: 12px; padding: 20px; margin-bottom: 20px; text-align: center;">
+          <div style="font-size: 15px; font-weight: 800; color: var(--salvie); margin-bottom: 6px;">🎉 Sparemålet er fullt dekket!</div>
+          <p style="font-size: 13px; color: var(--salvie); line-height: 1.4;">
+            Månedlig spareevne dekker målet innenfor valgt tidshorisont.
+          </p>
+        </div>
+
+        <!-- DEDIKERT BOKS FOR AKTIVERTE TILTAK (LESEMODUS) -->
+        <div id="d-aktive-tiltak-visning" style="display: none; margin-bottom: 20px;" class="card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid #F1F5F9; padding-bottom: 8px;">
+            <h4 style="font-size: 14px; font-weight: 800; color: var(--koks);">Aktiverte tiltak for denne sparingen:</h4>
+            <span id="d-aktive-tiltak-totalsum" style="font-size: 13px; font-weight: 800; color: var(--salvie);">+0 kr/mnd</span>
+          </div>
+          <div id="d-aktive-tiltak-liste"></div>
+        </div>
+
+        <!-- Kuttforslag (vises kun i simuleringsmodus ved gap) -->
+        <div class="card" id="d-kuttforslag-kort-seksjon" style="display: none; margin-bottom: 20px;">
+          <h4 style="font-size: 15px; font-weight: 800; color: var(--koks); margin-bottom: 14px;">SIFO-forslag for å lukke gapet:</h4>
+          <div id="d-kuttforslag-liste" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;"></div>
+          <button type="button" class="btn-primar" style="width: 100%; padding: 12px;" onclick="aktiverValgteTiltakDesktop()">
+            Aktiver valgte tiltak
+          </button>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px;">
+          <a onclick="lukkDetaljvisningDesktop()" style="color: var(--salvie); font-size: 13px; font-weight: 700; text-decoration: none; cursor: pointer;">
+            ← Tilbake til sparemål
+          </a>
+          <button type="button" onclick="slettGjeldendeMaalDesktop()" style="background: transparent; color: var(--varsel-rod); border: 1px solid #FECDD3; padding: 8px 14px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer;">
+            🗑 Slett mål
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- 5. INNSTILLINGER & PROFIL (STRUKTURERT ETTER DE 3 LAGENE)[cite: 2] -->
+    <!-- 5. INNSTILLINGER & PROFIL -->
     <div id="fane-profil" class="fane" style="display: none;">
-      
-      <!-- Fellesprofil -->
       <div class="card" style="margin-bottom: 20px;">
         <div class="profil-seksjon-tittel">Husholdningsprofil & Inntekt</div>
         <div class="form-rad">
@@ -277,10 +478,8 @@
         </div>
       </div>
 
-      <!-- Fordeling etter de 3 lagene[cite: 2] -->
       <div class="budsjett-rutenett" style="margin-bottom: 24px;">
-        
-        <!-- LAG 1: FASTE & BOLIG[cite: 2] -->
+        <!-- 1. Faste & Bolig -->
         <div class="card">
           <div class="profil-seksjon-tittel">1. Faste & Bolig</div>
           <div class="form-gruppe">
@@ -305,7 +504,7 @@
           </div>
         </div>
 
-        <!-- LAG 2: HVERDAGSFORBRUK[cite: 2] -->
+        <!-- 2. Hverdagsforbruk -->
         <div class="card" style="background: #FAFBFD; display: flex; flex-direction: column; justify-content: space-between;">
           <div>
             <div class="profil-seksjon-tittel">2. Hverdagsforbruk (SIFO)</div>
@@ -321,12 +520,12 @@
           </div>
           <div style="margin-top: 16px;">
             <a onclick="visFane('sifo')" style="display: block; text-align: center; padding: 10px; background: var(--lys-salvie); color: var(--salvie); font-weight: 700; border-radius: 6px; cursor: pointer; text-decoration: none; font-size: 12px;">
-              🎚️️ Juster i SIFO-kalkulator →
+              🎚 Juster i SIFO-kalkulator →
             </a>
           </div>
         </div>
 
-        <!-- LAG 3: LIVSSTIL & SPARING[cite: 2] -->
+        <!-- 3. Livsstil & Sparing -->
         <div class="card">
           <div class="profil-seksjon-tittel">3. Livsstil & Sparing</div>
           <div class="form-gruppe">
@@ -348,7 +547,6 @@
             </a>
           </div>
         </div>
-
       </div>
 
       <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -356,7 +554,7 @@
           Lagre innstillinger og oppdater budsjett
         </button>
         <button type="button" onclick="MonetaMotor.nullstillAltOgSlettData()" style="background: transparent; color: var(--varsel-rod); border: 1px solid #FECDD3; padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">
-          🗑️ Nullstill app og slett lokale data
+          🗑 Nullstill app og slett lokale data
         </button>
       </div>
     </div>
@@ -365,10 +563,12 @@
   <script src="js/felles_motor.js"></script>
 
   <script>
-    const { SIFO_KLYNGER, hentState, lagreState, beregnTotalOkonomi, initFaktiskLikNorm, fmt } = window.MonetaMotor;
+    const { SIFO_KLYNGER, hentState, lagreState, beregnTotalOkonomi, initFaktiskLikNorm, genererKuttForslag, fmt } = window.MonetaMotor;
     let state = hentState();
-    let aktivValgtPost = 'mat_drikke';
-    let chartInstance = null;
+    
+    let aktivModus = 'post';
+    let aktivValgtId = 'mat_drikke';
+    let desktopMaalModus = 'oversikt'; // 'oversikt', 'lesemodus' eller 'simulering'
 
     window.visFane = function(id, el) {
       document.querySelectorAll('.fane').forEach(f => f.style.display = 'none');
@@ -385,6 +585,10 @@
         });
       }
 
+      if (id === 'maalsparing') {
+        desktopMaalModus = 'oversikt';
+      }
+
       const titler = {
         dashboard: 'Dashboard',
         budsjett: 'Budsjettoversikt: 3-Lags Modellen',
@@ -393,6 +597,8 @@
         profil: 'Innstillinger & Profil'
       };
       document.getElementById('sidetittel').innerText = titler[id] || 'Moneta';
+      
+      oppsettSlider();
       oppdater();
     };
 
@@ -420,30 +626,97 @@
       lagreState(state);
     };
 
+    // SIFO-KALKULATOR METODER
+    window.endreSifoValgModus = function(val) {
+      if (val.startsWith('klynge_')) {
+        aktivModus = 'klynge';
+        aktivValgtId = val.replace('klynge_', '');
+        document.getElementById('sifo-modus-dropdown').value = val;
+      } else if (val.startsWith('post_')) {
+        aktivModus = 'post';
+        aktivValgtId = val.replace('post_', '');
+        document.getElementById('sifo-modus-dropdown').value = val;
+      }
+      oppsettSlider();
+      oppdater();
+    };
+
+    window.velgEnkeltpostFraTabell = function(postId) {
+      aktivModus = 'post';
+      aktivValgtId = postId;
+      document.getElementById('sifo-modus-dropdown').value = 'post_' + postId;
+      oppsettSlider();
+      oppdater();
+    };
+
     function oppsettSlider() {
       const okonomi = beregnTotalOkonomi(state);
-      const postNavn = finnPostNavn(aktivValgtPost);
-      document.getElementById('sifo-aktiv-tittel').innerText = postNavn;
-
-      const norm = okonomi.normer[aktivValgtPost] || 0;
-      const faktisk = state.faktiskForbruk[aktivValgtPost] || 0;
       const slider = document.getElementById('sifo-slider');
+      const pille = document.getElementById('slider-avvik-pille');
 
-      const erLaastMotpost = (aktivValgtPost === 'kollektivreise' && state.transportmiddel !== 'Kollektivtransport') ||
-                             (aktivValgtPost === 'bilhold' && state.transportmiddel === 'Kollektivtransport');
+      if (aktivModus === 'post') {
+        const postNavn = finnPostNavn(aktivValgtId);
+        document.getElementById('sifo-aktiv-tittel').innerText = postNavn;
 
-      if (erLaastMotpost) {
-        slider.disabled = true;
-        slider.value = 0;
-        document.getElementById('slider-norm').innerText = `Låst (0 kr - motpost)`;
-        document.getElementById('slider-faktisk').innerText = `0 kr`;
+        const norm = okonomi.normer[aktivValgtId] || 0;
+        const faktisk = state.faktiskForbruk[aktivValgtId] || 0;
+        const diff = faktisk - norm;
+
+        const erLaastMotpost = (aktivValgtId === 'kollektivreise' && state.transportmiddel !== 'Kollektivtransport') ||
+                               (aktivValgtId === 'bilhold' && state.transportmiddel === 'Kollektivtransport');
+
+        if (erLaastMotpost) {
+          slider.disabled = true;
+          slider.value = 0;
+          document.getElementById('slider-norm').innerText = `Låst (0 kr - motpost)`;
+          document.getElementById('slider-faktisk').innerText = `0 kr`;
+          pille.style.background = '#E2E8F0';
+          pille.style.color = 'var(--tekst-dempet)';
+          pille.innerText = 'Låst';
+        } else {
+          slider.disabled = false;
+          slider.min = Math.round(norm * 0.3);
+          slider.max = Math.round(norm * 2.5);
+          slider.value = faktisk;
+          document.getElementById('slider-norm').innerText = `Norm: ${fmt(norm)} kr`;
+          document.getElementById('slider-faktisk').innerText = `${fmt(faktisk)} kr`;
+
+          if (diff > 50) {
+            pille.style.background = 'var(--varsel-rosa)';
+            pille.style.color = 'var(--varsel-rod)';
+            pille.innerText = `+${fmt(diff)} kr over`;
+          } else {
+            pille.style.background = 'var(--lys-salvie)';
+            pille.style.color = 'var(--salvie)';
+            pille.innerText = diff < -50 ? `${fmt(diff)} kr under` : 'I balanse';
+          }
+        }
+
       } else {
+        const kNr = aktivValgtId;
+        const klynge = SIFO_KLYNGER[kNr];
+        document.getElementById('sifo-aktiv-tittel').innerText = `${klynge.tittel} (Felles)`;
+
+        const norm = okonomi.klyngeNorm[kNr] || 0;
+        const faktisk = okonomi.klyngeFaktisk[kNr] || 0;
+        const diff = faktisk - norm;
+
         slider.disabled = false;
         slider.min = Math.round(norm * 0.3);
         slider.max = Math.round(norm * 2.5);
         slider.value = faktisk;
-        document.getElementById('slider-norm').innerText = `Norm: ${fmt(norm)} kr`;
+        document.getElementById('slider-norm').innerText = `Samlet norm: ${fmt(norm)} kr`;
         document.getElementById('slider-faktisk').innerText = `${fmt(faktisk)} kr`;
+
+        if (diff > 50) {
+          pille.style.background = 'var(--varsel-rosa)';
+          pille.style.color = 'var(--varsel-rod)';
+          pille.innerText = `+${fmt(diff)} kr over`;
+        } else {
+          pille.style.background = 'var(--lys-salvie)';
+          pille.style.color = 'var(--salvie)';
+          pille.innerText = diff < -50 ? `${fmt(diff)} kr under` : 'I balanse';
+        }
       }
     }
 
@@ -456,35 +729,212 @@
     }
 
     document.getElementById('sifo-slider').addEventListener('input', (e) => {
-      state.faktiskForbruk[aktivValgtPost] = Number(e.target.value);
-      oppsettSlider();
+      const nyVerdi = Number(e.target.value);
+      const okonomiFør = beregnTotalOkonomi(state);
+
+      if (aktivModus === 'post') {
+        state.faktiskForbruk[aktivValgtId] = nyVerdi;
+      } else {
+        const kNr = aktivValgtId;
+        const kNorm = okonomiFør.klyngeNorm[kNr] || 1;
+        const faktor = nyVerdi / kNorm;
+
+        SIFO_KLYNGER[kNr].poster.forEach(post => {
+          const erLaastMotpost = (post.id === 'kollektivreise' && state.transportmiddel !== 'Kollektivtransport') ||
+                                 (post.id === 'bilhold' && state.transportmiddel === 'Kollektivtransport');
+          if (!erLaastMotpost) {
+            const pNorm = okonomiFør.normer[post.id] || 0;
+            state.faktiskForbruk[post.id] = Math.round(pNorm * faktor);
+          }
+        });
+      }
+
+      document.getElementById('slider-faktisk').innerText = `${fmt(nyVerdi)} kr`;
       oppdater();
       lagreState(state);
     });
 
-    function tegnGraf(fremskrivning) {
-      const ctx = document.getElementById('projeksjonChart');
-      if (!ctx) return;
-      if (chartInstance) chartInstance.destroy();
-      chartInstance = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: fremskrivning.labels,
-          datasets: [
-            { label: '+ Kutt', data: fremskrivning.dataMedKutt, borderColor: '#0D9488', backgroundColor: 'rgba(204,251,241,0.4)', fill: true, tension: 0.1 },
-            { label: 'I dag', data: fremskrivning.dataUtenKutt, borderColor: '#94A3B8', borderDash: [5,5], fill: false, tension: 0.1 }
-          ]
-        },
-        options: { responsive: true, maintainAspectRatio: false }
-      });
+    window.nullstillValgtSifoPostEllerKlynge = function() {
+      const okonomi = beregnTotalOkonomi(state);
+      if (aktivModus === 'post') {
+        state.faktiskForbruk[aktivValgtId] = okonomi.normer[aktivValgtId];
+      } else {
+        const kNr = aktivValgtId;
+        SIFO_KLYNGER[kNr].poster.forEach(p => {
+          const erLaastMotpost = (p.id === 'kollektivreise' && state.transportmiddel !== 'Kollektivtransport') ||
+                                 (p.id === 'bilhold' && state.transportmiddel === 'Kollektivtransport');
+          state.faktiskForbruk[p.id] = erLaastMotpost ? 0 : okonomi.normer[p.id];
+        });
+      }
+      oppsettSlider();
+      oppdater();
+      lagreState(state);
+    };
+
+    // HJELPEFUNKSJON FOR Å HENTE AKTIVERTE TILTAK
+    function hentAktiveTiltakForMaal(valgtMaal) {
+      if (!valgtMaal) return [];
+      const resultat = [];
+
+      if (Array.isArray(valgtMaal.aktiverteKutt) && valgtMaal.aktiverteKutt.length > 0) {
+        valgtMaal.aktiverteKutt.forEach(k => {
+          resultat.push({
+            id: k.id,
+            tittel: k.tittel || finnPostNavn(k.postId || '') || 'Kutt til SIFO-norm',
+            belop: Number(k.belop) || 0
+          });
+        });
+        return resultat;
+      }
+
+      if (valgtMaal.valgteTiltak && typeof valgtMaal.valgteTiltak === 'object') {
+        const forslag = genererKuttForslag(state);
+        Object.keys(valgtMaal.valgteTiltak).forEach(tiltakId => {
+          if (valgtMaal.valgteTiltak[tiltakId]) {
+            const funnet = forslag.find(f => f.id === tiltakId);
+            if (funnet) {
+              resultat.push({
+                id: funnet.id,
+                tittel: funnet.tittel,
+                belop: funnet.belop
+              });
+            }
+          }
+        });
+      }
+
+      return resultat;
     }
+
+    // MÅLSPARING: LESEMODUS VS SIMULERING
+    window.apneSparemålLesemodusDesktop = function(id) {
+      state.aktivtMaalId = id;
+      desktopMaalModus = 'lesemodus';
+      lagreState(state);
+      oppdater();
+    };
+
+    window.lukkDetaljvisningDesktop = function() {
+      desktopMaalModus = 'oversikt';
+      oppdater();
+    };
+
+    window.opprettNyttSparemålDesktop = function() {
+      const tittel = document.getElementById('d-nytt-navn').value.trim();
+      const belop = Number(document.getElementById('d-nytt-belop').value);
+      const mnd = Number(document.getElementById('d-nytt-mnd').value);
+
+      if (!tittel || belop <= 0 || mnd <= 0) {
+        alert("Vennligst fyll ut navn, målsum og tidshorisont.");
+        return;
+      }
+
+      const nyId = 'maal_' + Date.now();
+      if (!state.sparemaalListe) state.sparemaalListe = [];
+
+      state.sparemaalListe.push({
+        id: nyId,
+        tittel: tittel,
+        malsum: belop,
+        mnd: mnd,
+        valgteTiltak: {},
+        aktiverteKutt: []
+      });
+
+      state.aktivtMaalId = nyId;
+      desktopMaalModus = 'simulering';
+
+      document.getElementById('d-nytt-navn').value = '';
+      document.getElementById('d-nytt-belop').value = '';
+      document.getElementById('d-nytt-mnd').value = '';
+
+      lagreState(state);
+      oppdater();
+    };
+
+    window.slettSparemålDesktop = function(id, e) {
+      if (e) e.stopPropagation();
+      if (!confirm("Er du sikker på at du vil slette dette sparemålet?")) return;
+
+      const maal = (state.sparemaalListe || []).find(m => m.id === id);
+      if (maal && maal.aktiverteKutt) {
+        maal.aktiverteKutt.forEach(k => {
+          if (k.postId && k.forrigeVerdi !== undefined) {
+            state.faktiskForbruk[k.postId] = k.forrigeVerdi;
+          } else if (k.felt && k.forrigeVerdi !== undefined) {
+            state[k.felt] = k.forrigeVerdi;
+          }
+        });
+      }
+
+      state.sparemaalListe = (state.sparemaalListe || []).filter(m => m.id !== id);
+      if (state.aktivtMaalId === id) {
+        state.aktivtMaalId = state.sparemaalListe[0] ? state.sparemaalListe[0].id : null;
+        desktopMaalModus = 'oversikt';
+      }
+
+      lagreState(state);
+      oppdater();
+    };
+
+    window.slettGjeldendeMaalDesktop = function() {
+      window.slettSparemålDesktop(state.aktivtMaalId);
+    };
+
+    window.toggleKuttTiltakDesktop = function(tiltakId) {
+      const maal = (state.sparemaalListe || []).find(m => m.id === state.aktivtMaalId);
+      if (!maal) return;
+      if (!maal.valgteTiltak) maal.valgteTiltak = {};
+      maal.valgteTiltak[tiltakId] = !maal.valgteTiltak[tiltakId];
+      lagreState(state);
+      oppdater();
+    };
+
+    window.aktiverValgteTiltakDesktop = function() {
+      const maal = (state.sparemaalListe || []).find(m => m.id === state.aktivtMaalId);
+      if (!maal) return;
+
+      const { normer } = window.MonetaMotor.beregnEksaktSifoNorm(state);
+      const forslag = genererKuttForslag(state);
+      if (!maal.aktiverteKutt) maal.aktiverteKutt = [];
+
+      forslag.forEach(f => {
+        if (maal.valgteTiltak && maal.valgteTiltak[f.id]) {
+          if (f.type === 'sifo' && f.postId) {
+            maal.aktiverteKutt.push({
+              id: f.id,
+              tittel: f.tittel,
+              belop: f.belop,
+              postId: f.postId,
+              forrigeVerdi: state.faktiskForbruk[f.postId]
+            });
+            state.faktiskForbruk[f.postId] = normer[f.postId];
+          } else if (f.type === 'livsstil' && f.felt) {
+            maal.aktiverteKutt.push({
+              id: f.id,
+              tittel: f.tittel,
+              belop: f.belop,
+              felt: f.felt,
+              forrigeVerdi: state[f.felt]
+            });
+            state[f.felt] = Math.round(Number(state[f.felt] || 0) * 0.5);
+          }
+        }
+      });
+
+      maal.valgteTiltak = {};
+      lagreState(state);
+      alert("Tiltakene er aktivert! Forbruket er oppdatert i budsjettet og SIFO-kalkulatoren.");
+      desktopMaalModus = 'oversikt';
+      oppdater();
+    };
 
     function oppdater() {
       const okonomi = beregnTotalOkonomi(state);
 
       document.getElementById('header-bruker-navn').innerText = state.fulltNavn || 'Profil';
 
-      // Dashboard
+      // 1. Dashboard
       document.getElementById('d-buffer').innerText = `${okonomi.buffer >= 0 ? '+' : ''}${fmt(okonomi.buffer)} kr`;
       document.getElementById('d-rente').innerText = `Tåler +${okonomi.renteTaleevne}%`;
       document.getElementById('d-sifo-faktisk').innerText = `${fmt(okonomi.sumForbrukFaktisk)} kr`;
@@ -506,7 +956,7 @@
         avvikListe.innerHTML = `<div style="font-size:12px; color:var(--salvie);">✅ Forbruket er innenfor SIFO-norm.</div>`;
       }
 
-      // Budsjett
+      // 2. Budsjett
       document.getElementById('b-inntekt').innerText = `${fmt(okonomi.inntektNetto)} kr`;
       document.getElementById('b-faste').innerText = `${fmt(okonomi.sumFaste)} kr`;
       document.getElementById('b-sifo').innerText = `${fmt(okonomi.sumForbrukFaktisk)} kr`;
@@ -528,46 +978,209 @@
         bSifoListe.innerHTML += `<div class="utgift-rad"><span>${SIFO_KLYNGER[kNr].tittel}</span><strong>${fmt(okonomi.klyngeFaktisk[kNr])} kr</strong></div>`;
       }
 
-      // SIFO Tabell
-      const sifoRader = document.getElementById('sifo-rader');
-      sifoRader.innerHTML = '';
+      // 3. SIFO Statusfelt & Tabell
+      document.getElementById('sifo-sum-over-tall').innerText = `+${fmt(okonomi.muligKutt)} kr/mnd`;
+      const totAvvik = okonomi.sumForbrukFaktisk - okonomi.sumSifoNorm;
+      const totAvvikEl = document.getElementById('sifo-totalt-avvik-tall');
+      totAvvikEl.innerText = `${totAvvik >= 0 ? '+' : ''}${fmt(totAvvik)} kr/mnd`;
+      totAvvikEl.style.color = totAvvik > 50 ? 'var(--varsel-rod)' : 'var(--salvie)';
+
+      let tabellHTML = '';
       for (const kNr in SIFO_KLYNGER) {
         const klynge = SIFO_KLYNGER[kNr];
-        sifoRader.innerHTML += `<tr style="background:#F1F5F9;"><th colspan="4" style="color:var(--salvie); font-size:11px; text-transform:uppercase;">${klynge.tittel}</th></tr>`;
+        const erKlyngeValgt = (aktivModus === 'klynge' && String(aktivValgtId) === String(kNr));
+
+        tabellHTML += `
+          <tr class="klynge-hode-rad ${erKlyngeValgt ? 'klynge-valgt-hode' : ''}" onclick="endreSifoValgModus('klynge_${kNr}')">
+            <th colspan="3" style="font-size:11.5px; text-transform:uppercase; color: ${erKlyngeValgt ? 'var(--salvie-mork)' : 'var(--salvie)'};">
+              📁 ${klynge.tittel} ${erKlyngeValgt ? '◄ (Aktiv fellesjustering)' : ''}
+            </th>
+            <th style="text-align: right; font-size:11px; color:var(--mork-skifer);">
+              ${fmt(okonomi.klyngeFaktisk[kNr])} / ${fmt(okonomi.klyngeNorm[kNr])} kr
+            </th>
+          </tr>
+        `;
+
         klynge.poster.forEach(post => {
           const f = state.faktiskForbruk[post.id] || 0;
           const n = okonomi.normer[post.id] || 0;
           const diff = f - n;
-          const tr = document.createElement('tr');
-          tr.className = `post-rad ${aktivValgtPost === post.id ? 'valgt-rad' : ''}`;
-          tr.onclick = () => {
-            aktivValgtPost = post.id;
-            oppsettSlider();
-            oppdater();
-          };
-          tr.innerHTML = `
-            <td><strong>${post.navn}</strong></td>
-            <td style="text-align: right;">${fmt(f)} kr</td>
-            <td style="text-align: right; color: var(--tekst-dempet);">${fmt(n)} kr</td>
-            <td style="text-align: right; font-weight: 700; color: ${diff > 0 ? 'var(--varsel-rod)' : 'var(--salvie)'};">${diff > 0 ? '+' : ''}${fmt(diff)} kr</td>
+          const erRadValgt = (aktivModus === 'post' && aktivValgtId === post.id) || erKlyngeValgt;
+
+          tabellHTML += `
+            <tr class="post-rad ${erRadValgt ? 'valgt-rad' : ''}" onclick="velgEnkeltpostFraTabell('${post.id}')">
+              <td><strong>${post.navn}</strong></td>
+              <td style="text-align: right;">${fmt(f)} kr</td>
+              <td style="text-align: right; color: var(--tekst-dempet);">${fmt(n)} kr</td>
+              <td style="text-align: right; font-weight: 700; color: ${diff > 0 ? 'var(--varsel-rod)' : 'var(--salvie)'};">
+                ${diff > 0 ? '+' : ''}${fmt(diff)} kr
+              </td>
+            </tr>
           `;
-          sifoRader.appendChild(tr);
         });
       }
+      document.getElementById('sifo-rader').innerHTML = tabellHTML;
 
-      // Målsparing
-      document.getElementById('m-malsum-vis').innerText = `${fmt(okonomi.aktivtMaal.malsum)} kr`;
-      document.getElementById('m-mnd-vis').innerText = okonomi.aktivtMaal.mnd;
-      document.getElementById('m-krav').innerText = `${fmt(okonomi.aktivtMaal.paakrevd)} kr/mnd`;
-      document.getElementById('m-trygg').innerText = `${fmt(Math.max(0, okonomi.buffer))} kr/mnd`;
-      const gapEl = document.getElementById('m-gap');
-      const gap = okonomi.buffer < 0 ? Math.abs(okonomi.buffer) : 0;
-      gapEl.innerText = okonomi.buffer >= 0 ? `Dekket! 🎉` : `-${fmt(gap)} kr/mnd`;
-      gapEl.style.color = okonomi.buffer >= 0 ? 'var(--salvie)' : 'var(--varsel-rod)';
+      // 4. Målsparing Rendering Desktop
+      const oversiktSeksjon = document.getElementById('d-maal-oversikt-seksjon');
+      const detaljSeksjon = document.getElementById('d-maal-detalj-seksjon');
+      const maalListe = state.sparemaalListe || [];
+      const valgtMaal = maalListe.find(m => m.id === state.aktivtMaalId) || maalListe[0];
 
-      tegnGraf(okonomi.fremskrivning);
+      // Oppdater kapasitet øverst
+      const restBuffer = okonomi.buffer;
+      const dKapEl = document.getElementById('d-maal-kapasitet');
+      if (dKapEl) {
+        dKapEl.innerText = `Kapasitet: ${fmt(restBuffer)} kr/mnd`;
+        dKapEl.style.color = restBuffer >= 0 ? 'var(--salvie)' : 'var(--varsel-rod)';
+      }
 
-      // Profil inputs synkronisering
+      if (desktopMaalModus === 'oversikt' || !valgtMaal) {
+        oversiktSeksjon.style.display = 'block';
+        detaljSeksjon.style.display = 'none';
+
+        const gridCont = document.getElementById('d-maal-kort-grid');
+        gridCont.innerHTML = '';
+
+        if (maalListe.length === 0) {
+          gridCont.innerHTML = `<div style="font-size: 13px; color: var(--tekst-dempet); grid-column: 1/-1;">Ingen registrerte sparemål enda. Opprett et nytt over!</div>`;
+        } else {
+          maalListe.forEach(m => {
+            const kort = document.createElement('div');
+            kort.className = 'desktop-maal-kort';
+            kort.onclick = () => apneSparemålLesemodusDesktop(m.id);
+            kort.innerHTML = `
+              <div>
+                <div class="desktop-maal-kort-tittel">${m.tittel}</div>
+                <div class="desktop-maal-kort-sum">${fmt(m.malsum)} kr</div>
+                <div class="desktop-maal-kort-sub">Tidshorisont: ${m.mnd} måneder</div>
+              </div>
+              <div class="desktop-maal-kort-bunn">
+                <button type="button" class="btn-slett-tekst" onclick="slettSparemålDesktop('${m.id}', event)">
+                  🗑 Slett
+                </button>
+              </div>
+            `;
+            gridCont.appendChild(kort);
+          });
+        }
+
+      } else {
+        // DETALJVISNING
+        oversiktSeksjon.style.display = 'none';
+        detaljSeksjon.style.display = 'block';
+
+        const kravMnd = Math.round(valgtMaal.malsum / Math.max(1, valgtMaal.mnd));
+        const valgteTiltak = valgtMaal.valgteTiltak || {};
+        
+        let frigjortSimulert = 0;
+        const forslag = genererKuttForslag(state);
+        forslag.forEach(f => {
+          if (valgteTiltak[f.id]) frigjortSimulert += f.belop;
+        });
+
+        const allokertBuffer = Math.max(0, okonomi.buffer + kravMnd);
+        const totalSpareevne = allokertBuffer + frigjortSimulert;
+        const gap = kravMnd - totalSpareevne;
+        const maalErInnenfor = gap <= 0;
+
+        document.getElementById('d-det-tittel-horisont').innerText = `${valgtMaal.tittel} (${valgtMaal.mnd} mnd)`;
+        document.getElementById('d-det-sum-stor').innerText = `${fmt(valgtMaal.malsum)} kr`;
+        document.getElementById('d-det-krav-spareevne').innerText = `Krav: ${fmt(kravMnd)} kr/mnd • Spareevne: ${fmt(totalSpareevne)} kr/mnd`;
+
+        const modusBadge = document.getElementById('d-det-modus-badge');
+        const gapBadge = document.getElementById('d-det-gap-badge');
+
+        if (desktopMaalModus === 'lesemodus') {
+          modusBadge.innerText = 'Aktivt mål';
+          modusBadge.style.background = '#F1F5F9';
+          modusBadge.style.color = 'var(--mork-skifer)';
+          // SKJUL BELØPET/BADGEN OPPE I HØYRE HJØRNE I LESEMODUS
+          gapBadge.style.display = 'none';
+        } else {
+          modusBadge.innerText = 'Simulering';
+          modusBadge.style.background = 'var(--lys-salvie)';
+          modusBadge.style.color = 'var(--salvie)';
+          // VIS KUN BADGEN I SIMULERINGSMODUS
+          gapBadge.style.display = 'inline-block';
+          if (maalErInnenfor) {
+            gapBadge.className = 'avvik-kort-badge badge-under';
+            gapBadge.innerText = `Innenfor (+${fmt(Math.abs(gap))} kr)`;
+          } else {
+            gapBadge.className = 'avvik-kort-badge badge-over';
+            gapBadge.innerText = `Gap: −${fmt(gap)} kr`;
+          }
+        }
+
+        const samletNadd = Math.min(valgtMaal.malsum, Math.round(totalSpareevne * valgtMaal.mnd));
+        const pst = Math.min(100, Math.round((samletNadd / (valgtMaal.malsum || 1)) * 100));
+        document.getElementById('d-det-prosent-visning').innerText = `${pst}% av målet nås (${fmt(samletNadd)} kr)`;
+        document.getElementById('d-det-progresjon-bar').style.width = `${pst}%`;
+        document.getElementById('d-det-slutt-mnd-tekst').innerText = `Mnd ${valgtMaal.mnd}`;
+
+        const dekketBoks = document.getElementById('d-maal-dekket-melding');
+        const kuttSeksjon = document.getElementById('d-kuttforslag-kort-seksjon');
+        const aktiveTiltakBoks = document.getElementById('d-aktive-tiltak-visning');
+
+        if (desktopMaalModus === 'lesemodus') {
+          kuttSeksjon.style.display = 'none';
+          dekketBoks.style.display = maalErInnenfor ? 'block' : 'none';
+
+          const aktiveTiltak = hentAktiveTiltakForMaal(valgtMaal);
+          aktiveTiltakBoks.style.display = 'block';
+          const aktiveCont = document.getElementById('d-aktive-tiltak-liste');
+          aktiveCont.innerHTML = '';
+
+          if (aktiveTiltak.length === 0) {
+            aktiveCont.innerHTML = `<div style="font-size:13px; color:var(--tekst-dempet); padding:4px 0;">Ingen kutt-tiltak er aktivert for dette sparemålet. Målet dekkes av din ordinære månedsbuffer.</div>`;
+            document.getElementById('d-aktive-tiltak-totalsum').innerText = `0 kr/mnd`;
+          } else {
+            let sumAktivert = 0;
+            aktiveTiltak.forEach(k => {
+              sumAktivert += (k.belop || 0);
+              aktiveCont.innerHTML += `
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #F1F5F9; font-size:13px;">
+                  <span style="font-weight:600; color:var(--mork-skifer);">✓ ${k.tittel}</span>
+                  <span style="font-weight:700; color:var(--salvie);">+${fmt(k.belop)} kr/mnd</span>
+                </div>
+              `;
+            });
+            document.getElementById('d-aktive-tiltak-totalsum').innerText = `+${fmt(sumAktivert)} kr/mnd`;
+          }
+
+        } else {
+          // SIMULERINGSMODUS
+          aktiveTiltakBoks.style.display = 'none';
+
+          if (maalErInnenfor) {
+            dekketBoks.style.display = 'block';
+            kuttSeksjon.style.display = 'none';
+          } else {
+            dekketBoks.style.display = 'none';
+            kuttSeksjon.style.display = 'block';
+
+            const kuttListeCont = document.getElementById('d-kuttforslag-liste');
+            kuttListeCont.innerHTML = '';
+
+            forslag.forEach(f => {
+              const erAktiv = !!valgteTiltak[f.id];
+              const rad = document.createElement('div');
+              rad.style.cssText = 'display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #F1F5F9;';
+              rad.innerHTML = `
+                <label style="display:flex; align-items:center; gap:10px; font-size:13px; font-weight:600; cursor:pointer;">
+                  <input type="checkbox" style="width:18px; height:18px; accent-color:var(--salvie); cursor:pointer;" ${erAktiv ? 'checked' : ''}>
+                  <span>${f.tittel}</span>
+                </label>
+                <span style="font-size:13px; font-weight:700; color:var(--salvie);">+${fmt(f.belop)} kr</span>
+              `;
+              rad.querySelector('input').addEventListener('change', () => toggleKuttTiltakDesktop(f.id));
+              kuttListeCont.appendChild(rad);
+            });
+          }
+        }
+      }
+
+      // 5. Profil Inputs
       document.getElementById('p-navn').value = state.fulltNavn || '';
       document.getElementById('p-inntekt').value = state.inntektNetto || 0;
       document.getElementById('p-transport').value = state.transportmiddel || 'Bensinbil';
@@ -578,7 +1191,6 @@
       document.getElementById('p-felleskost').value = state.felleskost || 0;
       document.getElementById('p-strom').value = state.strom || 0;
       document.getElementById('p-forsikring').value = state.forsikring || 0;
-      document.getElementById('p-helse').value = state.helse || 0;
       document.getElementById('p-restaurant').value = state.restaurant || 0;
       document.getElementById('p-ferie').value = state.ferie || 0;
       document.getElementById('p-annen-sparing').value = state.annenSparing || 0;

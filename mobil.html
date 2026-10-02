@@ -89,7 +89,7 @@
     /* MÅLSPARING-STILER */
     .sparemaal-seksjon-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     .sparemaal-tittel { font-size: 16px; font-weight: 800; color: var(--koks); }
-    .kapasitet-tekst { font-size: 12px; font-weight: 700; color: var(--salvie); }
+    .kapasitet-tekst { font-size: 12.5px; font-weight: 800; color: var(--salvie); }
 
     .maal-liste-container { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
     .maal-rad-kort {
@@ -119,7 +119,7 @@
       font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 4px;
     }
 
-    /* Detaljvisning av enkeltmål */
+    /* Detaljvisning */
     .maal-status-hode-kort {
       background: #FFFFFF; border: 1px solid var(--ramme); border-radius: 12px; padding: 14px 16px; margin-bottom: 12px;
       display: flex; justify-content: space-between; align-items: flex-start;
@@ -380,7 +380,7 @@
     <!-- 4. MÅLSPARING -->
     <div id="m-fane-maalsparing" class="m-fane" style="display: none;">
       
-      <!-- VISNING 1: OVERSIKT OVER DINE SPAREMÅL + OPPRETTELSE (Helt ren, ingen kutt) -->
+      <!-- VISNING 1: OVERSIKT OVER DINE SPAREMÅL + OPPRETTELSE -->
       <div id="m-maal-oversikt-seksjon">
         <div class="sparemaal-seksjon-header">
           <h2 class="sparemaal-tittel">Dine sparemål</h2>
@@ -410,7 +410,7 @@
         </div>
       </div>
 
-      <!-- VISNING 2: DETALJER FOR VALGT MÅL -->
+      <!-- VISNING 2: DETALJVISNING FOR VALGT MÅL -->
       <div id="m-maal-detalj-seksjon" style="display: none;">
         
         <!-- Hodekort -->
@@ -418,14 +418,15 @@
           <div>
             <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
               <span style="font-size: 11.5px; color: var(--tekst-dempet); font-weight: 600;" id="m-det-tittel-horisont">-</span>
-              <span class="simulering-tag">Simulering</span>
+              <span id="m-det-modus-badge" class="simulering-tag">Aktivt mål</span>
             </div>
             <div style="font-size: 24px; font-weight: 800; color: var(--koks);" id="m-det-sum-stor">0 kr</div>
             <div style="font-size: 11px; color: var(--tekst-dempet); margin-top: 4px;" id="m-det-krav-spareevne">
               Krav: 0 kr/mnd • Spareevne: 0 kr/mnd
             </div>
           </div>
-          <span id="m-det-gap-badge" class="avvik-kort-badge badge-under">Innenfor</span>
+          <!-- Skjules i lesemodus -->
+          <span id="m-det-gap-badge" class="avvik-kort-badge badge-under" style="display: none;">Innenfor</span>
         </div>
 
         <!-- Fremskriving mot mål -->
@@ -448,23 +449,24 @@
           </div>
         </div>
 
-        <!-- Melding når målet er innenfor (ingen kutt trengs) -->
+        <!-- Melding når målet er innenfor -->
         <div id="m-maal-dekket-melding" style="display: none; background: var(--lys-salvie); border: 1px solid var(--salvie-kant); border-radius: 12px; padding: 16px; margin-bottom: 14px; text-align: center;">
           <div style="font-size: 14px; font-weight: 800; color: var(--salvie); margin-bottom: 4px;">🎉 Sparemålet er fullt dekket!</div>
           <p style="font-size: 11.5px; color: var(--salvie); line-height: 1.4;">
-            Din nåværende månedlige spareevne er tilstrekkelig til å nå dette målet. Ingen kutt i SIFO- eller livsstilsposter er nødvendig.
+            Månedlig spareevne dekker målet innenfor valgt tidshorisont.
           </p>
         </div>
 
-        <!-- Viser aktive tiltak hvis brukeren har aktivert noen, men målet nå er dekket -->
+        <!-- DEDIKERT BOKS FOR AKTIVERTE TILTAK (LESEMODUS) -->
         <div id="m-aktive-tiltak-visning" style="display: none;" class="tiltak-klynge-boks">
-          <div style="font-size: 13.5px; font-weight: 800; color: var(--koks); margin-bottom: 8px;">
-            Tilknyttede kutt-tiltak
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px; border-bottom: 1px solid #F1F5F9; padding-bottom: 6px;">
+            <span style="font-size: 13px; font-weight: 800; color: var(--koks);">Aktiverte tiltak for denne sparingen:</span>
+            <span id="m-aktive-tiltak-totalsum" style="font-size: 12px; font-weight: 800; color: var(--salvie);">+0 kr/mnd</span>
           </div>
           <div id="m-aktive-tiltak-liste"></div>
         </div>
 
-        <!-- Kuttforslag-kort (vises KUN hvis målet har et gap) -->
+        <!-- Kuttforslag-kort (vises kun i simuleringsmodus dersom det er et gap) -->
         <div class="tiltak-klynge-boks" id="m-kuttforslag-kort-seksjon" style="display: none;">
           <div style="font-size: 13.5px; font-weight: 800; color: var(--koks); margin-bottom: 12px;">
             SIFO-forslag for å lukke gapet
@@ -479,7 +481,7 @@
 
         <!-- Handlinger i bunn -->
         <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 8px;">
-          <a class="lenke-ga-tilbake" onclick="lukkDetaljvisning()">← Forkast og gå tilbake</a>
+          <a class="lenke-ga-tilbake" onclick="lukkDetaljvisning()">← Tilbake til sparemål</a>
           <button type="button" onclick="slettGjeldendeMaal()" style="background: transparent; color: var(--varsel-rod); border: none; font-size: 11.5px; font-weight: 700; cursor: pointer;">
             🗑️ Slett mål
           </button>
@@ -492,8 +494,6 @@
     <!-- 5. MOBIL PROFIL (STRUKTURERT ETTER DE 3 LAGENE) -->
     <div id="m-fane-profil" class="m-fane" style="display: none;">
       <div class="profil-kort">
-        
-        <!-- Fellesprofil -->
         <div class="seksjon-ramme">
           <div class="seksjon-tittel-skjema">Husholdning & Inntekt</div>
           <div class="form-gruppe">
@@ -583,7 +583,7 @@
 
         <div style="margin-top: 14px; text-align: center;">
           <button type="button" onclick="MonetaMotor.nullstillAltOgSlettData()" style="background: var(--varsel-rosa); color: var(--varsel-rod); border: 1px solid #FECDD3; width: 100%; padding: 8px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer;">
-            🗑️ Nullstill app og slett lagrede data
+            🗑 Nullstill app og slett lagrede data
           </button>
         </div>
       </div>
@@ -602,7 +602,7 @@
   <script>
     const { SIFO_KLYNGER, hentState, lagreState, beregnTotalOkonomi, initFaktiskLikNorm, genererKuttForslag, fmt } = window.MonetaMotor;
     let state = hentState();
-    let visningsModusMaal = 'oversikt'; // 'oversikt' eller 'detalj'
+    let visningsModusMaal = 'oversikt'; // 'oversikt', 'lesemodus' eller 'simulering'
 
     window.visMobilFane = function(id, el) {
       document.querySelectorAll('.m-fane').forEach(f => f.style.display = 'none');
@@ -617,6 +617,10 @@
         bunnLenker.forEach(a => {
           if (a.getAttribute('onclick')?.includes(id)) a.classList.add('aktiv');
         });
+      }
+
+      if (id === 'maalsparing') {
+        visningsModusMaal = 'oversikt';
       }
 
       const titler = { dashboard: 'Moneta', budsjett: 'Totalbudsjett', sifo: 'SIFO-kalkulator', maalsparing: 'Målsparing', profil: 'Profil' };
@@ -659,10 +663,53 @@
       }
     };
 
-    // MÅLSPARING-NAVIGASJON OG HANDLINGER
-    window.apneSparemålDetalj = function(id) {
+    function finnPostNavn(postId) {
+      for (const kNr in SIFO_KLYNGER) {
+        const post = SIFO_KLYNGER[kNr].poster.find(p => p.id === postId);
+        if (post) return post.navn;
+      }
+      return postId;
+    }
+
+    // HJELPEFUNKSJON FOR Å HENTE AKTIVERTE TILTAK PÅ MOBIL
+    function hentAktiveTiltakForMaal(valgtMaal) {
+      if (!valgtMaal) return [];
+      const resultat = [];
+
+      if (Array.isArray(valgtMaal.aktiverteKutt) && valgtMaal.aktiverteKutt.length > 0) {
+        valgtMaal.aktiverteKutt.forEach(k => {
+          resultat.push({
+            id: k.id,
+            tittel: k.tittel || finnPostNavn(k.postId || '') || 'Kutt til SIFO-norm',
+            belop: Number(k.belop) || 0
+          });
+        });
+        return resultat;
+      }
+
+      if (valgtMaal.valgteTiltak && typeof valgtMaal.valgteTiltak === 'object') {
+        const forslag = genererKuttForslag(state);
+        Object.keys(valgtMaal.valgteTiltak).forEach(tiltakId => {
+          if (valgtMaal.valgteTiltak[tiltakId]) {
+            const funnet = forslag.find(f => f.id === tiltakId);
+            if (funnet) {
+              resultat.push({
+                id: funnet.id,
+                tittel: funnet.tittel,
+                belop: funnet.belop
+              });
+            }
+          }
+        });
+      }
+
+      return resultat;
+    }
+
+    // MÅLSPARING: RENT SKILLE MELLOM LESEMODUS OG NYTT MÅL
+    window.apneSparemålLesemodus = function(id) {
       state.aktivtMaalId = id;
-      visningsModusMaal = 'detalj';
+      visningsModusMaal = 'lesemodus';
       lagreState(state);
       oppdaterMobil();
     };
@@ -690,11 +737,12 @@
         tittel: tittel,
         malsum: belop,
         mnd: mnd,
-        valgteTiltak: {}
+        valgteTiltak: {},
+        aktiverteKutt: []
       });
 
       state.aktivtMaalId = nyId;
-      visningsModusMaal = 'detalj';
+      visningsModusMaal = 'simulering';
 
       document.getElementById('m-nytt-navn').value = '';
       document.getElementById('m-nytt-belop').value = '';
@@ -706,6 +754,18 @@
 
     window.slettGjeldendeMaal = function() {
       if (!confirm("Vil du slette dette sparemålet?")) return;
+      const maal = (state.sparemaalListe || []).find(m => m.id === state.aktivtMaalId);
+      
+      if (maal && maal.aktiverteKutt) {
+        maal.aktiverteKutt.forEach(k => {
+          if (k.postId && k.forrigeVerdi !== undefined) {
+            state.faktiskForbruk[k.postId] = k.forrigeVerdi;
+          } else if (k.felt && k.forrigeVerdi !== undefined) {
+            state[k.felt] = k.forrigeVerdi;
+          }
+        });
+      }
+
       state.sparemaalListe = (state.sparemaalListe || []).filter(m => m.id !== state.aktivtMaalId);
       state.aktivtMaalId = state.sparemaalListe[0] ? state.sparemaalListe[0].id : null;
       visningsModusMaal = 'oversikt';
@@ -723,7 +783,40 @@
     };
 
     window.aktiverValgteTiltak = function() {
-      alert("Tiltak er lagret og aktivert for dette sparemålet!");
+      const maal = (state.sparemaalListe || []).find(m => m.id === state.aktivtMaalId);
+      if (!maal) return;
+
+      const { normer } = window.MonetaMotor.beregnEksaktSifoNorm(state);
+      const forslag = genererKuttForslag(state);
+      if (!maal.aktiverteKutt) maal.aktiverteKutt = [];
+
+      forslag.forEach(f => {
+        if (maal.valgteTiltak && maal.valgteTiltak[f.id]) {
+          if (f.type === 'sifo' && f.postId) {
+            maal.aktiverteKutt.push({
+              id: f.id,
+              tittel: f.tittel,
+              belop: f.belop,
+              postId: f.postId,
+              forrigeVerdi: state.faktiskForbruk[f.postId]
+            });
+            state.faktiskForbruk[f.postId] = normer[f.postId];
+          } else if (f.type === 'livsstil' && f.felt) {
+            maal.aktiverteKutt.push({
+              id: f.id,
+              tittel: f.tittel,
+              belop: f.belop,
+              felt: f.felt,
+              forrigeVerdi: state[f.felt]
+            });
+            state[f.felt] = Math.round(Number(state[f.felt] || 0) * 0.5);
+          }
+        }
+      });
+
+      maal.valgteTiltak = {};
+      lagreState(state);
+      alert("Tiltakene er aktivert! Forbruket er oppdatert i SIFO- og budsjettfanen.");
       visningsModusMaal = 'oversikt';
       oppdaterMobil();
     };
@@ -826,21 +919,23 @@
       }
       document.getElementById('m-kutt-banner').innerText = `Mulig kutt: +${fmt(okonomi.muligKutt)} kr/mnd`;
 
-      // 4. MÅLSPARING RENDERING
+      // Målsparing Rendering Mobil
       const oversiktSeksjon = document.getElementById('m-maal-oversikt-seksjon');
       const detaljSeksjon = document.getElementById('m-maal-detalj-seksjon');
       const maalListe = state.sparemaalListe || [];
       const valgtMaal = maalListe.find(m => m.id === state.aktivtMaalId) || maalListe[0];
 
+      // Oppdater kapasitet øverst
+      const restBuffer = okonomi.buffer;
+      const mKapEl = document.getElementById('m-maal-kapasitet');
+      if (mKapEl) {
+        mKapEl.innerText = `Kapasitet: ${fmt(restBuffer)} kr/mnd`;
+        mKapEl.style.color = restBuffer >= 0 ? 'var(--salvie)' : 'var(--varsel-rod)';
+      }
+
       if (visningsModusMaal === 'oversikt' || !valgtMaal) {
-        // VISNING 1: RENT OVERSIKTSBILDE
         oversiktSeksjon.style.display = 'block';
         detaljSeksjon.style.display = 'none';
-
-        const restKapasitet = okonomi.buffer;
-        const kapEl = document.getElementById('m-maal-kapasitet');
-        kapEl.innerText = `Kapasitet: ${fmt(restKapasitet)} kr/mnd`;
-        kapEl.style.color = restKapasitet >= 0 ? 'var(--salvie)' : 'var(--varsel-rod)';
 
         const listeCont = document.getElementById('m-maal-liste');
         listeCont.innerHTML = '';
@@ -849,7 +944,7 @@
           const kravMnd = Math.round(m.malsum / Math.max(1, m.mnd));
           const kort = document.createElement('div');
           kort.className = 'maal-rad-kort';
-          kort.onclick = () => apneSparemålDetalj(m.id);
+          kort.onclick = () => apneSparemålLesemodus(m.id);
           kort.innerHTML = `
             <div class="maal-rad-venstre">
               <span class="maal-navn-stor">${m.tittel}</span>
@@ -864,7 +959,7 @@
         });
 
       } else {
-        // VISNING 2: DETALJBILDE FOR VALGT MÅL
+        // DETALJVISNING
         oversiktSeksjon.style.display = 'none';
         detaljSeksjon.style.display = 'block';
 
@@ -877,27 +972,39 @@
           if (valgteTiltak[f.id]) frigjort += f.belop;
         });
 
-        // Beregn netto tilgjengelig buffer for dette målet
         const allokertBuffer = Math.max(0, okonomi.buffer + kravMnd);
         const totalSpareevne = allokertBuffer + frigjort;
         const gap = kravMnd - totalSpareevne;
         const maalErInnenfor = gap <= 0;
 
-        // Toppkort
         document.getElementById('m-det-tittel-horisont').innerText = `${valgtMaal.tittel} (${valgtMaal.mnd} mnd)`;
         document.getElementById('m-det-sum-stor').innerText = `${fmt(valgtMaal.malsum)} kr`;
         document.getElementById('m-det-krav-spareevne').innerText = `Krav: ${fmt(kravMnd)} kr/mnd • Spareevne: ${fmt(totalSpareevne)} kr/mnd`;
 
+        const tagBadge = document.getElementById('m-det-modus-badge');
         const gapBadge = document.getElementById('m-det-gap-badge');
-        if (maalErInnenfor) {
-          gapBadge.className = 'avvik-kort-badge badge-under';
-          gapBadge.innerText = `Innenfor (+${fmt(Math.abs(gap))} kr)`;
+
+        if (visningsModusMaal === 'lesemodus') {
+          tagBadge.innerText = 'Aktivt mål';
+          tagBadge.style.background = '#F1F5F9';
+          tagBadge.style.color = 'var(--mork-skifer)';
+          // SKJUL BELØPET/BADGEN OPPE I HØYRE HJØRNE I LESEMODUS
+          gapBadge.style.display = 'none';
         } else {
-          gapBadge.className = 'avvik-kort-badge badge-over';
-          gapBadge.innerText = `Gap: −${fmt(gap)} kr`;
+          tagBadge.innerText = 'Simulering';
+          tagBadge.style.background = 'var(--lys-salvie)';
+          tagBadge.style.color = 'var(--salvie)';
+          // VIS KUN BADGEN I SIMULERINGSMODUS
+          gapBadge.style.display = 'inline-block';
+          if (maalErInnenfor) {
+            gapBadge.className = 'avvik-kort-badge badge-under';
+            gapBadge.innerText = `Innenfor (+${fmt(Math.abs(gap))} kr)`;
+          } else {
+            gapBadge.className = 'avvik-kort-badge badge-over';
+            gapBadge.innerText = `Gap: −${fmt(gap)} kr`;
+          }
         }
 
-        // Fremskriving
         const samletNadd = Math.min(valgtMaal.malsum, Math.round(totalSpareevne * valgtMaal.mnd));
         const pst = Math.min(100, Math.round((samletNadd / (valgtMaal.malsum || 1)) * 100));
         document.getElementById('m-det-prosent-visning').innerText = `${pst}% av målet nås (${fmt(samletNadd)} kr)`;
@@ -908,60 +1015,66 @@
         const kuttSeksjon = document.getElementById('m-kuttforslag-kort-seksjon');
         const aktiveTiltakBoks = document.getElementById('m-aktive-tiltak-visning');
 
-        // STRENG KONDISJONELL VISNING:
-        // Hvis målet er innenfor, skal det ALDRI komme kuttforslag for restaurant eller ferie!
-        if (maalErInnenfor) {
-          dekketBoks.style.display = 'block';
+        if (visningsModusMaal === 'lesemodus') {
+          // LESEMODUS
           kuttSeksjon.style.display = 'none';
+          dekketBoks.style.display = maalErInnenfor ? 'block' : 'none';
 
-          // Hvis målet allerede har aktiverte tiltak, vises de som en ren oversikt
-          const aktiveIder = Object.keys(valgteTiltak).filter(id => valgteTiltak[id]);
-          if (aktiveIder.length > 0) {
-            aktiveTiltakBoks.style.display = 'block';
-            const aktiveCont = document.getElementById('m-aktive-tiltak-liste');
-            aktiveCont.innerHTML = '';
-            aktiveIder.forEach(id => {
-              const funnet = forslag.find(f => f.id === id);
-              if (funnet) {
-                aktiveCont.innerHTML += `
-                  <div class="tiltak-rad-element">
-                    <span style="font-size: 11.5px; font-weight: 600;">✓ ${funnet.tittel}</span>
-                    <span class="tiltak-belop-gronn">+${fmt(funnet.belop)} kr</span>
-                  </div>
-                `;
-              }
-            });
+          const aktiveTiltak = hentAktiveTiltakForMaal(valgtMaal);
+          aktiveTiltakBoks.style.display = 'block';
+          const aktiveCont = document.getElementById('m-aktive-tiltak-liste');
+          aktiveCont.innerHTML = '';
+
+          if (aktiveTiltak.length === 0) {
+            aktiveCont.innerHTML = `<div style="font-size:11.5px; color:var(--tekst-dempet); padding:4px 0;">Ingen kutt-tiltak er aktivert for dette sparemålet. Målet dekkes av din ordinære månedsbuffer.</div>`;
+            document.getElementById('m-aktive-tiltak-totalsum').innerText = `0 kr/mnd`;
           } else {
-            aktiveTiltakBoks.style.display = 'none';
+            let sumAktivert = 0;
+            aktiveTiltak.forEach(k => {
+              sumAktivert += (k.belop || 0);
+              aktiveCont.innerHTML += `
+                <div class="tiltak-rad-element">
+                  <span style="font-size: 12px; font-weight: 600; color:var(--mork-skifer);">✓ ${k.tittel}</span>
+                  <span class="tiltak-belop-gronn">+${fmt(k.belop)} kr/mnd</span>
+                </div>
+              `;
+            });
+            document.getElementById('m-aktive-tiltak-totalsum').innerText = `+${fmt(sumAktivert)} kr/mnd`;
           }
 
         } else {
-          // Målet er IKKE innenfor: Vis kuttforslag for å lukke gapet
-          dekketBoks.style.display = 'none';
+          // SIMULERINGSMODUS
           aktiveTiltakBoks.style.display = 'none';
-          kuttSeksjon.style.display = 'block';
 
-          const kuttListeCont = document.getElementById('m-kuttforslag-liste');
-          kuttListeCont.innerHTML = '';
+          if (maalErInnenfor) {
+            dekketBoks.style.display = 'block';
+            kuttSeksjon.style.display = 'none';
+          } else {
+            dekketBoks.style.display = 'none';
+            kuttSeksjon.style.display = 'block';
 
-          forslag.forEach(f => {
-            const erAktiv = !!valgteTiltak[f.id];
-            const rad = document.createElement('div');
-            rad.className = 'tiltak-rad-element';
-            rad.innerHTML = `
-              <label class="tiltak-cb-label">
-                <input type="checkbox" class="tiltak-cb-input" ${erAktiv ? 'checked' : ''}>
-                <span>${f.tittel}</span>
-              </label>
-              <span class="tiltak-belop-gronn">+${fmt(f.belop)} kr</span>
-            `;
-            rad.querySelector('input').addEventListener('change', () => toggleKuttTiltak(f.id));
-            kuttListeCont.appendChild(rad);
-          });
+            const kuttListeCont = document.getElementById('m-kuttforslag-liste');
+            kuttListeCont.innerHTML = '';
+
+            forslag.forEach(f => {
+              const erAktiv = !!valgteTiltak[f.id];
+              const rad = document.createElement('div');
+              rad.className = 'tiltak-rad-element';
+              rad.innerHTML = `
+                <label class="tiltak-cb-label">
+                  <input type="checkbox" class="tiltak-cb-input" ${erAktiv ? 'checked' : ''}>
+                  <span>${f.tittel}</span>
+                </label>
+                <span class="tiltak-belop-gronn">+${fmt(f.belop)} kr</span>
+              `;
+              rad.querySelector('input').addEventListener('change', () => toggleKuttTiltak(f.id));
+              kuttListeCont.appendChild(rad);
+            });
+          }
         }
       }
 
-      // Profil inputs synkronisering
+      // Profil inputs
       document.getElementById('m-prof-navn').value = state.fulltNavn || '';
       document.getElementById('m-prof-inntekt').value = state.inntektNetto || 0;
       document.getElementById('m-prof-voksne').value = state.voksne || 1;
