@@ -1,6 +1,7 @@
 /**
  * FELLES MOTOR & FORRETNINGSLOGIKK (Moneta 2026)
  * Datakilde: Forbruksforskningsinstituttet SIFO, OsloMet (Referansebudsjettet 2026, CC BY 4.0)
+ * Inkluderer 3-lags budsjett, målsparing og livsfase-/stresstests-simulator.
  * Lokal lagring uten eksterne biblioteksavhengigheter.
  */
 
@@ -52,22 +53,20 @@
     voksne: 1,
     barn: 0,
     transportmiddel: "Bensinbil", // 'Bensinbil', 'Elbil' eller 'Kollektivtransport'
-    // Lag 1: Faste forpliktelser og bolig
     boliglanSaldo: 0,
     boliglanTermin: 0,
     felleskost: 0,
     strom: 0,
     forsikring: 0,
     helse: 0,
-    // Lag 3: Livsstil & Sparing
     restaurant: 0,
     ferie: 0,
     annenSparing: 0,
     faktiskForbruk: {},
     aktivtMaalId: "maal_1",
     sparemaalListe: [
-      { id: "maal_1", tittel: "Påske 2027", malsum: 35000, mnd: 6, valgteTiltak: {} },
-      { id: "maal_2", tittel: "Ferie", malsum: 20000, mnd: 6, valgteTiltak: {} }
+      { id: "maal_1", tittel: "Påske 2027", malsum: 35000, mnd: 6, valgteTiltak: {}, aktiverteKutt: [] },
+      { id: "maal_2", tittel: "Ferie", malsum: 20000, mnd: 6, valgteTiltak: {}, aktiverteKutt: [] }
     ]
   };
 
@@ -176,6 +175,7 @@
         if (diff > 50) {
           forslag.push({
             id: `kutt_${post.id}`,
+            postId: post.id,
             tittel: `Kutt ${post.navn} til SIFO-norm`,
             belop: Math.round(diff),
             type: 'sifo'
@@ -189,6 +189,7 @@
     if (rest > 0) {
       forslag.push({
         id: 'kutt_restaurant_50',
+        felt: 'restaurant',
         tittel: 'Reduser Restaurant & Kafé med 50%',
         belop: Math.round(rest * 0.5),
         type: 'livsstil'
@@ -200,6 +201,7 @@
     if (ferie > 0) {
       forslag.push({
         id: 'kutt_ferie_50',
+        felt: 'ferie',
         tittel: 'Reduser Ferieavsetning med 50%',
         belop: Math.round(ferie * 0.5),
         type: 'livsstil'
@@ -209,7 +211,7 @@
     return forslag;
   }
 
-  // 6. TOTALBEREGNING (MED SPAREMÅL INN I LAG 3)
+  // 6. TOTALBEREGNING AV NÅVÆRENDE BUDSJETT (BASELINE)
   function beregnTotalOkonomi(state) {
     const { normer, klynger, totalNorm } = beregnEksaktSifoNorm(state);
 
@@ -247,21 +249,14 @@
       sumForbrukFaktisk += kSum;
     }
 
-    // Lag 3: Sparemål integreres som fast sparing
+    // Lag 3: Sparemål akkumulert som sparing
     const maalListe = state.sparemaalListe || [];
     let sumMaalsparingMnd = 0;
-    let samletFrigjortFraKutt = 0;
-    const forslag = genererKuttForslag(state);
 
     maalListe.forEach(m => {
       const mnd = Math.max(1, Number(m.mnd) || 1);
       const krav = Math.round(Number(m.malsum || 0) / mnd);
       sumMaalsparingMnd += krav;
-
-      const valgte = m.valgteTiltak || {};
-      forslag.forEach(f => {
-        if (valgte[f.id]) samletFrigjortFraKutt += f.belop;
-      });
     });
 
     const restaurant = Number(state.restaurant) || 0;
@@ -271,7 +266,7 @@
 
     // Disponibel restbuffer
     const inntektNetto = Number(state.inntektNetto) || 0;
-    const buffer = inntektNetto - sumFaste - sumForbrukFaktisk - sumLivsstil + samletFrigjortFraKutt;
+    const buffer = inntektNetto - sumFaste - sumForbrukFaktisk - sumLivsstil;
 
     // Rente-tåleevne
     const saldo = Number(state.boliglanSaldo) || 0;
@@ -284,21 +279,12 @@
 
     // Aktivt valgt mål
     const aktivtMaal = maalListe.find(m => m.id === state.aktivtMaalId) || maalListe[0] || {
-      id: 'default', tittel: 'Sparemål', malsum: 30000, mnd: 6, valgteTiltak: {}
+      id: 'default', tittel: 'Sparemål', malsum: 30000, mnd: 6, valgteTiltak: {}, aktiverteKutt: []
     };
 
     const aktivtMalsum = Number(aktivtMaal.malsum) || 0;
     const aktivtMnd = Math.max(1, Number(aktivtMaal.mnd) || 1);
     const aktivtKrav = Math.round(aktivtMalsum / aktivtMnd);
-
-    // Fremskrivning for aktivt mål
-    const fremskrivning = { labels: [], dataUtenKutt: [], dataMedKutt: [] };
-    const renKapasitetUtenKutt = Math.max(0, buffer - samletFrigjortFraKutt + aktivtKrav);
-    for (let m = 0; m <= aktivtMnd; m++) {
-      fremskrivning.labels.push(m === 0 ? '0' : `Mnd ${m}`);
-      fremskrivning.dataUtenKutt.push(Math.min(aktivtMalsum, Math.round(renKapasitetUtenKutt * m)));
-      fremskrivning.dataMedKutt.push(Math.min(aktivtMalsum, Math.round((renKapasitetUtenKutt + samletFrigjortFraKutt) * m)));
-    }
 
     return {
       inntektNetto,
@@ -322,7 +308,6 @@
       ferie,
       annenSparing,
       sumMaalsparingMnd,
-      samletFrigjortFraKutt,
       buffer,
       renteTaleevne,
       aktivtMaal: {
@@ -331,8 +316,220 @@
         malsum: aktivtMalsum,
         mnd: aktivtMnd,
         paakrevd: aktivtKrav
+      }
+    };
+  }
+
+  // =========================================================================
+  // 7. SIMULERINGSMOTOR: LIVSFASE & MAKRO-STRESSTEST
+  // =========================================================================
+
+  /**
+   * Simulerer endringer i husstand og makroøkonomi uten å overskrive lagret tilstand.
+   * 
+   * @param {Object} state - Nåværende lagret tilstand.
+   * @param {Object} config - Simuleringsparametre.
+   *   Livsfase:
+   *     - scenarioType: 'uendret' | 'bli_samboer' | 'fa_barn' | 'flere_barn' | 'samlivsbrudd'
+   *     - partnerInntekt: Netto månedlig inntekt for ny partner (kr)
+   *     - partnerLanTermin: Eventuell økning i lån/termin ved samboerskap (kr)
+   *     - antallNyeBarn: Hvor mange ekstra barn (tall)
+   *     - samlivsbrudd: {
+   *         boligValg: 'beholde_alene' | 'kjope_mindre' | 'leie',
+   *         nyMndKostnad: Ny termin eller husleie (kr),
+   *         egenInntektNetto: Egen nettoinntekt alene (kr),
+   *         barnefordeling: 'delt_50_50' | '100_prosent'
+   *       }
+   *   Stresstest / Makro:
+   *     - renteOkningPst: Renteøkning i prosentpoeng (f.eks. 1.0, 2.0, 3.5)
+   *     - dyrtidPst: Generell prisøkning på SIFO og strøm (f.eks. 5, 10, 15 %)
+   *     - inntektsfallPst: Prosentvis fall i inntekt (f.eks. 10, 20 %, dagpenger)
+   */
+  function simulerScenario(state, config = {}) {
+    const baseline = beregnTotalOkonomi(state);
+
+    // Klon profil for simulering
+    const simProfil = {
+      voksne: Number(state.voksne) || 1,
+      barn: Number(state.barn) || 0,
+      inntektNetto: Number(state.inntektNetto) || 0,
+      transportmiddel: state.transportmiddel || 'Bensinbil',
+      boliglanSaldo: Number(state.boliglanSaldo) || 0,
+      boliglanTermin: Number(state.boliglanTermin) || 0,
+      felleskost: Number(state.felleskost) || 0,
+      strom: Number(state.strom) || 0,
+      forsikring: Number(state.forsikring) || 0,
+      helse: Number(state.helse) || 0,
+      restaurant: Number(state.restaurant) || 0,
+      ferie: Number(state.ferie) || 0,
+      annenSparing: Number(state.annenSparing) || 0,
+      sparemaalListe: state.sparemaalListe || []
+    };
+
+    // A. APPLISER LIVSFASE
+    const scenario = config.scenarioType || 'uendret';
+
+    if (scenario === 'bli_samboer') {
+      simProfil.voksne = Math.max(2, simProfil.voksne + 1);
+      const partnerInntekt = Number(config.partnerInntekt) || 35000;
+      simProfil.inntektNetto += partnerInntekt;
+
+      if (config.partnerLanTermin) {
+        simProfil.boliglanTermin += Number(config.partnerLanTermin);
+      }
+      if (config.antallNyeBarn) {
+        simProfil.barn += Number(config.antallNyeBarn);
+      }
+
+    } else if (scenario === 'fa_barn' || scenario === 'flere_barn') {
+      const ekstra = Math.max(1, Number(config.antallNyeBarn) || 1);
+      simProfil.barn += ekstra;
+
+    } else if (scenario === 'samlivsbrudd') {
+      simProfil.voksne = 1;
+
+      // Inntekt alene
+      if (config.samlivsbrudd?.egenInntektNetto) {
+        simProfil.inntektNetto = Number(config.samlivsbrudd.egenInntektNetto);
+      } else {
+        // Standard: Halvering av husstandsinntekt dersom uspesifisert
+        simProfil.inntektNetto = Math.round(simProfil.inntektNetto * 0.5);
+      }
+
+      // Barnefordeling
+      const fordeling = config.samlivsbrudd?.barnefordeling || 'delt_50_50';
+      if (fordeling === 'delt_50_50') {
+        // Ved 50/50 delt bosted halveres de variable SIFO-kostnadene for barn
+        simProfil.barn = Math.max(0, simProfil.barn * 0.5);
+      }
+
+      // Bolighåndtering
+      const boligValg = config.samlivsbrudd?.boligValg || 'beholde_alene';
+      if (boligValg === 'beholde_alene') {
+        // Må bære hele boliglånet alene
+        // simProfil.boliglanTermin forblir uendret, men bæres av 1 inntekt!
+      } else if (boligValg === 'kjope_mindre') {
+        const nyTermin = Number(config.samlivsbrudd?.nyMndKostnad) || Math.round(simProfil.boliglanTermin * 0.6);
+        simProfil.boliglanTermin = nyTermin;
+        simProfil.boliglanSaldo = Math.round(simProfil.boliglanSaldo * 0.6);
+        simProfil.felleskost = Math.round(simProfil.felleskost * 0.7);
+      } else if (boligValg === 'leie') {
+        const nyHusleie = Number(config.samlivsbrudd?.nyMndKostnad) || 14000;
+        simProfil.boliglanTermin = 0;
+        simProfil.boliglanSaldo = 0;
+        simProfil.felleskost = nyHusleie; // Leie inn i felleskost
+      }
+    }
+
+    // B. APPLISER MAKRO & STRESSTESTER
+    // 1. Renteøkning (beregner økt terminbeløp med 22% skattefradrag)
+    const renteOkningPst = Number(config.renteOkningPst) || 0;
+    if (renteOkningPst > 0 && simProfil.boliglanSaldo > 0) {
+      const aarligRenteMer = simProfil.boliglanSaldo * (renteOkningPst / 100);
+      const nettoMndMerrente = (aarligRenteMer * 0.78) / 12; // 22% rentefradrag
+      simProfil.boliglanTermin += Math.round(nettoMndMerrente);
+    }
+
+    // 2. Dyrtid / Prisstigning (påvirker SIFO og strøm)
+    const dyrtidPst = Number(config.dyrtidPst) || 0;
+    const dyrtidFaktor = 1 + (dyrtidPst / 100);
+
+    // 3. Inntektsfall
+    const inntektsfallPst = Number(config.inntektsfallPst) || 0;
+    if (inntektsfallPst > 0) {
+      simProfil.inntektNetto = Math.round(simProfil.inntektNetto * (1 - (inntektsfallPst / 100)));
+    }
+
+    // C. BEREGN SIFO FOR DET SIMULERTE SCENARIOET
+    const sifoBeregning = beregnEksaktSifoNorm(simProfil);
+    let simSumSifo = sifoBeregning.totalNorm * dyrtidFaktor;
+    const simStrom = Math.round(simProfil.strom * dyrtidFaktor);
+
+    // D. BEREGN FASTE KOSTNADER (LAG 1)
+    const simSumFaste = simProfil.boliglanTermin + simProfil.felleskost + simStrom + simProfil.forsikring + simProfil.helse;
+
+    // E. LIVSSTIL & SPARING (LAG 3)
+    let simSumMaalsparing = 0;
+    simProfil.sparemaalListe.forEach(m => {
+      const mnd = Math.max(1, Number(m.mnd) || 1);
+      simSumMaalsparing += Math.round(Number(m.malsum || 0) / mnd);
+    });
+    const simSumLivsstil = simProfil.restaurant + simProfil.ferie + simProfil.annenSparing + simSumMaalsparing;
+
+    // F. TOTAL DISPONIBEL BUFFER I SIMULERINGEN
+    const simBuffer = Math.round(simProfil.inntektNetto - simSumFaste - simSumSifo - simSumLivsstil);
+
+    // G. DELTA (SAMMENLIGNING MOT NÅSITUASJON)
+    const deltaBuffer = simBuffer - baseline.buffer;
+    const deltaInntekt = simProfil.inntektNetto - baseline.inntektNetto;
+    const deltaFaste = simSumFaste - baseline.sumFaste;
+    const deltaSifo = Math.round(simSumSifo - baseline.sumSifoNorm);
+
+    // Statusvurdering
+    let status = 'robust';
+    let statusTekst = 'Økonomien er robust og tåler endringen godt.';
+    if (simBuffer < 0) {
+      status = 'kritisk';
+      statusTekst = `Underskudd: Månedlig gap på −${fmt(Math.abs(simBuffer))} kr/mnd.`;
+    } else if (simBuffer < 4000) {
+      status = 'saarbar';
+      statusTekst = 'Stram økonomi: Liten buffer mot uforutsette hendelser.';
+    }
+
+    // H. IDENTIFISER NØDVENDIGE TILTAK HVIS UNDERSKUDD
+    const nodvendigeKutt = [];
+    if (simBuffer < 0) {
+      const underskudd = Math.abs(simBuffer);
+      let dekketHittil = 0;
+
+      if (simProfil.restaurant > 0) {
+        const kuttRest = Math.min(underskudd - dekketHittil, simProfil.restaurant);
+        nodvendigeKutt.push({ tittel: 'Kutt i Restaurant & Kafé', belop: kuttRest });
+        dekketHittil += kuttRest;
+      }
+      if (dekketHittil < underskudd && simProfil.ferie > 0) {
+        const kuttFerie = Math.min(underskudd - dekketHittil, simProfil.ferie);
+        nodvendigeKutt.push({ tittel: 'Kutt i Ferieavsetning', belop: kuttFerie });
+        dekketHittil += kuttFerie;
+      }
+      if (dekketHittil < underskudd && simSumMaalsparing > 0) {
+        const pauseMaal = Math.min(underskudd - dekketHittil, simSumMaalsparing);
+        nodvendigeKutt.push({ tittel: 'Pause eller forlenge tidshorisont på sparemål', belop: pauseMaal });
+        dekketHittil += pauseMaal;
+      }
+    }
+
+    return {
+      baseline: {
+        buffer: baseline.buffer,
+        inntekt: baseline.inntektNetto,
+        faste: baseline.sumFaste,
+        sifo: baseline.sumSifoNorm,
+        livsstil: baseline.sumLivsstil,
+        renteTaleevne: baseline.renteTaleevne
       },
-      fremskrivning
+      simulert: {
+        voksne: simProfil.voksne,
+        barn: simProfil.barn,
+        buffer: simBuffer,
+        inntekt: simProfil.inntektNetto,
+        faste: simSumFaste,
+        sifo: Math.round(simSumSifo),
+        livsstil: simSumLivsstil,
+        boliglanTermin: simProfil.boliglanTermin,
+        boliglanSaldo: simProfil.boliglanSaldo
+      },
+      delta: {
+        buffer: deltaBuffer,
+        inntekt: deltaInntekt,
+        faste: deltaFaste,
+        sifo: deltaSifo
+      },
+      vurdering: {
+        status,
+        statusTekst,
+        nodvendigeKutt
+      }
     };
   }
 
@@ -340,6 +537,7 @@
     return Math.round(tall || 0).toLocaleString('no-NO');
   }
 
+  // EKSPORT AV SENTRALE FUNKSJONER
   window.MonetaMotor = {
     SIFO_KLYNGER,
     hentState,
@@ -349,6 +547,7 @@
     initFaktiskLikNorm,
     genererKuttForslag,
     beregnTotalOkonomi,
+    simulerScenario,
     fmt
   };
 })();

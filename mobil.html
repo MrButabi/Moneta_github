@@ -34,10 +34,10 @@
     .mobil-topp-header h1 { font-size: 13.5px; font-weight: 700; color: #FFFFFF; margin: 0; }
     .topp-profil-lenke { color: #FFFFFF; text-decoration: none; font-size: 11.5px; font-weight: 700; cursor: pointer; }
 
-    main.mobil-hovedinnhold { padding: 52px 10px 70px 10px; width: 100%; max-width: 440px; margin: 0 auto; flex: 1; }
+    main.mobil-hovedinnhold { padding: 52px 10px 75px 10px; width: 100%; max-width: 440px; margin: 0 auto; flex: 1; }
 
     .mobil-bunnmeny {
-      display: flex; position: fixed; bottom: 0; left: 0; right: 0; height: 54px;
+      display: flex; position: fixed; bottom: 0; left: 0; right: 0; height: 56px;
       background-color: #FFFFFF; border-top: 1px solid var(--ramme); justify-content: space-around; align-items: center; z-index: 9999;
     }
     .mobil-bunnmeny a {
@@ -119,7 +119,7 @@
       font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 4px;
     }
 
-    /* Detaljvisning */
+    /* Detaljvisning mål */
     .maal-status-hode-kort {
       background: #FFFFFF; border: 1px solid var(--ramme); border-radius: 12px; padding: 14px 16px; margin-bottom: 12px;
       display: flex; justify-content: space-between; align-items: flex-start;
@@ -161,6 +161,41 @@
     .lenke-ga-tilbake {
       display: inline-block; color: var(--salvie); font-size: 12px; font-weight: 700; text-decoration: none; cursor: pointer; margin-top: 12px;
     }
+
+    /* SIMULERINGSFANE SPESIFIKKE STILER */
+    .sim-seksjon-kort {
+      background: #FFFFFF; border: 1px solid var(--ramme); border-radius: 12px; padding: 14px 16px; margin-bottom: 12px;
+    }
+    .sim-seksjon-tittel {
+      font-size: 13.5px; font-weight: 800; color: var(--koks); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .sim-knappe-rekke {
+      display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap;
+    }
+    .sim-valg-btn {
+      flex: 1; min-width: 90px; padding: 8px 10px; background: #F8FAFC; border: 1px solid var(--ramme); border-radius: 8px;
+      font-size: 11px; font-weight: 600; color: var(--koks); cursor: pointer; text-align: center; transition: all 0.15s ease;
+    }
+    .sim-valg-btn.valgt {
+      background: var(--mork-skifer); color: #FFFFFF; border-color: var(--mork-skifer); font-weight: 700;
+    }
+    .sim-pille-knapper {
+      display: flex; gap: 6px; margin-bottom: 8px;
+    }
+    .sim-pille-btn {
+      flex: 1; padding: 7px; background: #F1F5F9; border: 1px solid var(--ramme); border-radius: 6px;
+      font-size: 10.5px; font-weight: 600; text-align: center; cursor: pointer; color: var(--koks);
+    }
+    .sim-pille-btn.valgt {
+      background: var(--salvie); color: #FFFFFF; border-color: var(--salvie); font-weight: 700;
+    }
+
+    .sim-resultat-boks {
+      background: #FFFFFF; border: 2px solid var(--ramme); border-radius: 12px; padding: 16px; margin-bottom: 12px;
+    }
+    .sim-resultat-boks.robust { border-color: var(--salvie); background: #F0FDF4; }
+    .sim-resultat-boks.saarbar { border-color: #FBBF24; background: #FFFBEB; }
+    .sim-resultat-boks.kritisk { border-color: #F87171; background: var(--varsel-rosa); }
 
     .profil-kort { background: #FFFFFF; border: 1px solid var(--ramme); border-radius: 8px; padding: 10px 12px; }
     .seksjon-ramme { border-bottom: 1px solid var(--ramme); padding-bottom: 8px; margin-bottom: 8px; }
@@ -412,8 +447,6 @@
 
       <!-- VISNING 2: DETALJVISNING FOR VALGT MÅL -->
       <div id="m-maal-detalj-seksjon" style="display: none;">
-        
-        <!-- Hodekort -->
         <div class="maal-status-hode-kort">
           <div>
             <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
@@ -429,7 +462,6 @@
           <span id="m-det-gap-badge" class="avvik-kort-badge badge-under" style="display: none;">Innenfor</span>
         </div>
 
-        <!-- Fremskriving mot mål -->
         <div class="fremskriving-boks">
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <span style="font-size: 12px; font-weight: 700; color: var(--koks);">Fremskriving mot mål</span>
@@ -449,7 +481,6 @@
           </div>
         </div>
 
-        <!-- Melding når målet er innenfor -->
         <div id="m-maal-dekket-melding" style="display: none; background: var(--lys-salvie); border: 1px solid var(--salvie-kant); border-radius: 12px; padding: 16px; margin-bottom: 14px; text-align: center;">
           <div style="font-size: 14px; font-weight: 800; color: var(--salvie); margin-bottom: 4px;">🎉 Sparemålet er fullt dekket!</div>
           <p style="font-size: 11.5px; color: var(--salvie); line-height: 1.4;">
@@ -457,7 +488,6 @@
           </p>
         </div>
 
-        <!-- DEDIKERT BOKS FOR AKTIVERTE TILTAK (LESEMODUS) -->
         <div id="m-aktive-tiltak-visning" style="display: none;" class="tiltak-klynge-boks">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px; border-bottom: 1px solid #F1F5F9; padding-bottom: 6px;">
             <span style="font-size: 13px; font-weight: 800; color: var(--koks);">Aktiverte tiltak for denne sparingen:</span>
@@ -466,32 +496,149 @@
           <div id="m-aktive-tiltak-liste"></div>
         </div>
 
-        <!-- Kuttforslag-kort (vises kun i simuleringsmodus dersom det er et gap) -->
         <div class="tiltak-klynge-boks" id="m-kuttforslag-kort-seksjon" style="display: none;">
           <div style="font-size: 13.5px; font-weight: 800; color: var(--koks); margin-bottom: 12px;">
             SIFO-forslag for å lukke gapet
           </div>
-
           <div id="m-kuttforslag-liste"></div>
-
           <button type="button" class="btn-aktiver-tiltak" onclick="aktiverValgteTiltak()">
             Aktiver valgte tiltak
           </button>
         </div>
 
-        <!-- Handlinger i bunn -->
         <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 8px;">
           <a class="lenke-ga-tilbake" onclick="lukkDetaljvisning()">← Tilbake til sparemål</a>
           <button type="button" onclick="slettGjeldendeMaal()" style="background: transparent; color: var(--varsel-rod); border: none; font-size: 11.5px; font-weight: 700; cursor: pointer;">
             🗑️ Slett mål
           </button>
         </div>
+      </div>
+    </div>
 
+    <!-- 5. SIMULERING (LIVSFASE & MAKRO) -->
+    <div id="m-fane-simulering" class="m-fane" style="display: none;">
+      
+      <!-- RESULTAT / STATUSKORT -->
+      <div id="sim-resultat-kort" class="sim-resultat-boks robust">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;" id="sim-status-merke">Robust situasjon</span>
+          <span style="font-size: 11.5px; font-weight: 800;" id="sim-delta-merke">±0 kr</span>
+        </div>
+        <div style="font-size: 26px; font-weight: 800; color: var(--koks); margin-bottom: 4px;" id="sim-buffer-tall">+0 kr/mnd</div>
+        <div style="font-size: 11.5px; line-height: 1.4; color: var(--tekst-dempet);" id="sim-status-forklaring">
+          Simulert månedlig buffer etter livsfase- og makrojusteringer.
+        </div>
+
+        <!-- Eventuelle nødvendige kutt ved underskudd -->
+        <div id="sim-kutt-boks" style="display: none; margin-top: 10px; padding-top: 8px; border-top: 1px dashed #FECDD3;">
+          <div style="font-size: 11px; font-weight: 800; color: var(--varsel-rod); margin-bottom: 4px;">Nødvendige kutt for å unngå underskudd:</div>
+          <div id="sim-kutt-liste" style="font-size: 11px;"></div>
+        </div>
+      </div>
+
+      <!-- KORT 1: LIVSFASETRE -->
+      <div class="sim-seksjon-kort">
+        <div class="sim-seksjon-tittel">
+          <span>🌱 Livsfase & Husholdning</span>
+          <span style="font-size: 10.5px; color: var(--tekst-dempet); font-weight: 500;" id="sim-dagens-profil-tekst">Dagens: 1 voksen</span>
+        </div>
+
+        <label class="felt-label">Hva ønsker du å simulere?</label>
+        <div class="sim-knappe-rekke" id="sim-livsfase-valg-container"></div>
+
+        <!-- Undervalg for Samboerskap -->
+        <div id="sim-sub-samboer" style="display: none; margin-top: 10px; border-top: 1px solid #F1F5F9; padding-top: 10px;">
+          <label class="felt-label">Partners netto månedsinntekt (kr):</label>
+          <input type="number" id="sim-partner-inntekt" class="felt-input" value="35000" oninput="kjorSimulering()">
+          
+          <label class="felt-label">Venter dere også barn sammen?</label>
+          <div class="sim-pille-knapper">
+            <button class="sim-pille-btn valgt" onclick="settSimBarn(0, this)">Ingen barn</button>
+            <button class="sim-pille-btn" onclick="settSimBarn(1, this)">+1 barn</button>
+            <button class="sim-pille-btn" onclick="settSimBarn(2, this)">+2 barn</button>
+          </div>
+        </div>
+
+        <!-- Undervalg for Få barn / Familieforøkelse -->
+        <div id="sim-sub-barn" style="display: none; margin-top: 10px; border-top: 1px solid #F1F5F9; padding-top: 10px;">
+          <label class="felt-label">Hvor mange barn venter du/dere?</label>
+          <div class="sim-pille-knapper">
+            <button class="sim-pille-btn valgt" onclick="settSimBarn(1, this)">+1 barn</button>
+            <button class="sim-pille-btn" onclick="settSimBarn(2, this)">+2 barn</button>
+            <button class="sim-pille-btn" onclick="settSimBarn(3, this)">+3 barn</button>
+          </div>
+        </div>
+
+        <!-- Undervalg for Samlivsbrudd -->
+        <div id="sim-sub-brudd" style="display: none; margin-top: 10px; border-top: 1px solid #F1F5F9; padding-top: 10px;">
+          <label class="felt-label">Boligsituasjon etter brudd:</label>
+          <select id="sim-brudd-bolig" class="felt-input" onchange="kjorSimulering()">
+            <option value="beholde_alene">Beholde bolig (bære boliglånet alene)</option>
+            <option value="kjope_mindre">Selge og kjøpe mindre (60% av dagens lån)</option>
+            <option value="leie">Selge og leie leilighet</option>
+          </select>
+
+          <label class="felt-label">Barnefordeling:</label>
+          <div class="sim-pille-knapper">
+            <button class="sim-pille-btn valgt" onclick="settSimBruddBarn('delt_50_50', this)">50/50 delt bosted</button>
+            <button class="sim-pille-btn" onclick="settSimBruddBarn('100_prosent', this)">100% hovedforsørger</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- KORT 2: MAKRO- & STRESSTEST -->
+      <div class="sim-seksjon-kort">
+        <div class="sim-seksjon-tittel">⚡ Makro- & Stresstest</div>
+        
+        <div style="margin-bottom: 12px;">
+          <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px;">
+            <span>Renteøkning på boliglån:</span>
+            <strong id="sim-rente-vis">0.0%</strong>
+          </div>
+          <div class="sim-pille-knapper">
+            <button class="sim-pille-btn valgt" onclick="settSimRente(0, this)">0%</button>
+            <button class="sim-pille-btn" onclick="settSimRente(1.5, this)">+1.5%</button>
+            <button class="sim-pille-btn" onclick="settSimRente(3.0, this)">+3.0%</button>
+            <button class="sim-pille-btn" onclick="settSimRente(4.5, this)">+4.5%</button>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px;">
+            <span>Dyrtid & Prisstigning (SIFO + strøm):</span>
+            <strong id="sim-dyrtid-vis">0%</strong>
+          </div>
+          <div class="sim-pille-knapper">
+            <button class="sim-pille-btn valgt" onclick="settSimDyrtid(0, this)">0%</button>
+            <button class="sim-pille-btn" onclick="settSimDyrtid(5, this)">+5%</button>
+            <button class="sim-pille-btn" onclick="settSimDyrtid(10, this)">+10%</button>
+            <button class="sim-pille-btn" onclick="settSimDyrtid(15, this)">+15%</button>
+          </div>
+        </div>
+
+        <div>
+          <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px;">
+            <span>Inntektsfall / Permittering:</span>
+            <strong id="sim-inntektsfall-vis">0%</strong>
+          </div>
+          <div class="sim-pille-knapper">
+            <button class="sim-pille-btn valgt" onclick="settSimInntektFall(0, this)">0%</button>
+            <button class="sim-pille-btn" onclick="settSimInntektFall(10, this)">-10%</button>
+            <button class="sim-pille-btn" onclick="settSimInntektFall(20, this)">-20%</button>
+            <button class="sim-pille-btn" onclick="settSimInntektFall(35, this)">Dagpenger (-35%)</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 14px;">
+        <button type="button" onclick="nullstillSimulering()" style="background: transparent; color: var(--tekst-dempet); border: none; font-size: 11.5px; font-weight: 700; cursor: pointer;">
+          ↺ Nullstill simulering
+        </button>
       </div>
 
     </div>
 
-    <!-- 5. MOBIL PROFIL (STRUKTURERT ETTER DE 3 LAGENE) -->
+    <!-- 6. PROFIL -->
     <div id="m-fane-profil" class="m-fane" style="display: none;">
       <div class="profil-kort">
         <div class="seksjon-ramme">
@@ -590,19 +737,37 @@
     </div>
   </main>
 
+  <!-- 4-PUNKTERS BUNNMENY UTEN SIFO -->
   <nav class="mobil-bunnmeny">
     <a class="bunn-a aktiv" onclick="visMobilFane('dashboard', this)"><span>📊</span><span>Oversikt</span></a>
     <a class="bunn-a" onclick="visMobilFane('budsjett', this)"><span>📑</span><span>Budsjett</span></a>
-    <a class="bunn-a" onclick="visMobilFane('sifo', this)"><span>⚖️</span><span>SIFO</span></a>
     <a class="bunn-a" onclick="visMobilFane('maalsparing', this)"><span>🎯</span><span>Mål</span></a>
+    <a class="bunn-a" onclick="visMobilFane('simulering', this)"><span>🔮</span><span>Simulering</span></a>
   </nav>
 
   <script src="js/felles_motor.js"></script>
 
   <script>
-    const { SIFO_KLYNGER, hentState, lagreState, beregnTotalOkonomi, initFaktiskLikNorm, genererKuttForslag, fmt } = window.MonetaMotor;
+    const { SIFO_KLYNGER, hentState, lagreState, beregnTotalOkonomi, initFaktiskLikNorm, genererKuttForslag, simulerScenario, fmt } = window.MonetaMotor;
     let state = hentState();
-    let visningsModusMaal = 'oversikt'; // 'oversikt', 'lesemodus' eller 'simulering'
+    let visningsModusMaal = 'oversikt';
+
+    // Simulerings-tilstand
+    let simConfig = {
+      scenarioType: 'uendret',
+      partnerInntekt: 35000,
+      partnerLanTermin: 0,
+      antallNyeBarn: 0,
+      samlivsbrudd: {
+        boligValg: 'beholde_alene',
+        nyMndKostnad: 0,
+        egenInntektNetto: 0,
+        barnefordeling: 'delt_50_50'
+      },
+      renteOkningPst: 0,
+      dyrtidPst: 0,
+      inntektsfallPst: 0
+    };
 
     window.visMobilFane = function(id, el) {
       document.querySelectorAll('.m-fane').forEach(f => f.style.display = 'none');
@@ -623,9 +788,15 @@
         visningsModusMaal = 'oversikt';
       }
 
-      const titler = { dashboard: 'Moneta', budsjett: 'Totalbudsjett', sifo: 'SIFO-kalkulator', maalsparing: 'Målsparing', profil: 'Profil' };
+      const titler = { dashboard: 'Moneta', budsjett: 'Totalbudsjett', sifo: 'SIFO-kalkulator', maalsparing: 'Målsparing', simulering: 'Simulering', profil: 'Profil' };
       document.getElementById('mobil-tittel').innerText = titler[id] || 'Moneta';
-      oppdaterMobil();
+      
+      if (id === 'simulering') {
+        initSimuleringTre();
+        kjorSimulering();
+      } else {
+        oppdaterMobil();
+      }
     };
 
     window.toggleKlynge = function(id) {
@@ -671,7 +842,6 @@
       return postId;
     }
 
-    // HJELPEFUNKSJON FOR Å HENTE AKTIVERTE TILTAK PÅ MOBIL
     function hentAktiveTiltakForMaal(valgtMaal) {
       if (!valgtMaal) return [];
       const resultat = [];
@@ -706,7 +876,7 @@
       return resultat;
     }
 
-    // MÅLSPARING: RENT SKILLE MELLOM LESEMODUS OG NYTT MÅL
+    // MÅLSPARING: METODER
     window.apneSparemålLesemodus = function(id) {
       state.aktivtMaalId = id;
       visningsModusMaal = 'lesemodus';
@@ -821,6 +991,178 @@
       oppdaterMobil();
     };
 
+    // =========================================================================
+    // SIMULERING LOGIKK & BRUKERGRENSESNITT
+    // =========================================================================
+
+    function initSimuleringTre() {
+      const antallVoksne = Number(state.voksne) || 1;
+      const antallBarn = Number(state.barn) || 0;
+      const profTekst = `${antallVoksne} ${antallVoksne === 1 ? 'voksen' : 'voksne'}${antallBarn > 0 ? `, ${antallBarn} barn` : ''}`;
+      document.getElementById('sim-dagens-profil-tekst').innerText = `Dagens: ${profTekst}`;
+
+      const valgCont = document.getElementById('sim-livsfase-valg-container');
+      valgCont.innerHTML = '';
+
+      if (antallVoksne === 1) {
+        valgCont.innerHTML = `
+          <button class="sim-valg-btn ${simConfig.scenarioType === 'uendret' ? 'valgt' : ''}" onclick="settSimScenario('uendret', this)">Uendret</button>
+          <button class="sim-valg-btn ${simConfig.scenarioType === 'bli_samboer' ? 'valgt' : ''}" onclick="settSimScenario('bli_samboer', this)">Bli samboer</button>
+          <button class="sim-valg-btn ${simConfig.scenarioType === 'fa_barn' ? 'valgt' : ''}" onclick="settSimScenario('fa_barn', this)">Få barn (alene)</button>
+        `;
+      } else {
+        valgCont.innerHTML = `
+          <button class="sim-valg-btn ${simConfig.scenarioType === 'uendret' ? 'valgt' : ''}" onclick="settSimScenario('uendret', this)">Uendret</button>
+          <button class="sim-valg-btn ${simConfig.scenarioType === 'flere_barn' ? 'valgt' : ''}" onclick="settSimScenario('flere_barn', this)">Flere barn</button>
+          <button class="sim-valg-btn ${simConfig.scenarioType === 'samlivsbrudd' ? 'valgt' : ''}" onclick="settSimScenario('samlivsbrudd', this)">Samlivsbrudd</button>
+        `;
+      }
+
+      oppdaterSubSeksjoner();
+    }
+
+    window.settSimScenario = function(scen, btn) {
+      simConfig.scenarioType = scen;
+      document.querySelectorAll('#sim-livsfase-valg-container .sim-valg-btn').forEach(b => b.classList.remove('valgt'));
+      if (btn) btn.classList.add('valgt');
+
+      oppdaterSubSeksjoner();
+      kjorSimulering();
+    };
+
+    function oppdaterSubSeksjoner() {
+      document.getElementById('sim-sub-samboer').style.display = (simConfig.scenarioType === 'bli_samboer') ? 'block' : 'none';
+      document.getElementById('sim-sub-barn').style.display = (simConfig.scenarioType === 'fa_barn' || simConfig.scenarioType === 'flere_barn') ? 'block' : 'none';
+      document.getElementById('sim-sub-brudd').style.display = (simConfig.scenarioType === 'samlivsbrudd') ? 'block' : 'none';
+    }
+
+    window.settSimBarn = function(antall, btn) {
+      simConfig.antallNyeBarn = antall;
+      const parent = btn.parentElement;
+      parent.querySelectorAll('.sim-pille-btn').forEach(b => b.classList.remove('valgt'));
+      btn.classList.add('valgt');
+      kjorSimulering();
+    };
+
+    window.settSimBruddBarn = function(type, btn) {
+      simConfig.samlivsbrudd.barnefordeling = type;
+      const parent = btn.parentElement;
+      parent.querySelectorAll('.sim-pille-btn').forEach(b => b.classList.remove('valgt'));
+      btn.classList.add('valgt');
+      kjorSimulering();
+    };
+
+    window.settSimRente = function(val, btn) {
+      simConfig.renteOkningPst = val;
+      document.getElementById('sim-rente-vis').innerText = `+${val.toFixed(1)}%`;
+      btn.parentElement.querySelectorAll('.sim-pille-btn').forEach(b => b.classList.remove('valgt'));
+      btn.classList.add('valgt');
+      kjorSimulering();
+    };
+
+    window.settSimDyrtid = function(val, btn) {
+      simConfig.dyrtidPst = val;
+      document.getElementById('sim-dyrtid-vis').innerText = `+${val}%`;
+      btn.parentElement.querySelectorAll('.sim-pille-btn').forEach(b => b.classList.remove('valgt'));
+      btn.classList.add('valgt');
+      kjorSimulering();
+    };
+
+    window.settSimInntektFall = function(val, btn) {
+      simConfig.inntektsfallPst = val;
+      document.getElementById('sim-inntektsfall-vis').innerText = `-${val}%`;
+      btn.parentElement.querySelectorAll('.sim-pille-btn').forEach(b => b.classList.remove('valgt'));
+      btn.classList.add('valgt');
+      kjorSimulering();
+    };
+
+    window.nullstillSimulering = function() {
+      simConfig = {
+        scenarioType: 'uendret',
+        partnerInntekt: 35000,
+        partnerLanTermin: 0,
+        antallNyeBarn: 0,
+        samlivsbrudd: {
+          boligValg: 'beholde_alene',
+          nyMndKostnad: 0,
+          egenInntektNetto: 0,
+          barnefordeling: 'delt_50_50'
+        },
+        renteOkningPst: 0,
+        dyrtidPst: 0,
+        inntektsfallPst: 0
+      };
+
+      document.querySelectorAll('#m-fane-simulering .sim-pille-btn').forEach(b => {
+        if (b.innerText.includes('0%') || b.innerText.includes('Ingen') || b.innerText.includes('50/50')) {
+          b.classList.add('valgt');
+        } else {
+          b.classList.remove('valgt');
+        }
+      });
+      document.getElementById('sim-partner-inntekt').value = 35000;
+      document.getElementById('sim-rente-vis').innerText = '0.0%';
+      document.getElementById('sim-dyrtid-vis').innerText = '0%';
+      document.getElementById('sim-inntektsfall-vis').innerText = '0%';
+
+      initSimuleringTre();
+      kjorSimulering();
+    };
+
+    window.kjorSimulering = function() {
+      if (simConfig.scenarioType === 'bli_samboer') {
+        simConfig.partnerInntekt = Number(document.getElementById('sim-partner-inntekt').value) || 35000;
+      }
+      if (simConfig.scenarioType === 'samlivsbrudd') {
+        simConfig.samlivsbrudd.boligValg = document.getElementById('sim-brudd-bolig').value;
+      }
+
+      const res = simulerScenario(state, simConfig);
+      
+      const kort = document.getElementById('sim-resultat-kort');
+      kort.className = `sim-resultat-boks ${res.vurdering.status}`;
+
+      const bufferEl = document.getElementById('sim-buffer-tall');
+      bufferEl.innerText = `${res.simulert.buffer >= 0 ? '+' : ''}${fmt(res.simulert.buffer)} kr/mnd`;
+      bufferEl.style.color = res.simulert.buffer >= 0 ? 'var(--koks)' : 'var(--varsel-rod)';
+
+      const deltaEl = document.getElementById('sim-delta-merke');
+      const d = res.delta.buffer;
+      deltaEl.innerText = `${d >= 0 ? '+' : ''}${fmt(d)} kr vs nå`;
+      deltaEl.style.color = d >= 0 ? 'var(--salvie)' : 'var(--varsel-rod)';
+
+      const statusMerke = document.getElementById('sim-status-merke');
+      if (res.vurdering.status === 'robust') {
+        statusMerke.innerText = 'Robust situasjon';
+        statusMerke.style.color = 'var(--salvie)';
+      } else if (res.vurdering.status === 'saarbar') {
+        statusMerke.innerText = 'Stram økonomi';
+        statusMerke.style.color = '#D97706';
+      } else {
+        statusMerke.innerText = 'Underskudd';
+        statusMerke.style.color = 'var(--varsel-rod)';
+      }
+
+      document.getElementById('sim-status-forklaring').innerText = res.vurdering.statusTekst;
+
+      const kuttBoks = document.getElementById('sim-kutt-boks');
+      const kuttListe = document.getElementById('sim-kutt-liste');
+      if (res.vurdering.nodvendigeKutt && res.vurdering.nodvendigeKutt.length > 0) {
+        kuttBoks.style.display = 'block';
+        kuttListe.innerHTML = '';
+        res.vurdering.nodvendigeKutt.forEach(k => {
+          kuttListe.innerHTML += `
+            <div style="display:flex; justify-content:space-between; padding:3px 0; color:var(--varsel-rod);">
+              <span>• ${k.tittel}</span>
+              <strong>−${fmt(k.belop)} kr</strong>
+            </div>
+          `;
+        });
+      } else {
+        kuttBoks.style.display = 'none';
+      }
+    };
+
     function oppdaterMobil() {
       const okonomi = beregnTotalOkonomi(state);
 
@@ -925,7 +1267,6 @@
       const maalListe = state.sparemaalListe || [];
       const valgtMaal = maalListe.find(m => m.id === state.aktivtMaalId) || maalListe[0];
 
-      // Oppdater kapasitet øverst
       const restBuffer = okonomi.buffer;
       const mKapEl = document.getElementById('m-maal-kapasitet');
       if (mKapEl) {
@@ -959,7 +1300,6 @@
         });
 
       } else {
-        // DETALJVISNING
         oversiktSeksjon.style.display = 'none';
         detaljSeksjon.style.display = 'block';
 
@@ -988,13 +1328,11 @@
           tagBadge.innerText = 'Aktivt mål';
           tagBadge.style.background = '#F1F5F9';
           tagBadge.style.color = 'var(--mork-skifer)';
-          // SKJUL BELØPET/BADGEN OPPE I HØYRE HJØRNE I LESEMODUS
           gapBadge.style.display = 'none';
         } else {
           tagBadge.innerText = 'Simulering';
           tagBadge.style.background = 'var(--lys-salvie)';
           tagBadge.style.color = 'var(--salvie)';
-          // VIS KUN BADGEN I SIMULERINGSMODUS
           gapBadge.style.display = 'inline-block';
           if (maalErInnenfor) {
             gapBadge.className = 'avvik-kort-badge badge-under';
@@ -1016,7 +1354,6 @@
         const aktiveTiltakBoks = document.getElementById('m-aktive-tiltak-visning');
 
         if (visningsModusMaal === 'lesemodus') {
-          // LESEMODUS
           kuttSeksjon.style.display = 'none';
           dekketBoks.style.display = maalErInnenfor ? 'block' : 'none';
 
@@ -1026,7 +1363,7 @@
           aktiveCont.innerHTML = '';
 
           if (aktiveTiltak.length === 0) {
-            aktiveCont.innerHTML = `<div style="font-size:11.5px; color:var(--tekst-dempet); padding:4px 0;">Ingen kutt-tiltak er aktivert for dette sparemålet. Målet dekkes av din ordinære månedsbuffer.</div>`;
+            aktiveCont.innerHTML = `<div style="font-size:11.5px; color:var(--tekst-dempet); padding:4px 0;">Ingen kutt-tiltak er aktivert for dette sparemålet. Det dekkes med ordinær månedsbuffer.</div>`;
             document.getElementById('m-aktive-tiltak-totalsum').innerText = `0 kr/mnd`;
           } else {
             let sumAktivert = 0;
@@ -1043,7 +1380,6 @@
           }
 
         } else {
-          // SIMULERINGSMODUS
           aktiveTiltakBoks.style.display = 'none';
 
           if (maalErInnenfor) {
