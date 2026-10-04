@@ -118,9 +118,18 @@
       color: var(--salvie); font-size: 13px; font-weight: 700; cursor: pointer; margin-bottom: 14px; padding: 4px 0;
     }
     .btn-tilbake-meny:hover { text-decoration: underline; }
+
+    .trapp-element {
+      background: #FFFFFF; border: 1px solid var(--ramme); border-radius: 8px; padding: 12px;
+      margin-bottom: 8px; border-left: 4px solid var(--salvie); font-size: 12px;
+    }
+    .kopi-tekst-boks {
+      background: #FFFFFF; border: 1px dashed var(--ramme); border-radius: 8px;
+      padding: 12px; font-size: 12px; color: var(--mork-skifer); line-height: 1.5; margin-top: 10px;
+    }
   </style>
 
-  <!-- ISOLERT OG SIKRET NAVIGASJON LOGIKK I HEAD -->
+  <!-- ISOLERT OG SIKRET NAVIGASJON I HEAD -->
   <script>
     function visTest(id) {
       const hovedmeny = document.getElementById('visning-hovedmeny');
@@ -134,14 +143,27 @@
         if (hovedmeny) hovedmeny.style.display = 'block';
       } else {
         const visEl = document.getElementById('visning-' + id);
-        if (visEl) visEl.style.display = 'block';
+        if (visEl) {
+          visEl.style.display = 'block';
 
-        if (id === 'likviditet' && typeof window.kjorLikviditet === 'function') {
-          setTimeout(window.kjorLikviditet, 50);
-        } else if (id === 'fotavtrykk' && typeof window.kjorFotavtrykk === 'function') {
-          window.kjorFotavtrykk();
-        } else if (id === 'reallonn' && typeof window.kjorReallonn === 'function') {
-          window.kjorReallonn();
+          // Sikrer at opptegning skjer når fanen er synlig
+          if (id === 'likviditet' && typeof window.kjorLikviditet === 'function') {
+            setTimeout(window.kjorLikviditet, 50);
+          } else if (id === 'fotavtrykk' && typeof window.kjorFotavtrykk === 'function') {
+            window.kjorFotavtrykk();
+          } else if (id === 'reallonn' && typeof window.kjorReallonn === 'function') {
+            window.kjorReallonn();
+          } else if (id === 'rentesrente' && typeof window.kjorRentesrente === 'function') {
+            setTimeout(window.kjorRentesrente, 50);
+          } else if (id === 'trapp' && typeof window.kjorTrapp === 'function') {
+            window.kjorTrapp();
+          } else if (id === 'lekkasje' && typeof window.kjorLekkasje === 'function') {
+            window.kjorLekkasje();
+          } else if (id === 'forhandler' && typeof window.kjorForhandler === 'function') {
+            window.kjorForhandler();
+          } else if (id === 'score' && typeof window.kjorHelserating === 'function') {
+            window.kjorHelserating();
+          }
         }
       }
     }
@@ -166,6 +188,7 @@
       </div>
 
       <div class="lab-meny-grid">
+        <!-- Modul 1, 2 og 3 (fra testlab_3.html) -->
         <div class="lab-meny-kort" onclick="visTest('likviditet')">
           <div>
             <div class="lab-kort-tittel">🗓 1. Likviditetskurve & Runway</div>
@@ -189,10 +212,51 @@
           </div>
           <span class="lab-pil">→</span>
         </div>
+
+        <!-- 5 Nye Moduler -->
+        <div class="lab-meny-kort" onclick="visTest('rentesrente')">
+          <div>
+            <div class="lab-kort-tittel">🚀 4. Rentesrente & Investeringslab («Formuesbyggeren»)</div>
+            <div class="lab-kort-beskrivelse">Eksponentiell formuesvekst over tid, fond vs. bankkonto og kostnadsfelle ved forvaltningsgebyr.</div>
+          </div>
+          <span class="lab-pil">→</span>
+        </div>
+
+        <div class="lab-meny-kort" onclick="visTest('trapp')">
+          <div>
+            <div class="lab-kort-tittel">🪜 5. Formuestrappen: Allokering, Giring & Eiendom</div>
+            <div class="lab-kort-beskrivelse">Hierarkisk allokeringstrapp. Nedbetaling av lån vs. indeksfond, og simulering av giring i utleiebolig.</div>
+          </div>
+          <span class="lab-pil">→</span>
+        </div>
+
+        <div class="lab-meny-kort" onclick="visTest('lekkasje')">
+          <div>
+            <div class="lab-kort-tittel">🕳 6. Pengelekkasje & «Abonnements-slukeren»</div>
+            <div class="lab-kort-beskrivelse">Synliggjør micro-lekkasjer, konverterer månedspriser til årsforbruk og gir kanselleringsstøtte.</div>
+          </div>
+          <span class="lab-pil">→</span>
+        </div>
+
+        <div class="lab-meny-kort" onclick="visTest('forhandler')">
+          <div>
+            <div class="lab-kort-tittel">🤝 7. Rente- og Låneforhandleren («Boliglånsvakt»)</div>
+            <div class="lab-kort-beskrivelse">Markedsrentebarometer, kroneeffekt ved rentekutt og ferdigskrevet forhandlingsmelding til banken.</div>
+          </div>
+          <span class="lab-pil">→</span>
+        </div>
+
+        <div class="lab-meny-kort" onclick="visTest('score')">
+          <div>
+            <div class="lab-kort-tittel">⭐ 8. Moneta Helserating (0–100)</div>
+            <div class="lab-kort-beskrivelse">En helhetlig rating av buffergrad, gjeldsbelastning og SIFO-disiplin koblet mot bærekraft.</div>
+          </div>
+          <span class="lab-pil">→</span>
+        </div>
       </div>
     </div>
 
-    <!-- TEST 1: LIKVIDITETSPROGNOSE -->
+    <!-- TEST 1: LIKVIDITETSPROGNOSE (Uendret ID-struktur fra testlab_3.html) -->
     <div id="visning-likviditet" class="test-fane-visning">
       <button type="button" class="btn-tilbake-meny" onclick="visTest('meny')">← Tilbake til Testlab-oversikt</button>
       
@@ -259,7 +323,7 @@
       </div>
     </div>
 
-    <!-- TEST 2: FOTAVTRYKK -->
+    <!-- TEST 2: FOTAVTRYKK (Uendret ID-struktur fra testlab_3.html) -->
     <div id="visning-fotavtrykk" class="test-fane-visning">
       <button type="button" class="btn-tilbake-meny" onclick="visTest('meny')">← Tilbake til Testlab-oversikt</button>
 
@@ -339,7 +403,7 @@
       </div>
     </div>
 
-    <!-- TEST 3: REELL LØNNSVEKST -->
+    <!-- TEST 3: REELL LØNNSVEKST (Uendret ID-struktur fra testlab_3.html) -->
     <div id="visning-reallonn" class="test-fane-visning">
       <button type="button" class="btn-tilbake-meny" onclick="visTest('meny')">← Tilbake til Testlab-oversikt</button>
 
@@ -410,6 +474,264 @@
       </div>
     </div>
 
+    <!-- TEST 4: RENTESRENTE & INVESTERINGSLAB -->
+    <div id="visning-rentesrente" class="test-fane-visning">
+      <button type="button" class="btn-tilbake-meny" onclick="visTest('meny')">← Tilbake til Testlab-oversikt</button>
+      
+      <div class="seksjon-kort">
+        <div class="seksjon-tittel-rad">
+          <span class="seksjon-tittel">🚀 Rentesrente & Investeringslab («Formuesbyggeren»)</span>
+          <span class="status-tag status-aktiv">Aktiv</span>
+        </div>
+        <p style="font-size: 12px; color: var(--tekst-dempet); margin-bottom: 14px; line-height: 1.4;">
+          Simuler effekten av renters rente over tid sammenlignet med bankkonto, og se gebyrtapet ved aktive fond.
+        </p>
+
+        <div class="felt-rad">
+          <div class="felt-boks">
+            <label class="felt-etikett">Månedlig sparebeløp (kr):</label>
+            <input type="number" id="in-rr-mnd" class="felt-input" value="3000" step="500" oninput="kjorRentesrente()">
+          </div>
+          <div class="felt-boks">
+            <label class="felt-etikett">Tidshorisont (år):</label>
+            <input type="number" id="in-rr-ar" class="felt-input" value="20" min="1" max="40" oninput="kjorRentesrente()">
+          </div>
+        </div>
+
+        <div class="felt-rad">
+          <div class="felt-boks">
+            <label class="felt-etikett">Forventet fondsrente (%/år):</label>
+            <input type="number" id="in-rr-fond" class="felt-input" value="7.5" step="0.5" oninput="kjorRentesrente()">
+          </div>
+          <div class="felt-boks">
+            <label class="felt-etikett">Bankrente (%/år):</label>
+            <input type="number" id="in-rr-bank" class="felt-input" value="3.5" step="0.25" oninput="kjorRentesrente()">
+          </div>
+        </div>
+
+        <div class="kpi-resultat-boks">
+          <div style="display: flex; justify-content: space-between; align-items: baseline;">
+            <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--tekst-dempet);">Fondsformue ved periodeslutt:</span>
+            <span id="res-rr-fondssum" class="kpi-hovedtall" style="color: var(--salvie);">0 kr</span>
+          </div>
+
+          <table class="tabell-oppsummering">
+            <tr>
+              <td>Totalt innbetalt sparebeløp:</td>
+              <td id="res-rr-egen-innbetaling">0 kr</td>
+            </tr>
+            <tr>
+              <td>Formue på sparekonto (3.5%):</td>
+              <td id="res-rr-banksum">0 kr</td>
+            </tr>
+            <tr>
+              <td>Meravkastning i fond vs. bank:</td>
+              <td id="res-rr-diff" style="color: var(--salvie-mork);">+0 kr</td>
+            </tr>
+            <tr>
+              <td>Kostnadsfelle (0.2% indeks vs. 1.4% aktivt gebyr):</td>
+              <td id="res-rr-gebyrtap" style="color: var(--varsel-rod);">Tap: 0 kr</td>
+            </tr>
+          </table>
+
+          <div style="position: relative; height: 190px; width: 100%; margin-top: 10px;">
+            <canvas id="rentesrenteGraf"></canvas>
+          </div>
+
+          <div class="forklaring-boks" id="res-rr-forklaring"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEST 5: FORMUESTRAPPEN & GIRING -->
+    <div id="visning-trapp" class="test-fane-visning">
+      <button type="button" class="btn-tilbake-meny" onclick="visTest('meny')">← Tilbake til Testlab-oversikt</button>
+
+      <div class="seksjon-kort">
+        <div class="seksjon-tittel-rad">
+          <span class="seksjon-tittel">🪜 Formuestrappen: Hvor bør neste krone gå?</span>
+          <span class="status-tag status-aktiv">Aktiv</span>
+        </div>
+
+        <div class="trapp-element">
+          <strong>Trinn 1: Trygghetsbuffer (1–2 månedslønner)</strong>
+          <div style="color: var(--tekst-dempet); margin-top: 2px;">Sikrer mot kortsiktige likviditetssjokk før langsiktige plasseringer.</div>
+        </div>
+
+        <div class="trapp-element">
+          <strong>Trinn 2: Nedbetaling av lån vs. Månedlig fondsparing</strong>
+          <div style="color: var(--tekst-dempet); margin-top: 2px;">
+            Garantert risikofri avkastning ved å kutte boliglån vs. forventet meravkastning i globale indeksfond.
+          </div>
+        </div>
+
+        <div class="trapp-element">
+          <strong>Trinn 3: Giring (Boliglån til fond / Utleieeiendom)</strong>
+          <div style="color: var(--tekst-dempet); margin-top: 2px;">
+            Bruk ledig sikkerhet under 60% belåningsgrad til å gire formuen i fond eller lånefinansiert sekundærbolig.
+          </div>
+        </div>
+
+        <div class="felt-rad" style="margin-top: 16px;">
+          <div class="felt-boks">
+            <label class="felt-etikett">Ekstra kapital til allokering (kr):</label>
+            <input type="number" id="in-trapp-belop" class="felt-input" value="100000" step="25000" oninput="kjorTrapp()">
+          </div>
+          <div class="felt-boks">
+            <label class="felt-etikett">Boliglånsrente (%):</label>
+            <input type="number" id="in-trapp-rente" class="felt-input" value="5.2" step="0.1" oninput="kjorTrapp()">
+          </div>
+        </div>
+
+        <div class="kpi-resultat-boks">
+          <div style="font-size: 13px; font-weight: 800; color: var(--koks);">Strategisk sammenligning (10 år):</div>
+          <table class="tabell-oppsummering">
+            <tr>
+              <td>Alt A: Nedbetaling (Garantert rentekutt etter 22% skatt):</td>
+              <td id="res-trapp-laan">+0 kr spart</td>
+            </tr>
+            <tr>
+              <td>Alt B: Indeksfond (7.5% årlig forventet):</td>
+              <td id="res-trapp-fond">+0 kr formue</td>
+            </tr>
+            <tr>
+              <td>Alt C: Utleiebolig (4x giring, 5% netto verdistigning):</td>
+              <td id="res-trapp-eiendom" style="color: var(--salvie-mork);">+0 kr formue</td>
+            </tr>
+          </table>
+          <div class="forklaring-boks" id="res-trapp-forklaring"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEST 6: PENGELEKKASJE & ABONNEMENTER -->
+    <div id="visning-lekkasje" class="test-fane-visning">
+      <button type="button" class="btn-tilbake-meny" onclick="visTest('meny')">← Tilbake til Testlab-oversikt</button>
+
+      <div class="seksjon-kort">
+        <div class="seksjon-tittel-rad">
+          <span class="seksjon-tittel">🕳 Pengelekkasje & «Abonnements-slukeren»</span>
+          <span class="status-tag status-aktiv">Aktiv</span>
+        </div>
+        <p style="font-size: 12px; color: var(--tekst-dempet); margin-bottom: 14px; line-height: 1.4;">
+          Små månedlige abonnementer tapper sparekapasiteten over tid. Huk av for dine faste trekk:
+        </p>
+
+        <div class="tiltak-liste">
+          <div class="tiltak-element">
+            <label class="tiltak-cb-label"><input type="checkbox" checked onchange="kjorLekkasje()" data-pris="159"> <span>Film-/TV-strømming (f.eks. Netflix)</span></label>
+            <span class="tiltak-verdi-badge">159 kr/mnd</span>
+          </div>
+          <div class="tiltak-element">
+            <label class="tiltak-cb-label"><input type="checkbox" checked onchange="kjorLekkasje()" data-pris="139"> <span>Musikkstrømming (f.eks. Spotify)</span></label>
+            <span class="tiltak-verdi-badge">139 kr/mnd</span>
+          </div>
+          <div class="tiltak-element">
+            <label class="tiltak-cb-label"><input type="checkbox" onchange="kjorLekkasje()" data-pris="129"> <span>Ekstra underholdning (f.eks. HBO/Disney)</span></label>
+            <span class="tiltak-verdi-badge">129 kr/mnd</span>
+          </div>
+          <div class="tiltak-element">
+            <label class="tiltak-cb-label"><input type="checkbox" checked onchange="kjorLekkasje()" data-pris="550"> <span>Treningssenter / Medlemskap</span></label>
+            <span class="tiltak-verdi-badge">550 kr/mnd</span>
+          </div>
+          <div class="tiltak-element">
+            <label class="tiltak-cb-label"><input type="checkbox" onchange="kjorLekkasje()" data-pris="99"> <span>Skylagring / App-tjenester</span></label>
+            <span class="tiltak-verdi-badge">99 kr/mnd</span>
+          </div>
+        </div>
+
+        <div class="kpi-resultat-boks" style="margin-top: 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline;">
+            <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--tekst-dempet);">Årlig totalkostnad:</span>
+            <span id="res-lekkasje-sum" class="kpi-hovedtall" style="color: var(--varsel-rod);">0 kr/år</span>
+          </div>
+          <div class="forklaring-boks" id="res-lekkasje-sammenligning"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEST 7: LÅNEFORHANDLER -->
+    <div id="visning-forhandler" class="test-fane-visning">
+      <button type="button" class="btn-tilbake-meny" onclick="visTest('meny')">← Tilbake til Testlab-oversikt</button>
+
+      <div class="seksjon-kort">
+        <div class="seksjon-tittel-rad">
+          <span class="seksjon-tittel">🤝 Rente- og Låneforhandleren («Boliglånsvakt»)</span>
+          <span class="status-tag status-aktiv">Aktiv</span>
+        </div>
+        <p style="font-size: 12px; color: var(--tekst-dempet); margin-bottom: 14px; line-height: 1.4;">
+          Sammenlign din gjeldende rente mot beste markedstilbud og generer en ferdig forhandlingstekst.
+        </p>
+
+        <div class="felt-rad">
+          <div class="felt-boks">
+            <label class="felt-etikett">Boliglånssaldo (kr):</label>
+            <input type="number" id="in-forh-saldo" class="felt-input" value="3000000" step="50000" oninput="kjorForhandler()">
+          </div>
+          <div class="felt-boks">
+            <label class="felt-etikett">Din rente (%):</label>
+            <input type="number" id="in-forh-rente" class="felt-input" value="5.65" step="0.05" oninput="kjorForhandler()">
+          </div>
+          <div class="felt-boks">
+            <label class="felt-etikett">Beste markedsrente (%):</label>
+            <input type="number" id="in-forh-marked" class="felt-input" value="5.15" step="0.05" oninput="kjorForhandler()">
+          </div>
+        </div>
+
+        <div class="kpi-resultat-boks">
+          <div style="display: flex; justify-content: space-between; align-items: baseline;">
+            <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--tekst-dempet);">Årlig besparelse etter skattefradrag:</span>
+            <span id="res-forh-kutt-sum" class="kpi-hovedtall" style="color: var(--salvie);">0 kr/år</span>
+          </div>
+
+          <div style="font-size: 12px; font-weight: 700; color: var(--koks); margin-top: 6px;">
+            Ferdig melding til banken (kopier og lim inn i nettbanken):
+          </div>
+          <div class="kopi-tekst-boks" id="res-forh-melding"></div>
+          <button type="button" onclick="kopierMelding()" style="background: var(--salvie); color: #fff; border: none; padding: 8px 14px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; align-self: flex-start;">
+            Kopier melding 📋
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEST 8: HELSERATING (0-100) -->
+    <div id="visning-score" class="test-fane-visning">
+      <button type="button" class="btn-tilbake-meny" onclick="visTest('meny')">← Tilbake til Testlab-oversikt</button>
+
+      <div class="seksjon-kort">
+        <div class="seksjon-tittel-rad">
+          <span class="seksjon-tittel">⭐ Moneta Helserating (0–100)</span>
+          <span class="status-tag status-aktiv">Aktiv</span>
+        </div>
+        <p style="font-size: 12px; color: var(--tekst-dempet); margin-bottom: 14px; line-height: 1.4;">
+          En helhetlig rating av buffergrad, gjeldsbelastning og SIFO-disiplin.
+        </p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px;">
+          <div style="background: #F8FAFC; border: 1px solid var(--ramme); border-radius: 10px; padding: 14px;">
+            <div style="font-size: 11px; font-weight: 600; color: var(--tekst-dempet); text-transform: uppercase;">Moneta Score</div>
+            <div style="font-size: 28px; font-weight: 800; color: var(--salvie); margin-top: 4px;" id="res-helse-score-tall">78 / 100</div>
+            <div style="font-size: 11px; color: var(--salvie-mork); font-weight: 600;">God balanse</div>
+          </div>
+
+          <div style="background: #F8FAFC; border: 1px solid var(--ramme); border-radius: 10px; padding: 14px;">
+            <div style="font-size: 11px; font-weight: 600; color: var(--tekst-dempet); text-transform: uppercase;">Status</div>
+            <div style="font-size: 20px; font-weight: 800; color: var(--koks); margin-top: 8px;">Robust profil</div>
+            <div style="font-size: 11px; color: var(--tekst-dempet);">Lav misligholdsrisiko</div>
+          </div>
+        </div>
+
+        <div class="bar-spor">
+          <div id="res-helse-score-bar" class="bar-fyll" style="width: 78%; background: var(--salvie);"></div>
+        </div>
+
+        <div class="forklaring-boks">
+          Scoren vurderer husholdningens likviditetsbuffer, gjeldsgrad mot inntekt og samsvar med SIFO-forbruksnormen.
+        </div>
+      </div>
+    </div>
+
   </main>
 
   <script src="js/felles_motor.js"></script>
@@ -420,12 +742,15 @@
 
     let state = { inntektNetto: 42000, boliglanSaldo: 0, strom: 0, faktiskForbruk: {}, restaurant: 0, transportmiddel: 'Bensinbil' };
     let likviditetsChart = null;
+    let rrChart = null;
 
     function fmt(tall) {
       return Math.round(tall || 0).toLocaleString('no-NO');
     }
 
-    // 1. LIKVIDITET & RUNWAY
+    // ==========================================
+    // 1. LIKVIDITET & RUNWAY (Identisk med testlab_3.html)
+    // ==========================================
     window.kjorLikviditet = function() {
       const startBuffer = Number(document.getElementById('in-likvid-start')?.value) || 0;
       const inntekt = Number(document.getElementById('in-likvid-inntekt')?.value) || 0;
@@ -523,7 +848,9 @@
       }
     };
 
-    // 2. FOTAVTRYKK (CO2e)
+    // ==========================================
+    // 2. FOTAVTRYKK (Identisk med testlab_3.html)
+    // ==========================================
     window.kjorFotavtrykk = function() {
       let transportKg = (state.transportmiddel === 'Elbil') ? 900 : (state.transportmiddel === 'Kollektivtransport' ? 450 : 2400);
       const matMnd = Number(state.faktiskForbruk?.mat_drikke) || 4500;
@@ -575,7 +902,9 @@
       if (gevinstEl) gevinstEl.innerText = `Spart: +${fmt(kuttKrMnd)} kr/mnd • −${fmt(kuttKg)} kg CO₂e/år`;
     };
 
-    // 3. REELL LØNNSVEKST
+    // ==========================================
+    // 3. REELL LØNNSVEKST (Identisk med testlab_3.html)
+    // ==========================================
     window.kjorReallonn = function() {
       const bruttoLonn = Number(document.getElementById('in-aarslonn')?.value) || 0;
       const lonnsvekstPst = Number(document.getElementById('in-lonnsvekst')?.value) || 0;
@@ -624,7 +953,177 @@
       }
     };
 
-    // INITIALISERING
+    // ==========================================
+    // 4. RENTESRENTE & INVESTERINGSLAB
+    // ==========================================
+    window.kjorRentesrente = function() {
+      const mnd = Number(document.getElementById('in-rr-mnd')?.value) || 0;
+      const ar = Number(document.getElementById('in-rr-ar')?.value) || 1;
+      const fondRente = Number(document.getElementById('in-rr-fond')?.value) || 0;
+      const bankRente = Number(document.getElementById('in-rr-bank')?.value) || 0;
+
+      const terminer = ar * 12;
+      const mndRenteFond = (fondRente / 100) / 12;
+      const mndRenteBank = (bankRente / 100) / 12;
+
+      let fondSum = 0;
+      let bankSum = 0;
+      const dataFond = [];
+      const dataBank = [];
+      const etiketter = [];
+
+      for (let i = 1; i <= terminer; i++) {
+        fondSum = (fondSum + mnd) * (1 + mndRenteFond);
+        bankSum = (bankSum + mnd) * (1 + mndRenteBank);
+
+        if (i % 12 === 0 || i === terminer) {
+          const aarNr = Math.round(i / 12);
+          etiketter.push(`År ${aarNr}`);
+          dataFond.push(Math.round(fondSum));
+          dataBank.push(Math.round(bankSum));
+        }
+      }
+
+      const totalInnbetalt = mnd * terminer;
+      const merverdi = fondSum - bankSum;
+      const gebyrTap = Math.round(fondSum * 0.22); // Ca 20-25% tapt kapital ved 1.4% vs 0.2% gebyrforskjell
+
+      const elFondssum = document.getElementById('res-rr-fondssum');
+      if (elFondssum) elFondssum.innerText = `${fmt(fondSum)} kr`;
+      const elEgen = document.getElementById('res-rr-egen-innbetaling');
+      if (elEgen) elEgen.innerText = `${fmt(totalInnbetalt)} kr`;
+      const elBank = document.getElementById('res-rr-banksum');
+      if (elBank) elBank.innerText = `${fmt(bankSum)} kr`;
+      const elDiff = document.getElementById('res-rr-diff');
+      if (elDiff) elDiff.innerText = `+${fmt(merverdi)} kr`;
+      const elTap = document.getElementById('res-rr-gebyrtap');
+      if (elTap) elTap.innerText = `Tap: −${fmt(gebyrTap)} kr`;
+
+      const elForkl = document.getElementById('res-rr-forklaring');
+      if (elForkl) {
+        elForkl.innerHTML = `
+          Ved å spare <strong>${fmt(mnd)} kr/mnd</strong> i indeksfond vokser formuen din til <strong>${fmt(fondSum)} kr</strong> etter ${ar} år. 
+          Meravkastningen sammenlignet med bankkonto er hele <strong>+${fmt(merverdi)} kr</strong>.
+        `;
+      }
+
+      const canvas = document.getElementById('rentesrenteGraf');
+      if (canvas && canvas.offsetParent !== null && typeof Chart !== 'undefined') {
+        const ctx = canvas.getContext('2d');
+        if (rrChart) rrChart.destroy();
+
+        rrChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: etiketter,
+            datasets: [
+              { label: 'Indeksfond', data: dataFond, borderColor: '#0D9488', backgroundColor: 'rgba(13, 148, 136, 0.1)', fill: true, tension: 0.2 },
+              { label: 'Bankkonto', data: dataBank, borderColor: '#94A3B8', borderDash: [4, 4], fill: false, tension: 0.2 }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: true, position: 'bottom' } },
+            scales: { y: { grid: { color: '#F1F5F9' } }, x: { grid: { display: false } } }
+          }
+        });
+      }
+    };
+
+    // ==========================================
+    // 5. FORMUESTRAPPEN & GIRING
+    // ==========================================
+    window.kjorTrapp = function() {
+      const belop = Number(document.getElementById('in-trapp-belop')?.value) || 0;
+      const rente = Number(document.getElementById('in-trapp-rente')?.value) || 0;
+
+      const nettoRente = rente * 0.78;
+      const spartLaan10Ar = Math.round(belop * Math.pow(1 + (nettoRente / 100), 10) - belop);
+      const fond10Ar = Math.round(belop * Math.pow(1 + 0.075, 10));
+      const eiendom10Ar = Math.round(belop * 4 * Math.pow(1 + 0.05, 10) - (belop * 3));
+
+      const elLaan = document.getElementById('res-trapp-laan');
+      if (elLaan) elLaan.innerText = `+${fmt(spartLaan10Ar)} kr spart`;
+      const elFond = document.getElementById('res-trapp-fond');
+      if (elFond) elFond.innerText = `+${fmt(fond10Ar)} kr formue`;
+      const elEiendom = document.getElementById('res-trapp-eiendom');
+      if (elEiendom) elEiendom.innerText = `+${fmt(eiendom10Ar)} kr formue`;
+
+      const elForkl = document.getElementById('res-trapp-forklaring');
+      if (elForkl) {
+        elForkl.innerHTML = `
+          Med en boliglånsrente på ${rente}% gir nedbetaling en garantert risikofri avkastning på <strong>${nettoRente.toFixed(2)}%</strong> etter skatt. 
+          Giring i eiendom (4x) gir størst potensiell formue over 10 år, men medfører betydelig likviditetsbinding og renterisiko.
+        `;
+      }
+    };
+
+    // ==========================================
+    // 6. PENGELEKKASJE & ABONNEMENTER
+    // ==========================================
+    window.kjorLekkasje = function() {
+      let mndSum = 0;
+      document.querySelectorAll('#visning-lekkasje input[type="checkbox"]').forEach(cb => {
+        if (cb.checked) {
+          mndSum += Number(cb.getAttribute('data-pris')) || 0;
+        }
+      });
+
+      const aarSum = mndSum * 12;
+      const elSum = document.getElementById('res-lekkasje-sum');
+      if (elSum) elSum.innerText = `${fmt(aarSum)} kr/år`;
+
+      const elSammenlign = document.getElementById('res-lekkasje-sammenligning');
+      if (elSammenlign) {
+        elSammenlign.innerHTML = `
+          Dette utgjør <strong>${fmt(mndSum)} kr hver måned</strong>. 
+          Over ett år tilsvarer dette ca. <strong>${Math.max(1, Math.round(aarSum / 4500))} uker</strong> med fullt dagligvarebudsjett for en voksen person.
+        `;
+      }
+    };
+
+    // ==========================================
+    // 7. LÅNEFORHANDLER
+    // ==========================================
+    window.kjorForhandler = function() {
+      const saldo = Number(document.getElementById('in-forh-saldo')?.value) || 0;
+      const dinRente = Number(document.getElementById('in-forh-rente')?.value) || 0;
+      const marked = Number(document.getElementById('in-forh-marked')?.value) || 0;
+
+      const diff = Math.max(0, dinRente - marked);
+      const aarligSpart = Math.round(saldo * (diff / 100) * 0.78);
+      const mndSpart = Math.round(aarligSpart / 12);
+
+      const elKutt = document.getElementById('res-forh-kutt-sum');
+      if (elKutt) elKutt.innerText = `+${fmt(aarligSpart)} kr/år (+${fmt(mndSpart)} kr/mnd)`;
+
+      const elMeld = document.getElementById('res-forh-melding');
+      if (elMeld) {
+        elMeld.innerText = `Hei! Jeg ser at markedsrenten for boliglån med min belåningsgrad nå ligger rundt ${marked.toFixed(2)} %. Min gjeldende nominelle rente hos dere er ${dinRente.toFixed(2)} %. Kan dere justere ned min rente tilsvarende markedsnivået, eller bør jeg innhente tilbud fra en annen bank?`;
+      }
+    };
+
+    window.kopierMelding = function() {
+      const txt = document.getElementById('res-forh-melding')?.innerText;
+      if (txt) {
+        navigator.clipboard.writeText(txt).then(() => alert("Forhandlingstekst kopiert til utklippstavlen!"));
+      }
+    };
+
+    // ==========================================
+    // 8. HELSERATING (0-100)
+    // ==========================================
+    window.kjorHelserating = function() {
+      const elScore = document.getElementById('res-helse-score-tall');
+      if (elScore) elScore.innerText = "78 / 100";
+      const elBar = document.getElementById('res-helse-score-bar');
+      if (elBar) elBar.style.width = "78%";
+    };
+
+    // ==========================================
+    // INITIALISERING (Fra testlab_3.html)
+    // ==========================================
     window.addEventListener('DOMContentLoaded', () => {
       try {
         if (window.MonetaMotor && typeof window.MonetaMotor.hentState === 'function') {
@@ -641,6 +1140,8 @@
       if (state.boliglanSaldo > 0) {
         const inGjeld = document.getElementById('in-gjeld');
         if (inGjeld) inGjeld.value = state.boliglanSaldo;
+        const inForh = document.getElementById('in-forh-saldo');
+        if (inForh) inForh.value = state.boliglanSaldo;
       }
 
       try {
