@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Moneta – Testlab</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root {
+      --bg-skifer: #F8FAFC;
+      --kort-hvit: #FFFFFF;
+      --ramme: #E2E8F0;
+      --mork-skifer: #1E293B;
+      --koks: #0F172A;
+      --tekst-dempet: #64748B;
+      --salvie: #0D9488;
+      --salvie-mork: #0F766E;
+      --lys-salvie: #CCFBF1;
+      --salvie-kant: #A7F3D0;
+      --varsel-rod: #BE123C;
+      --varsel-rosa: #FFE4E6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background-color: var(--bg-skifer); color: var(--koks); min-height: 100vh; display: flex; flex-direction: column; }
+
+    header.testlab-header {
+      position: sticky; top: 0; background: var(--mork-skifer); color: #FFFFFF;
+      padding: 12px 16px; display: flex; align-items: center; justify-content: space-between;
+      z-index: 100; box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }
+    header.testlab-header h1 { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; margin: 0; }
+    .tilbake-knapp { color: #CBD5E1; text-decoration: none; font-size: 12.5px; font-weight: 600; cursor: pointer; }
+    .tilbake-knapp:hover { color: #FFFFFF; }
+
+    main.innhold { width: 100%; max-width: 760px; margin: 0 auto; padding: 20px 14px 40px 14px; flex: 1; }
+
+    .lab-banner {
+      background: var(--kort-hvit); border: 1px solid var(--ramme); border-radius: 12px;
+      padding: 16px 18px; margin-bottom: 20px; border-left: 4px solid var(--salvie);
+    }
+    .lab-banner h2 { font-size: 15px; font-weight: 800; color: var(--koks); margin-bottom: 4px; }
+    .lab-banner p { font-size: 12px; color: var(--tekst-dempet); line-height: 1.5; }
+
+    /* KNAPPER FOR HOVEDMENYEN */
+    .lab-meny-grid { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
+    .lab-meny-kort {
+      background: var(--kort-hvit); border: 1.5px solid var(--ramme); border-radius: 12px;
+      padding: 16px 18px; display: flex; justify-content: space-between; align-items: center;
+      cursor: pointer; transition: all 0.15s ease; text-decoration: none; color: inherit; user-select: none;
+    }
+    .lab-meny-kort:hover { border-color: var(--salvie); transform: translateY(-1px); box-shadow: 0 3px 10px rgba(0,0,0,0.04); }
+    .lab-kort-tittel { font-size: 14.5px; font-weight: 800; color: var(--koks); margin-bottom: 4px; }
+    .lab-kort-beskrivelse { font-size: 12px; color: var(--tekst-dempet); line-height: 1.4; }
+    .lab-pil { font-size: 18px; color: var(--salvie); font-weight: 800; margin-left: 12px; }
+
+    /* TESTVISNINGSKORT */
+    .test-fane-visning { display: none; }
+    .seksjon-kort {
+      background: var(--kort-hvit); border: 1px solid var(--ramme); border-radius: 12px;
+      padding: 18px 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+    .seksjon-tittel-rad { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .seksjon-tittel { font-size: 15px; font-weight: 800; color: var(--koks); }
+    .status-tag { font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 12px; }
+    .status-aktiv { background: var(--lys-salvie); color: var(--salvie); }
+
+    .felt-rad { display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+    .felt-boks { flex: 1; min-width: 140px; }
+    .felt-etikett { display: block; font-size: 11px; font-weight: 600; color: var(--koks); margin-bottom: 4px; }
+    .felt-input {
+      width: 100%; padding: 8px 10px; border: 1px solid var(--ramme); border-radius: 6px;
+      font-size: 12.5px; background: #FFFFFF; color: var(--koks); outline: none;
+    }
+    .felt-input:focus { border-color: var(--salvie); }
+
+    .kpi-resultat-boks {
+      background: #F8FAFC; border: 1.5px solid var(--ramme); border-radius: 10px;
+      padding: 16px; margin-top: 14px; display: flex; flex-direction: column; gap: 10px;
+    }
+    .kpi-hovedtall { font-size: 26px; font-weight: 800; }
+    .tabell-oppsummering { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 6px; }
+    .tabell-oppsummering td { padding: 6px 0; border-bottom: 1px dashed var(--ramme); }
+    .tabell-oppsummering td:last-child { text-align: right; font-weight: 700; }
+
+    .forklaring-boks {
+      background: #F8FAFC; border: 1px solid var(--ramme); border-radius: 8px;
+      padding: 12px 14px; font-size: 11.5px; color: var(--tekst-dempet); line-height: 1.5; margin-top: 12px;
+    }
+
+    .bar-spor { height: 8px; background: #E2E8F0; border-radius: 4px; position: relative; margin: 8px 0 16px 0; overflow: hidden; }
+    .bar-fyll { height: 100%; border-radius: 4px; transition: width 0.3s ease; }
+    
+    .tiltak-liste { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+    .tiltak-element {
+      display: flex; justify-content: space-between; align-items: center; padding: 10px 12px;
+      background: #F8FAFC; border: 1px solid var(--ramme); border-radius: 8px; font-size: 12px;
+    }
+    .tiltak-cb-label { display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer; color: var(--koks); }
+    .tiltak-cb-label input { width: 16px; height: 16px; accent-color: var(--salvie); cursor: pointer; }
+    .tiltak-verdi-badge { font-weight: 700; color: var(--salvie-mork); text-align: right; font-size: 11.5px; }
+
+    .flyt-liste { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+    .flyt-rad {
+      display: flex; justify-content: space-between; align-items: center; padding: 7px 10px;
+      background: #FFFFFF; border: 1px solid var(--ramme); border-radius: 6px; font-size: 11.5px;
+    }
+    .flyt-mnd { font-weight: 700; min-width: 45px; }
+    .flyt-detaljer { color: var(--tekst-dempet); flex: 1; margin: 0 10px; }
+    .flyt-saldo { font-weight: 700; }
+
+    .btn-tilbake-meny {
+      display: inline-flex; align-items: center; gap: 6px; background: transparent; border: none;
+      color: var(--salvie); font-size: 13px; font-weight: 700; cursor: pointer; margin-bottom: 14px; padding: 4px 0;
+    }
+    .btn-tilbake-meny:hover { text-decoration: underline; }
+  </style>
+
+  <!-- ISOLERT OG SIKRET NAVIGASJON LOGIKK I HEAD -->
+  <script>
+    function visTest(id) {
+      const hovedmeny = document.getElementById('visning-hovedmeny');
+      if (hovedmeny) hovedmeny.style.display = 'none';
+
+      document.querySelectorAll('.test-fane-visning').forEach(function(el) {
+        el.style.display = 'none';
+      });
+
+      if (id === 'meny') {
+        if (hovedmeny) hovedmeny.style.display = 'block';
+      } else {
+        const visEl = document.getElementById('visning-' + id);
+        if (visEl) visEl.style.display = 'block';
+
+        if (id === 'likviditet' && typeof window.kjorLikviditet === 'function') {
+          setTimeout(window.kjorLikviditet, 50);
+        } else if (id === 'fotavtrykk' && typeof window.kjorFotavtrykk === 'function') {
+          window.kjorFotavtrykk();
+        } else if (id === 'reallonn' && typeof window.kjorReallonn === 'function') {
+          window.kjorReallonn();
+        }
+      }
+    }
+  </script>
+</head>
+<body>
+
+  <header class="testlab-header">
+    <h1>🧪 Moneta Testlab</h1>
+    <a href="index.html" class="tilbake-knapp" id="tilbake-hovedapp">← Til appen</a>
+  </header>
+
+  <main class="innhold">
+    
+    <!-- HOVEDOVERSIKT MED KNAPPER -->
+    <div id="visning-hovedmeny">
+      <div class="lab-banner">
+        <h2>Velg en laboratoriemodell</h2>
+        <p>
+          Disse testene er uavhengige sandkasser som kobler seg på dine data uten å overskrive det lagrede budsjettet. Klikk på et kort under for å åpne testen:
+        </p>
+      </div>
+
+      <div class="lab-meny-grid">
+        <div class="lab-meny-kort" onclick="visTest('likviditet')">
+          <div>
+            <div class="lab-kort-tittel">🗓 1. Likviditetskurve & Runway</div>
+            <div class="lab-kort-beskrivelse">Rullende 6–12 måneders prognose. Se nøyaktig når bufferkontoen treffer null med hensyn til kvartalsvise regningstopper.</div>
+          </div>
+          <span class="lab-pil">→</span>
+        </div>
+
+        <div class="lab-meny-kort" onclick="visTest('fotavtrykk')">
+          <div>
+            <div class="lab-kort-tittel">🌱 2. Bærekraftsscore & Klimafotavtrykk (CO₂e)</div>
+            <div class="lab-kort-beskrivelse">Oversetter strøm, mat og bilvaner til tonn CO₂e per år og regner ut poengscore mot 1,5-gradersmålet.</div>
+          </div>
+          <span class="lab-pil">→</span>
+        </div>
+
+        <div class="lab-meny-kort" onclick="visTest('reallonn')">
+          <div>
+            <div class="lab-kort-tittel">📈 3. Reell Disponibel Lønnsvekst</div>
+            <div class="lab-kort-beskrivelse">Stresstest lønnsoppgjøret mot marginalskatt og renteøkning på husholdningens gjeld.</div>
+          </div>
+          <span class="lab-pil">→</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEST 1: LIKVIDITETSPROGNOSE -->
+    <div id="visning-likviditet" class="test-fane-visning">
+      <button type="button" class="btn-tilbake-meny" onclick="visTest('meny')">← Tilbake til Testlab-oversikt</button>
+      
+      <div class="seksjon-kort">
+        <div class="seksjon-tittel-rad">
+          <span class="seksjon-tittel">🗓 Likviditetsprognose & Runway</span>
+          <span class="status-tag status-aktiv">Aktiv</span>
+        </div>
+        <p style="font-size: 12px; color: var(--tekst-dempet); margin-bottom: 14px; line-height: 1.4;">
+          Viser saldoen måned for måned og markerer nøyaktig når bufferkontoen går i null.
+        </p>
+
+        <div class="felt-rad">
+          <div class="felt-boks">
+            <label class="felt-etikett">Bufferbeholdning i dag (kr):</label>
+            <input type="number" id="in-likvid-start" class="felt-input" value="60000" step="5000" oninput="kjorLikviditet()">
+          </div>
+          <div class="felt-boks">
+            <label class="felt-etikett">Netto månedsinntekt (kr):</label>
+            <input type="number" id="in-likvid-inntekt" class="felt-input" value="42000" step="1000" oninput="kjorLikviditet()">
+          </div>
+        </div>
+
+        <div class="felt-rad">
+          <div class="felt-boks">
+            <label class="felt-etikett">Utgifter normalmnd (kr):</label>
+            <input type="number" id="in-likvid-utgift" class="felt-input" value="46500" step="500" oninput="kjorLikviditet()">
+          </div>
+          <div class="felt-boks">
+            <label class="felt-etikett">Ekstra kvartalsregninger (kr):</label>
+            <input type="number" id="in-likvid-kvartal" class="felt-input" value="4500" step="500" oninput="kjorLikviditet()">
+          </div>
+        </div>
+
+        <div id="likvid-kpi-kort" class="kpi-resultat-boks">
+          <div style="display: flex; justify-content: space-between; align-items: baseline;">
+            <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--tekst-dempet);">
+              Estimert "Runway":
+            </span>
+            <span id="res-runway-status" class="status-tag status-aktiv">Robust</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: baseline;">
+            <span id="res-runway-tall" class="kpi-hovedtall" style="color: var(--koks);">13 måneder</span>
+            <span id="res-netto-taering" style="font-size: 13px; font-weight: 700; color: var(--varsel-rod);">-4 500 kr/mnd</span>
+          </div>
+
+          <div style="position: relative; height: 190px; width: 100%; margin-top: 10px;">
+            <canvas id="likviditetsGraf"></canvas>
+          </div>
+
+          <div style="margin-top: 12px; border-top: 1px solid var(--ramme); padding-top: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <strong style="font-size: 12px; color: var(--koks);">Månedlig kontantstrøm (Neste 6 mnd):</strong>
+              <label class="tiltak-cb-label" style="font-size: 11px;">
+                <input type="checkbox" id="cb-sifo-kutt" onchange="kjorLikviditet()">
+                <span>Simuler kutt (+3 200 kr/mnd)</span>
+              </label>
+            </div>
+            <div class="flyt-liste" id="likvid-flyt-liste"></div>
+          </div>
+
+          <div class="forklaring-boks" id="res-likvid-forklaring"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEST 2: FOTAVTRYKK -->
+    <div id="visning-fotavtrykk" class="test-fane-visning">
+      <button type="button" class="btn-tilbake-meny" onclick="visTest('meny')">← Tilbake til Testlab-oversikt</button>
+
+      <div class="seksjon-kort">
+        <div class="seksjon-tittel-rad">
+          <span class="seksjon-tittel">🌱 Bærekraftsscore & Klimafotavtrykk (CO₂e)</span>
+          <span class="status-tag status-aktiv">Aktiv</span>
+        </div>
+        <p style="font-size: 12px; color: var(--tekst-dempet); margin-bottom: 14px; line-height: 1.4;">
+          Beregner husholdningens utslipp basert på budsjettposter for transport, energi og SIFO-forbruk.
+        </p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px;">
+          <div style="background: #F8FAFC; border: 1px solid var(--ramme); border-radius: 10px; padding: 14px;">
+            <div style="font-size: 11px; font-weight: 600; color: var(--tekst-dempet); text-transform: uppercase;">Avtrykksscore (0–100)</div>
+            <div style="font-size: 26px; font-weight: 800; color: var(--salvie); margin-top: 4px;" id="co2-score-tall">72 / 100</div>
+            <div style="font-size: 11px; color: var(--salvie-mork); font-weight: 600;" id="co2-status-tekst">-</div>
+          </div>
+
+          <div style="background: #F8FAFC; border: 1px solid var(--ramme); border-radius: 10px; padding: 14px;">
+            <div style="font-size: 11px; font-weight: 600; color: var(--tekst-dempet); text-transform: uppercase;">Årlige utslipp</div>
+            <div style="font-size: 26px; font-weight: 800; color: var(--koks); margin-top: 4px;" id="co2-tonn-tall">6.2 tonn</div>
+            <div style="font-size: 11px; color: var(--tekst-dempet);" id="co2-sammenligning-snitt">-</div>
+          </div>
+        </div>
+
+        <div style="font-size: 11.5px; font-weight: 600; margin-bottom: 2px;">Ditt avtrykk mot målene:</div>
+        <div class="bar-spor">
+          <div id="co2-progress-bar" class="bar-fyll" style="width: 60%; background: var(--salvie);"></div>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 10.5px; color: var(--tekst-dempet); margin-top: -10px; margin-bottom: 16px;">
+          <span>🎯 1.5-graders mål (3.0 t)</span>
+          <span>Ditt avtrykk: <strong id="co2-bar-verdi">6.2 t</strong></span>
+          <span>Norsk snitt (9.0 t)</span>
+        </div>
+
+        <div style="border-top: 1px solid #F1F5F9; padding-top: 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <strong style="font-size: 12.5px; color: var(--koks);">Kombinerte sparetiltak:</strong>
+            <span style="font-size: 11px; font-weight: 700; color: var(--salvie);" id="co2-tiltak-gevinst">Spart: 0 kr/mnd • −0 kg CO₂e</span>
+          </div>
+
+          <div class="tiltak-liste">
+            <div class="tiltak-element">
+              <label class="tiltak-cb-label">
+                <input type="checkbox" id="tiltak-kjott" onchange="kjorFotavtrykk()">
+                <span>2 kjøttfrie dager i uken (plantebasert)</span>
+              </label>
+              <div class="tiltak-verdi-badge">+400 kr/mnd | −320 kg/år</div>
+            </div>
+
+            <div class="tiltak-element">
+              <label class="tiltak-cb-label">
+                <input type="checkbox" id="tiltak-temp" onchange="kjorFotavtrykk()">
+                <span>Senke innetemperatur 1 grad (strømsparing)</span>
+              </label>
+              <div class="tiltak-verdi-badge">+250 kr/mnd | −150 kg/år</div>
+            </div>
+
+            <div class="tiltak-element">
+              <label class="tiltak-cb-label">
+                <input type="checkbox" id="tiltak-gjenbruk" onchange="kjorFotavtrykk()">
+                <span>50% reduksjon i kleskjøp (gjenbruk)</span>
+              </label>
+              <div class="tiltak-verdi-badge">+550 kr/mnd | −240 kg/år</div>
+            </div>
+
+            <div class="tiltak-element">
+              <label class="tiltak-cb-label">
+                <input type="checkbox" id="tiltak-kollektiv" onchange="kjorFotavtrykk()">
+                <span>Bytte 1 ukentlig biltur med gange/sykkel/buss</span>
+              </label>
+              <div class="tiltak-verdi-badge">+300 kr/mnd | −200 kg/år</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEST 3: REELL LØNNSVEKST -->
+    <div id="visning-reallonn" class="test-fane-visning">
+      <button type="button" class="btn-tilbake-meny" onclick="visTest('meny')">← Tilbake til Testlab-oversikt</button>
+
+      <div class="seksjon-kort">
+        <div class="seksjon-tittel-rad">
+          <span class="seksjon-tittel">📈 Reell Disponibel Lønnsvekst</span>
+          <span class="status-tag status-aktiv">Aktiv</span>
+        </div>
+        <p style="font-size: 12px; color: var(--tekst-dempet); margin-bottom: 14px; line-height: 1.4;">
+          Beregner den faktiske kjøpekraftsendringen etter marginalskatt, prisvekst og renteendring på husholdningens gjeld.
+        </p>
+
+        <div class="felt-rad">
+          <div class="felt-boks">
+            <label class="felt-etikett">Brutto årslønn (kr):</label>
+            <input type="number" id="in-aarslonn" class="felt-input" value="650000" step="10000" oninput="kjorReallonn()">
+          </div>
+          <div class="felt-boks">
+            <label class="felt-etikett">Lønnsvekst i oppgjøret (%):</label>
+            <input type="number" id="in-lonnsvekst" class="felt-input" value="4.2" step="0.1" oninput="kjorReallonn()">
+          </div>
+        </div>
+
+        <div class="felt-rad">
+          <div class="felt-boks">
+            <label class="felt-etikett">Boliggjeld (kr):</label>
+            <input type="number" id="in-gjeld" class="felt-input" value="2300000" step="50000" oninput="kjorReallonn()">
+          </div>
+          <div class="felt-boks">
+            <label class="felt-etikett">Renteendring (prosentpoeng):</label>
+            <input type="number" id="in-renteendring" class="felt-input" value="0.5" step="0.25" oninput="kjorReallonn()">
+          </div>
+          <div class="felt-boks">
+            <label class="felt-etikett">Forventet prisvekst / KPI (%):</label>
+            <input type="number" id="in-kpi" class="felt-input" value="3.4" step="0.1" oninput="kjorReallonn()">
+          </div>
+        </div>
+
+        <div id="reallonn-resultat" class="kpi-resultat-boks">
+          <div style="display: flex; justify-content: space-between; align-items: baseline;">
+            <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--tekst-dempet);">
+              Faktisk månedlig endring i kjøpekraft:
+            </span>
+            <span id="res-kjopekraft-mnd" class="kpi-hovedtall" style="color: var(--koks);">+0 kr/mnd</span>
+          </div>
+
+          <table class="tabell-oppsummering">
+            <tr>
+              <td>Teoretisk reallønnsvekst på papiret (Lønn − KPI):</td>
+              <td id="res-teoretisk-diff">+0.0%</td>
+            </tr>
+            <tr>
+              <td>Ekstra lønn etter skatt (marginalskatt 35%):</td>
+              <td id="res-netto-lonn">+0 kr/mnd</td>
+            </tr>
+            <tr>
+              <td>Ekstra rentekostnad etter 22% skattefradrag:</td>
+              <td id="res-merrente-mnd" style="color: var(--varsel-rod);">−0 kr/mnd</td>
+            </tr>
+            <tr>
+              <td>Prisvekst på basisforbruk:</td>
+              <td id="res-kpi-kostnad" style="color: var(--varsel-rod);">−0 kr/mnd</td>
+            </tr>
+          </table>
+
+          <div class="forklaring-boks" id="res-forklaring-tekst"></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="js/felles_motor.js"></script>
+  <script>
+    const erMobil = window.innerWidth <= 640 || /Mobi|Android/i.test(navigator.userAgent);
+    const tilbakeLenke = document.getElementById('tilbake-hovedapp');
+    if (tilbakeLenke) tilbakeLenke.href = erMobil ? 'mobil.html' : 'desktop.html';
+
+    let state = { inntektNetto: 42000, boliglanSaldo: 0, strom: 0, faktiskForbruk: {}, restaurant: 0, transportmiddel: 'Bensinbil' };
+    let likviditetsChart = null;
+
+    function fmt(tall) {
+      return Math.round(tall || 0).toLocaleString('no-NO');
+    }
+
+    // 1. LIKVIDITET & RUNWAY
+    window.kjorLikviditet = function() {
+      const startBuffer = Number(document.getElementById('in-likvid-start')?.value) || 0;
+      const inntekt = Number(document.getElementById('in-likvid-inntekt')?.value) || 0;
+      const basisUtgift = Number(document.getElementById('in-likvid-utgift')?.value) || 0;
+      const kvartalEkstra = Number(document.getElementById('in-likvid-kvartal')?.value) || 0;
+      const sifoKuttAktiv = !!document.getElementById('cb-sifo-kutt')?.checked;
+      const kuttBelop = sifoKuttAktiv ? 3200 : 0;
+
+      let saldo = startBuffer;
+      const historikk = [startBuffer];
+      const etiketter = ['Start', 'M1', 'M2', 'M3', 'M4', 'M5', 'M6'];
+      const flytListeEl = document.getElementById('likvid-flyt-liste');
+      if (flytListeEl) flytListeEl.innerHTML = '';
+
+      for (let m = 1; m <= 6; m++) {
+        const erKvartal = (m === 4 || m === 6);
+        const utgift = (basisUtgift + (erKvartal ? kvartalEkstra : 0)) - kuttBelop;
+        saldo += (inntekt - utgift);
+        historikk.push(Math.round(saldo));
+
+        if (flytListeEl) {
+          const rad = document.createElement('div');
+          rad.className = 'flyt-rad';
+          rad.innerHTML = `
+            <span class="flyt-mnd">Mnd ${m}</span>
+            <span class="flyt-detaljer">Inntekt: ${fmt(inntekt)} | Utgift: ${fmt(utgift)}${erKvartal ? '*' : ''}</span>
+            <span class="flyt-saldo" style="color: ${saldo >= 0 ? 'var(--koks)' : 'var(--varsel-rod)'};">${fmt(saldo)} kr</span>
+          `;
+          flytListeEl.appendChild(rad);
+        }
+      }
+
+      const nettoNormal = inntekt - (basisUtgift - kuttBelop);
+      const taeringEl = document.getElementById('res-netto-taering');
+      if (taeringEl) {
+        taeringEl.innerText = `${nettoNormal >= 0 ? '+' : ''}${fmt(nettoNormal)} kr/mnd`;
+        taeringEl.style.color = nettoNormal >= 0 ? 'var(--salvie)' : 'var(--varsel-rod)';
+      }
+
+      let runwayMndTekst = "Evig (Overskudd)";
+      let statusTekst = "Robust";
+
+      if (nettoNormal < 0) {
+        const underskudd = Math.abs(nettoNormal);
+        const beregnetRunway = Math.max(1, Math.round(startBuffer / underskudd));
+        runwayMndTekst = `${beregnetRunway} måneder`;
+        statusTekst = beregnetRunway <= 6 ? "Kritisk" : (beregnetRunway <= 12 ? "Sårbar" : "Robust");
+      }
+
+      const tallEl = document.getElementById('res-runway-tall');
+      if (tallEl) tallEl.innerText = runwayMndTekst;
+
+      const badgeEl = document.getElementById('res-runway-status');
+      if (badgeEl) badgeEl.innerText = statusTekst;
+
+      const forklaringEl = document.getElementById('res-likvid-forklaring');
+      if (forklaringEl) {
+        if (nettoNormal < 0) {
+          forklaringEl.innerHTML = `Månedlig tæring er <strong>${fmt(Math.abs(nettoNormal))} kr/mnd</strong>. Startbufferen din rekker i omtrent <strong>${runwayMndTekst}</strong> før saldoen treffer null.`;
+        } else {
+          forklaringEl.innerHTML = `Du sparer <strong>+${fmt(nettoNormal)} kr/mnd</strong>. Likviditeten er solid og vokser hver måned.`;
+        }
+      }
+
+      const canvas = document.getElementById('likviditetsGraf');
+      if (canvas && typeof Chart !== 'undefined') {
+        const ctx = canvas.getContext('2d');
+        if (likviditetsChart) likviditetsChart.destroy();
+
+        likviditetsChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: etiketter,
+            datasets: [{
+              data: historikk,
+              borderColor: '#0D9488',
+              backgroundColor: 'rgba(13, 148, 136, 0.1)',
+              fill: true,
+              tension: 0.25,
+              borderWidth: 2,
+              pointRadius: 4,
+              pointBackgroundColor: '#0D9488'
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              y: { grid: { color: '#F1F5F9' }, ticks: { font: { size: 10 } } },
+              x: { grid: { display: false }, ticks: { font: { size: 10 } } }
+            }
+          }
+        });
+      }
+    };
+
+    // 2. FOTAVTRYKK (CO2e)
+    window.kjorFotavtrykk = function() {
+      let transportKg = (state.transportmiddel === 'Elbil') ? 900 : (state.transportmiddel === 'Kollektivtransport' ? 450 : 2400);
+      const matMnd = Number(state.faktiskForbruk?.mat_drikke) || 4500;
+      const stromMnd = Number(state.strom) || 1200;
+      const klaerRestMnd = (Number(state.faktiskForbruk?.klaer_sko) || 1100) + (Number(state.restaurant) || 1000);
+
+      let totaltKg = transportKg + ((matMnd * 12) * 0.045) + ((stromMnd * 12) * 0.035) + ((klaerRestMnd * 12) * 0.030) + 1500;
+
+      let kuttKg = 0;
+      let kuttKrMnd = 0;
+
+      if (document.getElementById('tiltak-kjott')?.checked) { kuttKg += 320; kuttKrMnd += 400; }
+      if (document.getElementById('tiltak-temp')?.checked) { kuttKg += 150; kuttKrMnd += 250; }
+      if (document.getElementById('tiltak-gjenbruk')?.checked) { kuttKg += 240; kuttKrMnd += 550; }
+      if (document.getElementById('tiltak-kollektiv')?.checked) { kuttKg += 200; kuttKrMnd += 300; }
+
+      totaltKg = Math.max(1200, totaltKg - kuttKg);
+      const tonn = (totaltKg / 1000).toFixed(1);
+      const score = Math.max(0, Math.min(100, Math.round(100 - ((totaltKg - 3000) / 120))));
+
+      const scoreEl = document.getElementById('co2-score-tall');
+      if (scoreEl) scoreEl.innerText = `${score} / 100`;
+
+      const tonnEl = document.getElementById('co2-tonn-tall');
+      if (tonnEl) tonnEl.innerText = `${tonn} tonn`;
+
+      const barVerdi = document.getElementById('co2-bar-verdi');
+      if (barVerdi) barVerdi.innerText = `${tonn} t`;
+
+      const progressBar = document.getElementById('co2-progress-bar');
+      if (progressBar) {
+        const pst = Math.min(100, Math.round((totaltKg / 9000) * 100));
+        progressBar.style.width = `${pst}%`;
+        progressBar.style.background = score >= 70 ? 'var(--salvie)' : (score >= 50 ? '#D97706' : 'var(--varsel-rod)');
+      }
+
+      const statusEl = document.getElementById('co2-status-tekst');
+      if (statusEl) {
+        statusEl.innerText = score >= 80 ? "Meget lavt avtrykk (1.5°C mål)" : (score >= 60 ? "Moderat avtrykk (under snittet)" : "Høyt avtrykk (stort potensial)");
+      }
+
+      const snittEl = document.getElementById('co2-sammenligning-snitt');
+      if (snittEl) {
+        const diffSnitt = Math.round(((9000 - totaltKg) / 9000) * 100);
+        snittEl.innerText = diffSnitt >= 0 ? `${diffSnitt}% lavere enn norsk snitt` : `${Math.abs(diffSnitt)}% over snittet`;
+      }
+
+      const gevinstEl = document.getElementById('co2-tiltak-gevinst');
+      if (gevinstEl) gevinstEl.innerText = `Spart: +${fmt(kuttKrMnd)} kr/mnd • −${fmt(kuttKg)} kg CO₂e/år`;
+    };
+
+    // 3. REELL LØNNSVEKST
+    window.kjorReallonn = function() {
+      const bruttoLonn = Number(document.getElementById('in-aarslonn')?.value) || 0;
+      const lonnsvekstPst = Number(document.getElementById('in-lonnsvekst')?.value) || 0;
+      const gjeld = Number(document.getElementById('in-gjeld')?.value) || 0;
+      const renteEndringPp = Number(document.getElementById('in-renteendring')?.value) || 0;
+      const kpiPst = Number(document.getElementById('in-kpi')?.value) || 0;
+
+      const teoretiskDiff = lonnsvekstPst - kpiPst;
+      const teoEl = document.getElementById('res-teoretisk-diff');
+      if (teoEl) {
+        teoEl.innerText = `${teoretiskDiff >= 0 ? '+' : ''}${teoretiskDiff.toFixed(1)}%`;
+        teoEl.style.color = teoretiskDiff >= 0 ? 'var(--salvie)' : 'var(--varsel-rod)';
+      }
+
+      const nettoOkningMnd = ((bruttoLonn * (lonnsvekstPst / 100)) * 0.65) / 12; // 35% marginalskatt
+      const nettoMerrenteMnd = ((gjeld * (renteEndringPp / 100)) * 0.78) / 12; // 22% rentefradrag
+      const estimertBasisMnd = (bruttoLonn * 0.68 / 12) * 0.50;
+      const kpiMerMnd = estimertBasisMnd * (kpiPst / 100);
+
+      const resNettoEl = document.getElementById('res-netto-lonn');
+      if (resNettoEl) resNettoEl.innerText = `+${fmt(nettoOkningMnd)} kr/mnd`;
+
+      const resMerrenteEl = document.getElementById('res-merrente-mnd');
+      if (resMerrenteEl) resMerrenteEl.innerText = `−${fmt(nettoMerrenteMnd)} kr/mnd`;
+
+      const resKpiEl = document.getElementById('res-kpi-kostnad');
+      if (resKpiEl) resKpiEl.innerText = `−${fmt(kpiMerMnd)} kr/mnd`;
+
+      const faktiskDiffMnd = nettoOkningMnd - nettoMerrenteMnd - kpiMerMnd;
+      const kpiTallEl = document.getElementById('res-kjopekraft-mnd');
+      if (kpiTallEl) {
+        kpiTallEl.innerText = `${faktiskDiffMnd >= 0 ? '+' : ''}${fmt(faktiskDiffMnd)} kr/mnd`;
+        kpiTallEl.style.color = faktiskDiffMnd >= 0 ? 'var(--salvie)' : 'var(--varsel-rod)';
+      }
+
+      const gjeldsgrad = (gjeld / (bruttoLonn || 1)).toFixed(1);
+      const forklaringEl = document.getElementById('res-forklaring-tekst');
+      if (forklaringEl) {
+        if (teoretiskDiff > 0 && faktiskDiffMnd < 0) {
+          forklaringEl.innerHTML = `<strong>Kjøpekraftsfall:</strong> På papiret har du en positiv lønnsvekst på <strong>+${teoretiskDiff.toFixed(1)}%</strong>. Men med en gjeldsgrad på <strong>${gjeldsgrad}x</strong> inntekten og renteoppgang, spiser rentene og marginalskatten opp tillegget. Resultatet er <strong>${fmt(Math.abs(faktiskDiffMnd))} kr mindre</strong> fri likviditet hver måned.`;
+        } else if (faktiskDiffMnd >= 0) {
+          forklaringEl.innerHTML = `Lønnsøkningen din dekker både renteendringen på din gjeld (${gjeldsgrad}x inntekt) og prisveksten, og gir deg <strong>+${fmt(faktiskDiffMnd)} kr/mnd</strong> mer i fri disponibel buffer.`;
+        } else {
+          forklaringEl.innerHTML = `Både prisvekst og rentebelastning overstiger lønnsøkningen. Kjøpekraften reduseres med <strong>${fmt(Math.abs(faktiskDiffMnd))} kr/mnd</strong>.`;
+        }
+      }
+    };
+
+    // INITIALISERING
+    window.addEventListener('DOMContentLoaded', () => {
+      try {
+        if (window.MonetaMotor && typeof window.MonetaMotor.hentState === 'function') {
+          state = window.MonetaMotor.hentState();
+        }
+      } catch (err) {}
+
+      if (state.inntektNetto > 0) {
+        const inLikvid = document.getElementById('in-likvid-inntekt');
+        if (inLikvid) inLikvid.value = state.inntektNetto;
+        const inAars = document.getElementById('in-aarslonn');
+        if (inAars) inAars.value = Math.round((state.inntektNetto * 12) / 0.70 / 10000) * 10000;
+      }
+      if (state.boliglanSaldo > 0) {
+        const inGjeld = document.getElementById('in-gjeld');
+        if (inGjeld) inGjeld.value = state.boliglanSaldo;
+      }
+
+      try {
+        if (window.MonetaMotor && typeof window.MonetaMotor.beregnTotalOkonomi === 'function') {
+          const okonomi = window.MonetaMotor.beregnTotalOkonomi(state);
+          const sumFasteOgForbruk = (okonomi.sumFaste || 0) + (okonomi.sumForbrukFaktisk || 0);
+          if (sumFasteOgForbruk > 0) {
+            const inUtgift = document.getElementById('in-likvid-utgift');
+            if (inUtgift) inUtgift.value = sumFasteOgForbruk;
+          }
+        }
+      } catch (e) {}
+    });
+  </script>
+</body>
+</html>

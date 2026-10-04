@@ -173,7 +173,7 @@
       display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap;
     }
     .sim-valg-btn {
-      flex: 1; min-width: 90px; padding: 8px 10px; background: #F8FAFC; border: 1px solid var(--ramme); border-radius: 8px;
+      flex: 1; min-width: 85px; padding: 8px 10px; background: #F8FAFC; border: 1px solid var(--ramme); border-radius: 8px;
       font-size: 11px; font-weight: 600; color: var(--koks); cursor: pointer; text-align: center; transition: all 0.15s ease;
     }
     .sim-valg-btn.valgt {
@@ -414,7 +414,6 @@
 
     <!-- 4. MÅLSPARING -->
     <div id="m-fane-maalsparing" class="m-fane" style="display: none;">
-      
       <!-- VISNING 1: OVERSIKT OVER DINE SPAREMÅL + OPPRETTELSE -->
       <div id="m-maal-oversikt-seksjon">
         <div class="sparemaal-seksjon-header">
@@ -458,7 +457,6 @@
               Krav: 0 kr/mnd • Spareevne: 0 kr/mnd
             </div>
           </div>
-          <!-- Skjules i lesemodus -->
           <span id="m-det-gap-badge" class="avvik-kort-badge badge-under" style="display: none;">Innenfor</span>
         </div>
 
@@ -529,7 +527,7 @@
           Simulert månedlig buffer etter livsfase- og makrojusteringer.
         </div>
 
-        <!-- Eventuelle nødvendige kutt ved underskudd -->
+        <!-- Nødvendige kutt ved underskudd -->
         <div id="sim-kutt-boks" style="display: none; margin-top: 10px; padding-top: 8px; border-top: 1px dashed #FECDD3;">
           <div style="font-size: 11px; font-weight: 800; color: var(--varsel-rod); margin-bottom: 4px;">Nødvendige kutt for å unngå underskudd:</div>
           <div id="sim-kutt-liste" style="font-size: 11px;"></div>
@@ -546,11 +544,65 @@
         <label class="felt-label">Hva ønsker du å simulere?</label>
         <div class="sim-knappe-rekke" id="sim-livsfase-valg-container"></div>
 
+        <!-- Undervalg for Kjøpe bolig alene (når lån = 0) -->
+        <div id="sim-sub-kjope-bolig" style="display: none; margin-top: 10px; border-top: 1px solid #F1F5F9; padding-top: 10px;">
+          <div style="display: flex; gap: 8px;">
+            <div style="flex: 1.5;">
+              <label class="felt-label">Lånebeløp (kr):</label>
+              <input type="number" id="sim-kjop-laan" class="felt-input" value="3000000" step="50000" oninput="kjorSimulering()">
+            </div>
+            <div style="flex: 1;">
+              <label class="felt-label">Rente (%):</label>
+              <input type="number" id="sim-kjop-rente" class="felt-input" value="5.0" step="0.1" oninput="kjorSimulering()">
+            </div>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <div style="flex: 1;">
+              <label class="felt-label">Nedbetaling (år):</label>
+              <input type="number" id="sim-kjop-ar" class="felt-input" value="25" min="10" max="30" oninput="kjorSimulering()">
+            </div>
+            <div style="flex: 1.5;">
+              <label class="felt-label">Ny felleskost (kr/mnd):</label>
+              <input type="number" id="sim-kjop-felles" class="felt-input" value="3500" step="100" oninput="kjorSimulering()">
+            </div>
+          </div>
+        </div>
+
         <!-- Undervalg for Samboerskap -->
         <div id="sim-sub-samboer" style="display: none; margin-top: 10px; border-top: 1px solid #F1F5F9; padding-top: 10px;">
           <label class="felt-label">Partners netto månedsinntekt (kr):</label>
           <input type="number" id="sim-partner-inntekt" class="felt-input" value="35000" oninput="kjorSimulering()">
           
+          <label class="felt-label">Boligplan etter flytting:</label>
+          <div class="sim-pille-knapper" style="margin-bottom: 10px;">
+            <button class="sim-pille-btn valgt" id="btn-sambo-behold" onclick="settSamboBoligValg(false, this)">Behold bolig/leie</button>
+            <button class="sim-pille-btn" id="btn-sambo-kjop" onclick="settSamboBoligValg(true, this)">Kjøpe bolig sammen</button>
+          </div>
+
+          <!-- Inndata for felles boligkjøp som samboere -->
+          <div id="sim-samboer-kjop-seksjon" style="display: none; background: #F8FAFC; border: 1px solid var(--ramme); border-radius: 8px; padding: 10px; margin-bottom: 10px;">
+            <div style="display: flex; gap: 8px;">
+              <div style="flex: 1.5;">
+                <label class="felt-label">Felles lånebeløp (kr):</label>
+                <input type="number" id="sim-sambo-laan" class="felt-input" value="4500000" step="50000" oninput="kjorSimulering()">
+              </div>
+              <div style="flex: 1;">
+                <label class="felt-label">Rente (%):</label>
+                <input type="number" id="sim-sambo-rente" class="felt-input" value="5.0" step="0.1" oninput="kjorSimulering()">
+              </div>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <div style="flex: 1;">
+                <label class="felt-label">Nedbetaling (år):</label>
+                <input type="number" id="sim-sambo-ar" class="felt-input" value="25" min="10" max="30" oninput="kjorSimulering()">
+              </div>
+              <div style="flex: 1.5;">
+                <label class="felt-label">Ny felleskost (kr/mnd):</label>
+                <input type="number" id="sim-sambo-felles" class="felt-input" value="4500" step="100" oninput="kjorSimulering()">
+              </div>
+            </div>
+          </div>
+
           <label class="felt-label">Venter dere også barn sammen?</label>
           <div class="sim-pille-knapper">
             <button class="sim-pille-btn valgt" onclick="settSimBarn(0, this)">Ingen barn</button>
@@ -578,10 +630,13 @@
             <option value="leie">Selge og leie leilighet</option>
           </select>
 
-          <label class="felt-label">Barnefordeling:</label>
-          <div class="sim-pille-knapper">
-            <button class="sim-pille-btn valgt" onclick="settSimBruddBarn('delt_50_50', this)">50/50 delt bosted</button>
-            <button class="sim-pille-btn" onclick="settSimBruddBarn('100_prosent', this)">100% hovedforsørger</button>
+          <!-- Vises KUN dersom det faktisk finnes barn i husholdningen -->
+          <div id="sim-brudd-barnefordeling-seksjon" style="display: none;">
+            <label class="felt-label">Barnefordeling:</label>
+            <div class="sim-pille-knapper">
+              <button class="sim-pille-btn valgt" onclick="settSimBruddBarn('delt_50_50', this)">50/50 delt bosted</button>
+              <button class="sim-pille-btn" onclick="settSimBruddBarn('100_prosent', this)">100% hovedforsørger</button>
+            </div>
           </div>
         </div>
       </div>
@@ -666,7 +721,7 @@
             </div>
             <div class="form-gruppe" style="flex:1;">
               <label>Barn:</label>
-              <input type="number" id="m-prof-barn" min="0" max="6" value="0" onchange="oppdaterProfilMobil('barn', this.value)">
+              <input type="number" id="m-prof-barn" min="0" max="6" placeholder="0" onchange="oppdaterProfilMobil('barn', this.value)">
             </div>
           </div>
         </div>
@@ -728,7 +783,10 @@
           Lagre innstillinger og start
         </button>
 
-        <div style="margin-top: 14px; text-align: center;">
+        <div style="margin-top: 14px; text-align: center; display: flex; flex-direction: column; gap: 8px;">
+          <a href="testlab.html" style="display: flex; align-items: center; justify-content: center; background: #F1F5F9; color: var(--mork-skifer); border: 1.5px solid var(--ramme); width: 100%; padding: 10px; border-radius: 6px; font-size: 12px; font-weight: 700; text-decoration: none;">
+            🧪 Testlab (Kommende funksjoner) →
+          </a>
           <button type="button" onclick="MonetaMotor.nullstillAltOgSlettData()" style="background: var(--varsel-rosa); color: var(--varsel-rod); border: 1px solid #FECDD3; width: 100%; padding: 8px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer;">
             🗑 Nullstill app og slett lagrede data
           </button>
@@ -755,8 +813,21 @@
     // Simulerings-tilstand
     let simConfig = {
       scenarioType: 'uendret',
+      kjopeBolig: {
+        lanebelop: 3000000,
+        rente: 5.0,
+        lopetidAr: 25,
+        felleskost: 3500
+      },
       partnerInntekt: 35000,
       partnerLanTermin: 0,
+      partnerKjopeBolig: false,
+      samboerBolig: {
+        lanebelop: 4500000,
+        rente: 5.0,
+        lopetidAr: 25,
+        felleskost: 4500
+      },
       antallNyeBarn: 0,
       samlivsbrudd: {
         boligValg: 'beholde_alene',
@@ -998,26 +1069,32 @@
     function initSimuleringTre() {
       const antallVoksne = Number(state.voksne) || 1;
       const antallBarn = Number(state.barn) || 0;
-      const profTekst = `${antallVoksne} ${antallVoksne === 1 ? 'voksen' : 'voksne'}${antallBarn > 0 ? `, ${antallBarn} barn` : ''}`;
-      document.getElementById('sim-dagens-profil-tekst').innerText = `Dagens: ${profTekst}`;
+      const harBoliglan = (Number(state.boliglanSaldo) || 0) > 0;
+      const profTekst = `${antallVoksne} ${antallVoksne === 1 ? 'voksen' : 'voksne'}${antallBarn > 0 ? `, ${antallBarn} barn` : ''} • ${harBoliglan ? 'Boligeier' : 'Uten boliglån'}`;
+      document.getElementById('sim-dagens-profil-tekst').innerText = profTekst;
 
       const valgCont = document.getElementById('sim-livsfase-valg-container');
       valgCont.innerHTML = '';
 
+      let knapper = `<button class="sim-valg-btn ${simConfig.scenarioType === 'uendret' ? 'valgt' : ''}" onclick="settSimScenario('uendret', this)">Uendret</button>`;
+
+      if (!harBoliglan) {
+        knapper += `<button class="sim-valg-btn ${simConfig.scenarioType === 'kjope_bolig' ? 'valgt' : ''}" onclick="settSimScenario('kjope_bolig', this)">Kjøpe bolig</button>`;
+      }
+
       if (antallVoksne === 1) {
-        valgCont.innerHTML = `
-          <button class="sim-valg-btn ${simConfig.scenarioType === 'uendret' ? 'valgt' : ''}" onclick="settSimScenario('uendret', this)">Uendret</button>
+        knapper += `
           <button class="sim-valg-btn ${simConfig.scenarioType === 'bli_samboer' ? 'valgt' : ''}" onclick="settSimScenario('bli_samboer', this)">Bli samboer</button>
           <button class="sim-valg-btn ${simConfig.scenarioType === 'fa_barn' ? 'valgt' : ''}" onclick="settSimScenario('fa_barn', this)">Få barn (alene)</button>
         `;
       } else {
-        valgCont.innerHTML = `
-          <button class="sim-valg-btn ${simConfig.scenarioType === 'uendret' ? 'valgt' : ''}" onclick="settSimScenario('uendret', this)">Uendret</button>
+        knapper += `
           <button class="sim-valg-btn ${simConfig.scenarioType === 'flere_barn' ? 'valgt' : ''}" onclick="settSimScenario('flere_barn', this)">Flere barn</button>
           <button class="sim-valg-btn ${simConfig.scenarioType === 'samlivsbrudd' ? 'valgt' : ''}" onclick="settSimScenario('samlivsbrudd', this)">Samlivsbrudd</button>
         `;
       }
 
+      valgCont.innerHTML = knapper;
       oppdaterSubSeksjoner();
     }
 
@@ -1031,10 +1108,27 @@
     };
 
     function oppdaterSubSeksjoner() {
+      const harBarn = (Number(state.barn) || 0) > 0;
+
+      document.getElementById('sim-sub-kjope-bolig').style.display = (simConfig.scenarioType === 'kjope_bolig') ? 'block' : 'none';
       document.getElementById('sim-sub-samboer').style.display = (simConfig.scenarioType === 'bli_samboer') ? 'block' : 'none';
       document.getElementById('sim-sub-barn').style.display = (simConfig.scenarioType === 'fa_barn' || simConfig.scenarioType === 'flere_barn') ? 'block' : 'none';
       document.getElementById('sim-sub-brudd').style.display = (simConfig.scenarioType === 'samlivsbrudd') ? 'block' : 'none';
+
+      const barnefordelingBoks = document.getElementById('sim-brudd-barnefordeling-seksjon');
+      if (barnefordelingBoks) {
+        barnefordelingBoks.style.display = (simConfig.scenarioType === 'samlivsbrudd' && harBarn) ? 'block' : 'none';
+      }
     }
+
+    window.settSamboBoligValg = function(kjope, btn) {
+      simConfig.partnerKjopeBolig = kjope;
+      const parent = btn.parentElement;
+      parent.querySelectorAll('.sim-pille-btn').forEach(b => b.classList.remove('valgt'));
+      btn.classList.add('valgt');
+      document.getElementById('sim-samboer-kjop-seksjon').style.display = kjope ? 'block' : 'none';
+      kjorSimulering();
+    };
 
     window.settSimBarn = function(antall, btn) {
       simConfig.antallNyeBarn = antall;
@@ -1076,11 +1170,25 @@
       kjorSimulering();
     };
 
+    // RETTET NULLSTILLINGSFUNKSJON FOR MOBIL (Eksakt match)
     window.nullstillSimulering = function() {
       simConfig = {
         scenarioType: 'uendret',
+        kjopeBolig: {
+          lanebelop: 3000000,
+          rente: 5.0,
+          lopetidAr: 25,
+          felleskost: 3500
+        },
         partnerInntekt: 35000,
         partnerLanTermin: 0,
+        partnerKjopeBolig: false,
+        samboerBolig: {
+          lanebelop: 4500000,
+          rente: 5.0,
+          lopetidAr: 25,
+          felleskost: 4500
+        },
         antallNyeBarn: 0,
         samlivsbrudd: {
           boligValg: 'beholde_alene',
@@ -1094,13 +1202,24 @@
       };
 
       document.querySelectorAll('#m-fane-simulering .sim-pille-btn').forEach(b => {
-        if (b.innerText.includes('0%') || b.innerText.includes('Ingen') || b.innerText.includes('50/50')) {
+        const txt = b.innerText.trim();
+        if (txt === '0%' || txt === 'Ingen barn' || txt === '50/50 delt bosted' || txt === 'Behold bolig/leie') {
           b.classList.add('valgt');
         } else {
           b.classList.remove('valgt');
         }
       });
+
       document.getElementById('sim-partner-inntekt').value = 35000;
+      document.getElementById('sim-kjop-laan').value = 3000000;
+      document.getElementById('sim-kjop-rente').value = 5.0;
+      document.getElementById('sim-kjop-ar').value = 25;
+      document.getElementById('sim-kjop-felles').value = 3500;
+      document.getElementById('sim-sambo-laan').value = 4500000;
+      document.getElementById('sim-sambo-rente').value = 5.0;
+      document.getElementById('sim-sambo-ar').value = 25;
+      document.getElementById('sim-sambo-felles').value = 4500;
+      document.getElementById('sim-samboer-kjop-seksjon').style.display = 'none';
       document.getElementById('sim-rente-vis').innerText = '0.0%';
       document.getElementById('sim-dyrtid-vis').innerText = '0%';
       document.getElementById('sim-inntektsfall-vis').innerText = '0%';
@@ -1110,8 +1229,24 @@
     };
 
     window.kjorSimulering = function() {
+      if (simConfig.scenarioType === 'kjope_bolig') {
+        simConfig.kjopeBolig = {
+          lanebelop: Number(document.getElementById('sim-kjop-laan').value) || 3000000,
+          rente: Number(document.getElementById('sim-kjop-rente').value) || 5.0,
+          lopetidAr: Number(document.getElementById('sim-kjop-ar').value) || 25,
+          felleskost: Number(document.getElementById('sim-kjop-felles').value) || 3500
+        };
+      }
       if (simConfig.scenarioType === 'bli_samboer') {
         simConfig.partnerInntekt = Number(document.getElementById('sim-partner-inntekt').value) || 35000;
+        if (simConfig.partnerKjopeBolig) {
+          simConfig.samboerBolig = {
+            lanebelop: Number(document.getElementById('sim-sambo-laan').value) || 4500000,
+            rente: Number(document.getElementById('sim-sambo-rente').value) || 5.0,
+            lopetidAr: Number(document.getElementById('sim-sambo-ar').value) || 25,
+            felleskost: Number(document.getElementById('sim-sambo-felles').value) || 4500
+          };
+        }
       }
       if (simConfig.scenarioType === 'samlivsbrudd') {
         simConfig.samlivsbrudd.boligValg = document.getElementById('sim-brudd-bolig').value;
@@ -1410,20 +1545,20 @@
         }
       }
 
-      // Profil inputs
+      // Sett feltverdier i profil kun hvis definert slik at placeholder vises
       document.getElementById('m-prof-navn').value = state.fulltNavn || '';
-      document.getElementById('m-prof-inntekt').value = state.inntektNetto || 0;
+      document.getElementById('m-prof-inntekt').value = state.inntektNetto || '';
       document.getElementById('m-prof-voksne').value = state.voksne || 1;
-      document.getElementById('m-prof-barn').value = state.barn || 0;
+      document.getElementById('m-prof-barn').value = state.barn !== undefined && state.barn !== 0 ? state.barn : '';
       document.getElementById('m-prof-transport').value = state.transportmiddel || 'Bensinbil';
-      document.getElementById('m-prof-lan-saldo').value = state.boliglanSaldo || 0;
-      document.getElementById('m-prof-lan-termin').value = state.boliglanTermin || 0;
-      document.getElementById('m-prof-felleskost').value = state.felleskost || 0;
-      document.getElementById('m-prof-strom').value = state.strom || 0;
-      document.getElementById('m-prof-forsikring').value = state.forsikring || 0;
-      document.getElementById('m-prof-restaurant').value = state.restaurant || 0;
-      document.getElementById('m-prof-ferie').value = state.ferie || 0;
-      document.getElementById('m-prof-annen-sparing').value = state.annenSparing || 0;
+      document.getElementById('m-prof-lan-saldo').value = state.boliglanSaldo || '';
+      document.getElementById('m-prof-lan-termin').value = state.boliglanTermin || '';
+      document.getElementById('m-prof-felleskost').value = state.felleskost || '';
+      document.getElementById('m-prof-strom').value = state.strom || '';
+      document.getElementById('m-prof-forsikring').value = state.forsikring || '';
+      document.getElementById('m-prof-restaurant').value = state.restaurant || '';
+      document.getElementById('m-prof-ferie').value = state.ferie || '';
+      document.getElementById('m-prof-annen-sparing').value = state.annenSparing || '';
     }
 
     window.addEventListener('DOMContentLoaded', () => {
